@@ -9,7 +9,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView rvMoviePosters;
 
-    // TODO: 7/26/2017 create adapter
+    private MoviePosterAdapter moviePosterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
 
-        // TODO: 7/26/2017 set adapter
+        moviePosterAdapter = new MoviePosterAdapter();
+        rvMoviePosters.setAdapter(moviePosterAdapter);
     }
+
+
+
 }
