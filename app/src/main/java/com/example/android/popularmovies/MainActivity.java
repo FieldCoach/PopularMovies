@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -90,14 +91,17 @@ public class MainActivity extends AppCompatActivity {
     private String requestApiKey() {
         final String[] apiKey = new String[1];
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogLayout = inflater.inflate(R.layout.api_dialog_layout, null);
+        etApiDialog = (EditText) dialogLayout.findViewById(R.id.et_api_dialog);
+
         AlertDialog.Builder apiKeyDialog = new AlertDialog.Builder(this);
         apiKeyDialog.setMessage("Enter API Key")
-                .setView(R.layout.api_dialog_layout)
+                .setView(dialogLayout)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Get the API Key from the user
-                        etApiDialog = (EditText) findViewById(R.id.et_api_dialog);
                         apiKey[0] = etApiDialog.getText().toString();
                     }
                 })
