@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 /**
  * Created by AaronC on 7/26/2017.
  */
@@ -14,6 +16,8 @@ import android.widget.ListView;
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.PosterViewHolder>{
 
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
+
+    private ArrayList<String> moviePosterLocation;
 
     /**
      * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
@@ -87,5 +91,10 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         PosterViewHolder(View itemView) {
             super(itemView);
         }
+    }
+
+    public void setMoviePosterLocation(ArrayList<String> moviePosterLocation) {
+        // TODO: 8/2/2017 This arrayList might need to be cleared first
+        this.moviePosterLocation = moviePosterLocation;
     }
 }

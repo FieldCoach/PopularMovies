@@ -17,8 +17,12 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
-    final static String BASE_URL = "http://api.themoviedb.org/3/movie";
+    final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
     final static String QUERY_PARAMETER = "api_key";
+
+    final static String IMAGE_BASE_URL = " http://image.tmdb.org/t/p/";
+    final static String IMAGE_SIZE = "w185";
+
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     /**
@@ -27,8 +31,8 @@ public final class NetworkUtils {
      * @param apiKey request this from the user to prevent issues with GitHub
      * @return the built url
      */
-    public static URL buildUrl(String sortOrder, String apiKey) {
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+    public static URL buildMovieDbUrl(String sortOrder, String apiKey) {
+        Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
                 .appendPath(sortOrder)
                 .appendQueryParameter(QUERY_PARAMETER, apiKey)
                 .build();
@@ -39,7 +43,28 @@ public final class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "buildUrl() returned: " + url);
+        Log.d(TAG, "buildMovieDbUrl() returned: " + url);
+        return url;
+    }
+
+    /**
+     * Builds the url used to show the poster of a movie
+     * @param imageToDisplay the file name of the image to be shown
+     * @return
+     */
+    public static URL buildImageUrl(String imageToDisplay) {
+        Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon()
+                .appendPath(IMAGE_SIZE)
+                .appendPath(imageToDisplay)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "buildImageUrl() returned: " + url);
         return url;
     }
 

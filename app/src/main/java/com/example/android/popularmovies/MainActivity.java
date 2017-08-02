@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 sortBySelection = adapterView.getItemAtPosition(i).toString();
-//                getMovies();
+//                getMovies();      // TODO: 8/2/2017 figure out if getMovies() should be called here
             }
 
             @Override
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getMovies() {
-        URL movieRequestUrl = NetworkUtils.buildUrl(sortBySelection, apiKey);
+        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelection, apiKey);
         new GetMoviesTask().execute(movieRequestUrl);
     }
 
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
      * @return the API key
      */
     // TODO: 8/2/2017 returning null
-    private String requestApiKey() {
+    private void requestApiKey() {
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogLayout = inflater.inflate(R.layout.api_dialog_layout, null);
@@ -98,9 +99,11 @@ public class MainActivity extends AppCompatActivity {
                         apiKey = etApiDialog.getText().toString();
                         Log.d(TAG, "requestApi.onClick() returned: " + apiKey);
 
-                        if (apiKey != null) {
+                        if (apiKey != null && !apiKey.equals("")) {
                             setUpSpinner();
                             getMovies();
+                        } else {
+                            notifyApiKeyError();        // TODO: 8/2/2017 handle API key error in onPostExecute
                         }
                     }
                 })
@@ -108,15 +111,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Notify the user we cannot continue without the API Key
-                        Toast.makeText(getApplicationContext(), "Cannot continue without API Key", Toast.LENGTH_LONG).show();
+                        notifyApiKeyError();        // TODO: 8/2/2017 handle API key error in onPostExecute
                     }
                 })
                 .show();
-        return apiKey;
     }
 
 
-    public class GetMoviesTask extends AsyncTask<URL, Void, String> {
+    public class GetMoviesTask extends AsyncTask<URL, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(URL... params) {
+        protected JSONObject doInBackground(URL... params) {
             URL movieRequestUrl = params[0];
             String movieRequestResults = null;
             try {
@@ -134,19 +136,34 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // TODO: 8/1/2017 consider returning JSON object instead of String
-            JSONObject jsonObject = null;
+            JSONObject jsonData = null;
             try {
-                jsonObject = new JSONObject(movieRequestResults);
-                Log.d(TAG, "doInBackground() returned: " + jsonObject.toString(5));
-            } catch (JSONException e) {             // TODO: 8/2/2017 change back to JSON Exception
+                jsonData = new JSONObject(movieRequestResults);
+                Log.d(TAG, "doInBackground() returned: " + jsonData.toString(5));
+            } catch (JSONException e) {
                 e.printStackTrace();
+            }  catch (NullPointerException e){
+                //this should only happen if there is an invalid API key entered and the HttpResponse is null
             }
-            return movieRequestResults;
+            return jsonData;
         }
 
         @Override
-        protected void onPostExecute(String strings) {
-            super.onPostExecute(strings);
+        protected void onPostExecute(JSONObject jsonData) {
+            super.onPostExecute(jsonData);
+            if (jsonData == null){
+                notifyApiKeyError();
+            } else {
+                // TODO: 8/2/2017 populate ArrayList to pass to RecyclerView.Adapter
+                ArrayList<String> moviePosterLocation;
+
+                jsonData
+            }
         }
+    }
+
+    private void notifyApiKeyError() {
+        Toast.makeText(getApplicationContext(), "Please enter a valid API Key", Toast.LENGTH_LONG).show();
+        requestApiKey();
     }
 }
