@@ -50,8 +50,14 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
 
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+//        rvMoviePosters.setLayoutManager(layoutManager);
+
         moviePosterAdapter = new MoviePosterAdapter();
         rvMoviePosters.setAdapter(moviePosterAdapter);
+        //uncomment when using API set
+//        setUpSpinner();
+//        getMovies();
 
         requestApiKey();
     }
