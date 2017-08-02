@@ -29,11 +29,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView rvMoviePosters;
-    private EditText etApiDialog;
     private Spinner spSortBy;
 
     private MoviePosterAdapter moviePosterAdapter;
-    private String sortBySelection = "Popular";
+    private String sortBySelection = "popular";
     private String apiKey;
 
     @Override
@@ -51,11 +50,7 @@ public class MainActivity extends AppCompatActivity {
         moviePosterAdapter = new MoviePosterAdapter();
         rvMoviePosters.setAdapter(moviePosterAdapter);
 
-        apiKey = requestApiKey();
-        if (apiKey != null) {
-            setUpSpinner();
-            getMovies();
-        }
+        requestApiKey();
     }
 
     private void setUpSpinner() {
@@ -67,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 sortBySelection = adapterView.getItemAtPosition(i).toString();
-                getMovies();
+//                getMovies();
             }
 
             @Override
@@ -88,11 +83,10 @@ public class MainActivity extends AppCompatActivity {
      */
     // TODO: 8/2/2017 returning null
     private String requestApiKey() {
-        final String[] apiKey = new String[1];
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogLayout = inflater.inflate(R.layout.api_dialog_layout, null);
-        etApiDialog = (EditText) dialogLayout.findViewById(R.id.et_api_dialog);
+        final EditText etApiDialog = (EditText) dialogLayout.findViewById(R.id.et_api_dialog);
 
         AlertDialog.Builder apiKeyDialog = new AlertDialog.Builder(this);
         apiKeyDialog.setMessage("Enter API Key")
@@ -101,7 +95,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Get the API Key from the user
-                        apiKey[0] = etApiDialog.getText().toString();
+                        apiKey = etApiDialog.getText().toString();
+                        Log.d(TAG, "requestApi.onClick() returned: " + apiKey);
+
+                        if (apiKey != null) {
+                            setUpSpinner();
+                            getMovies();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -112,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .show();
-        Log.d(TAG, "requestApiKey() returned: " + apiKey[0]);
-        return apiKey[0];
+        return apiKey;
     }
 
 
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 jsonObject = new JSONObject(movieRequestResults);
                 Log.d(TAG, "doInBackground() returned: " + jsonObject.toString(5));
-            } catch (JSONException e) {
+            } catch (JSONException e) {             // TODO: 8/2/2017 change back to JSON Exception
                 e.printStackTrace();
             }
             return movieRequestResults;
