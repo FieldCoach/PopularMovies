@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: 8/1/2017 prompt user for sortOrder and apiKey
-    // TODO: 8/1/2017 design UI to prompt user for sortOrder and apiKey
     private void getMovies() {
         URL movieRequestUrl = NetworkUtils.buildUrl(sortBySelection, apiKey);
         new GetMoviesTask().execute(movieRequestUrl);
@@ -88,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
      * Prompts the user for their API Key. The dialog won't dismiss unless they enter one
      * @return the API key
      */
+    // TODO: 8/2/2017 returning null
     private String requestApiKey() {
         final String[] apiKey = new String[1];
 
