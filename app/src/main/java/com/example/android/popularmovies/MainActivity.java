@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -16,10 +17,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private MoviePosterAdapter moviePosterAdapter;
     private String sortBySelection = "popular";
     private String apiKey;
+    private ArrayList<Uri> moviePosterLocationsArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class GetMoviesTask extends AsyncTask<URL, Void, JSONObject> {
+    public class GetMoviesTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected JSONObject doInBackground(URL... params) {
+        protected String doInBackground(URL... params) {
             URL movieRequestUrl = params[0];
             String movieRequestResults = null;
             try {
@@ -135,29 +137,24 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            // TODO: 8/1/2017 consider returning JSON object instead of String
-            JSONObject jsonData = null;
-            try {
-                jsonData = new JSONObject(movieRequestResults);
-                Log.d(TAG, "doInBackground() returned: " + jsonData.toString(5));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }  catch (NullPointerException e){
-                //this should only happen if there is an invalid API key entered and the HttpResponse is null
-            }
-            return jsonData;
+            return movieRequestResults;
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonData) {
-            super.onPostExecute(jsonData);
-            if (jsonData == null){
+        protected void onPostExecute(String movieRequestResults) {
+            super.onPostExecute(movieRequestResults);
+            if (movieRequestResults == null){
                 notifyApiKeyError();
             } else {
                 // TODO: 8/2/2017 populate ArrayList to pass to RecyclerView.Adapter
-                ArrayList<String> moviePosterLocation;
+                try {
+                    moviePosterLocationsArray = JSONDataHandler.getMoviePosters(movieRequestResults);
+                    moviePosterAdapter.setMoviePosterLocationsArray(moviePosterLocationsArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                jsonData
+
             }
         }
     }

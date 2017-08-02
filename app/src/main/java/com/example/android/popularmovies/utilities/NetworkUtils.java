@@ -52,20 +52,15 @@ public final class NetworkUtils {
      * @param imageToDisplay the file name of the image to be shown
      * @return
      */
-    public static URL buildImageUrl(String imageToDisplay) {
+    public static Uri buildImageUri(String imageToDisplay) {
+        Log.d(TAG, "buildImageUri.imageToDisplay: " + imageToDisplay);
         Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon()
                 .appendPath(IMAGE_SIZE)
                 .appendPath(imageToDisplay)
                 .build();
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "buildImageUrl() returned: " + url);
-        return url;
+        Log.d(TAG, "buildImageUri() returned: " + builtUri);
+        return builtUri;
     }
 
     /**

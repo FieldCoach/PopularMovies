@@ -1,12 +1,19 @@
 package com.example.android.popularmovies;
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.squareup.picasso.Picasso;
+
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -16,8 +23,9 @@ import java.util.ArrayList;
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.PosterViewHolder>{
 
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
+    private static Context context;
 
-    private ArrayList<String> moviePosterLocation;
+    private ArrayList<Uri> moviePosterLocationsArray;
 
     /**
      * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
@@ -41,7 +49,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public PosterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         int movieListItemId = R.layout.movie_list_item;
         LayoutInflater layoutInflater = LayoutInflater.from(context);
 
@@ -72,7 +80,9 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public void onBindViewHolder(PosterViewHolder holder, int position) {
-
+        Uri currentMoviePoster = moviePosterLocationsArray.get(position);
+        Picasso.with(context).load(currentMoviePoster).into(holder.moviePoster);
+        Log.d(TAG, "onBindViewHolder() returned: " + position);
     }
 
     /**
@@ -82,19 +92,28 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public int getItemCount() {
-        return 0;
+        if (null == moviePosterLocationsArray) return 0;
+        return moviePosterLocationsArray.size();
     }
 
-    class PosterViewHolder extends RecyclerView.ViewHolder {
-
+    class PosterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public final ImageView moviePoster;
 
         PosterViewHolder(View itemView) {
             super(itemView);
+            moviePoster = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            // TODO: 8/2/2017 onClick logic for moviePosters
         }
     }
 
-    public void setMoviePosterLocation(ArrayList<String> moviePosterLocation) {
+    public void setMoviePosterLocationsArray(ArrayList<Uri> moviePosterLocationsArray) {
         // TODO: 8/2/2017 This arrayList might need to be cleared first
-        this.moviePosterLocation = moviePosterLocation;
+        this.moviePosterLocationsArray = moviePosterLocationsArray;
+        notifyDataSetChanged();
     }
 }
