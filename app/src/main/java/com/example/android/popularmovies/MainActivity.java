@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
-//        etApiDialog = (EditText) findViewById(R.id.et_api_dialog);
         spSortBy = (Spinner) findViewById(R.id.spinner);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);

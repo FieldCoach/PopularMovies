@@ -38,6 +38,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         @Override
         public void onClick(View view) {
             // TODO: 8/2/2017 onClick logic for moviePosters
+
         }
     }
     /**
@@ -93,9 +94,12 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
-        Uri currentMoviePoster = moviePosterLocationsArray[position];
-        Picasso.with(context).load(currentMoviePoster).into(holder.moviePoster);          // TODO: 8/2/2017 Picasso isn't loading the image correctly because of the currentMoviePoster Uri
-        Log.d(TAG, "onBindViewHolder() returned: " + position);
+        String currentMoviePoster = moviePosterLocationsArray[position].toString();
+        Picasso.with(context)
+                .load(currentMoviePoster)
+                .fit()
+                .into(holder.moviePoster);          // TODO: 8/2/2017 Picasso isn't loading the image correctly because of the currentMoviePoster Uri
+        Log.d(TAG, "onBindViewHolder() returned: " + currentMoviePoster);
     }
 
     /**

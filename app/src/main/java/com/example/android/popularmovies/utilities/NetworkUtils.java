@@ -20,8 +20,8 @@ public final class NetworkUtils {
     final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
     final static String QUERY_PARAMETER = "api_key";
 
-    final static String IMAGE_BASE_URL = " http://image.tmdb.org/t/p/";
-    final static String IMAGE_SIZE = "w185";
+    final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    final static String IMAGE_SIZE = "w342";
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
@@ -33,7 +33,7 @@ public final class NetworkUtils {
      */
     public static URL buildMovieDbUrl(String sortOrder, String apiKey) {
         Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
-                .appendPath(sortOrder)
+                .appendPath(sortOrder.toLowerCase())
                 .appendQueryParameter(QUERY_PARAMETER, apiKey)
                 .build();
 
