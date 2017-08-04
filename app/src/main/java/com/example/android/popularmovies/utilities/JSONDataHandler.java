@@ -14,34 +14,35 @@ import java.util.ArrayList;
 
 public class JSONDataHandler {
 
-    public static ArrayList<JSONObject> getMovieObjectsArray(String movieRequestResults) throws JSONException{
+    public static ArrayList<JSONObject> getMovieJSONObjectsArray(String movieRequestResults) throws JSONException{
 
         final String RESULTS = "results";
 
-        JSONObject movieResultsJson = new JSONObject(movieRequestResults);
-        JSONArray resultsArray = movieResultsJson.getJSONArray(RESULTS);
+        JSONObject movieResultsJSONObject = new JSONObject(movieRequestResults);
+        JSONArray movieResultsJSONArray = movieResultsJSONObject.getJSONArray(RESULTS);
 
-        ArrayList<JSONObject> moviePostersArray = new ArrayList<>();
+        ArrayList<JSONObject> movieJSONObjectsArray = new ArrayList<>();
 
-        for (int i = 0; i < resultsArray.length(); i++) {
-            JSONObject movieObject = resultsArray.getJSONObject(i);
+        for (int i = 0; i < movieResultsJSONArray.length(); i++) {
+            JSONObject movieObject = movieResultsJSONArray.getJSONObject(i);
 
-            moviePostersArray.add(movieObject);
+            movieJSONObjectsArray.add(movieObject);
         }
-        return moviePostersArray;
+        return movieJSONObjectsArray;
     }
 
-    public static ArrayList<Uri> getPosterLocationsArray(ArrayList<JSONObject> movieObjectsArray){
+    public static ArrayList<Uri> getPosterLocationsArray(ArrayList<JSONObject> movieJSONObjectsArray){
 
         ArrayList<Uri> posterLocationsArray = new ArrayList<>();
-        for (int i = 0; i < movieObjectsArray.size(); i++) {
-            String posterLocation = "";
+        for (int i = 0; i < movieJSONObjectsArray.size(); i++) {
+            String posterLocationString = "";
             try {
-                posterLocation = movieObjectsArray.get(i).getString("poster_path").substring(1);
+                //substring is used to prevent error caused by forward slash at he beginning of the path
+                posterLocationString = movieJSONObjectsArray.get(i).getString("poster_path").substring(1);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Uri moviePosterUri = NetworkUtils.buildImageUri(posterLocation);
+            Uri moviePosterUri = NetworkUtils.buildImageUri(posterLocationString);
 
             posterLocationsArray.add(moviePosterUri);
         }
@@ -49,13 +50,13 @@ public class JSONDataHandler {
     }
 
     public static String getDetails(JSONObject movieObject, String key){
-        String details = "";
+        String detailsString = "";
         try {
-            details = movieObject.getString(key);
+            detailsString = movieObject.getString(key);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return details;
+        return detailsString;
     }
 
 }
