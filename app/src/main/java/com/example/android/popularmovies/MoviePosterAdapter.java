@@ -13,8 +13,6 @@ import android.widget.ListView;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /**
@@ -26,7 +24,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
     private static Context context;
 
-    private String movieRequestResults;
+    private String movieRequestResults;         // TODO: 8/4/2017 remove per code inspection (memory leak)
     private Uri[] moviePosterLocationsArray;
 
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
