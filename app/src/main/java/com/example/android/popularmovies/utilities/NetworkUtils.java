@@ -17,11 +17,11 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
-    final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
-    final static String QUERY_PARAMETER = "api_key";
+    private final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
+    private final static String QUERY_PARAMETER = "api_key";
 
-    final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    final static String IMAGE_SIZE = "w342";
+    private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private final static String IMAGE_SIZE = "w342";
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
@@ -50,7 +50,7 @@ public final class NetworkUtils {
     /**
      * Builds the url used to show the poster of a movie
      * @param imageToDisplay the file name of the image to be shown
-     * @return
+     * @return the builtUri
      */
     public static Uri buildImageUri(String imageToDisplay) {
         Log.d(TAG, "buildImageUri.imageToDisplay: " + imageToDisplay);

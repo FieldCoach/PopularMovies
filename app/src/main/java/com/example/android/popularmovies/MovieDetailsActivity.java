@@ -16,22 +16,16 @@ import java.util.ArrayList;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
-    private ImageView detailsPoster;
-    private TextView title;
-    private TextView rating;
-    private TextView overview;
-    private TextView releaseDate;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        detailsPoster = (ImageView) findViewById(R.id.iv_details_poster);
-        title = (TextView) findViewById(R.id.tv_title);
-        rating = (TextView) findViewById(R.id.tv_rating);
-        overview = (TextView) findViewById(R.id.tv_overview);
-        releaseDate = (TextView) findViewById(R.id.tv_release_date);
+        ImageView detailsPoster = (ImageView) findViewById(R.id.iv_details_poster);
+        TextView title = (TextView) findViewById(R.id.tv_title);
+        TextView rating = (TextView) findViewById(R.id.tv_rating);
+        TextView overview = (TextView) findViewById(R.id.tv_overview);
+        TextView releaseDate = (TextView) findViewById(R.id.tv_release_date);
 
         Intent intent = getIntent();
         int position = intent.getIntExtra("position", 0);

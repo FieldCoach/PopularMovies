@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private RecyclerView rvMoviePosters;
     private Spinner spnrSortBy;
 
     private MoviePosterAdapter moviePosterAdapter;
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
+        RecyclerView rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
         spnrSortBy = (Spinner) findViewById(R.id.spinner);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Prompts the user for their API Key. The dialog won't dismiss unless they enter one
-     * @return the API key
      */
     // TODO: 8/2/2017 returning null
     private void requestApiKey() {
