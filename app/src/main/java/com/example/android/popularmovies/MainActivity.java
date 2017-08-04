@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView rvMoviePosters;
-    private Spinner spSortBy;
+    private Spinner spnrSortBy;
 
     private MoviePosterAdapter moviePosterAdapter;
-    private String sortBySelection = "popular";
+    private String sortBySelectionString = "popular";
     private String apiKey;
 
     private static ArrayList<JSONObject> movieObjectsArray;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
-        spSortBy = (Spinner) findViewById(R.id.spinner);
+        spnrSortBy = (Spinner) findViewById(R.id.spinner);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
@@ -54,23 +54,23 @@ public class MainActivity extends AppCompatActivity {
         moviePosterAdapter = new MoviePosterAdapter();
         rvMoviePosters.setAdapter(moviePosterAdapter);
         //uncomment when using API set
-//        apiKey = ****SET YOUR OWN*****;
-//        setUpSpinner();
-//        getMovies();
+        apiKey = "35a2c8b5ef8960c539ecc989877bc80e";
+        setUpSpinner();
+        getMovies();
+//        requestApiKey();
         // TODO: 8/3/2017 check for internet connection before continuing
 
-        requestApiKey();
     }
 
     private void setUpSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_by_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spSortBy.setAdapter(adapter);
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.sort_by_array, android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnrSortBy.setAdapter(arrayAdapter);
 
-        spSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnrSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                sortBySelection = adapterView.getItemAtPosition(i).toString();
+                sortBySelectionString = adapterView.getItemAtPosition(i).toString();
 //                getMovies();      // TODO: 8/2/2017 figure out if getMovies() should be called here
             }
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getMovies() {
-        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelection, apiKey);
+        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, apiKey);
         new GetMoviesTask().execute(movieRequestUrl);
     }
 
@@ -93,25 +93,25 @@ public class MainActivity extends AppCompatActivity {
     // TODO: 8/2/2017 returning null
     private void requestApiKey() {
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogLayout = inflater.inflate(R.layout.api_dialog_layout, null);
-        final EditText etApiDialog = (EditText) dialogLayout.findViewById(R.id.et_api_dialog);
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View apiDialogLayout = layoutInflater.inflate(R.layout.api_dialog_layout, null);
+        final EditText etApiInput = (EditText) apiDialogLayout.findViewById(R.id.et_api_dialog);
 
-        AlertDialog.Builder apiKeyDialog = new AlertDialog.Builder(this);
-        apiKeyDialog.setMessage("Enter API Key")
-                .setView(dialogLayout)
+        AlertDialog.Builder apiDialogView = new AlertDialog.Builder(this);
+        apiDialogView.setMessage("Enter API Key")
+                .setView(apiDialogLayout)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Get the API Key from the user
-                        apiKey = etApiDialog.getText().toString();
+                        apiKey = etApiInput.getText().toString();
                         Log.d(TAG, "requestApi.onClick() returned: " + apiKey);
 
                         if (apiKey != null && !apiKey.equals("")) {
                             setUpSpinner();
                             getMovies();
                         } else {
-                            notifyApiKeyError();        // TODO: 8/2/2017 handle API key error in onPostExecute
+                            notifyApiInputError();        // TODO: 8/2/2017 handle API key error in onPostExecute
                         }
                     }
                 })
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Notify the user we cannot continue without the API Key
-                        notifyApiKeyError();        // TODO: 8/2/2017 handle API key error in onPostExecute
+                        notifyApiInputError();        // TODO: 8/2/2017 handle API key error in onPostExecute
                     }
                 })
                 .show();
@@ -136,25 +136,25 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(URL... params) {
             URL movieRequestUrl = params[0];
-            String movieRequestResults = null;
+            String movieResultsString = null;
             try {
-                movieRequestResults = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
+                movieResultsString = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            return movieRequestResults;
+            return movieResultsString;
         }
 
         @Override
         protected void onPostExecute(String movieRequestResults) {
             super.onPostExecute(movieRequestResults);
             if (movieRequestResults == null){
-                notifyApiKeyError();
+                notifyApiInputError();
             } else {
                 // TODO: 8/2/2017 populate ArrayList to pass to RecyclerView.Adapter
                 try {
-                    movieObjectsArray = JSONDataHandler.getMovieObjectsArray(movieRequestResults);
+                    movieObjectsArray = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
                     ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
 
                     moviePosterAdapter.setMovieData(movieRequestResults, posterLocationsArray);
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void notifyApiKeyError() {
+    private void notifyApiInputError() {
         Toast.makeText(getApplicationContext(), "Please enter a valid API Key", Toast.LENGTH_LONG).show();
         requestApiKey();
     }
