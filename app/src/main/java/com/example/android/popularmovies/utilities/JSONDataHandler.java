@@ -14,26 +14,60 @@ import java.util.ArrayList;
 
 public class JSONDataHandler {
 
-    public static ArrayList<Uri> getMoviePosters(String movieRequestResults) throws JSONException{
+    public static ArrayList<JSONObject> getMovieObjectsArray(String movieRequestResults) throws JSONException{
 
-        final String POSTER_PATH = "poster_path";
         final String RESULTS = "results";
 
         JSONObject movieResultsJson = new JSONObject(movieRequestResults);
         JSONArray resultsArray = movieResultsJson.getJSONArray(RESULTS);
 
-        ArrayList<Uri> moviePostersArray = new ArrayList<>();
+        ArrayList<JSONObject> moviePostersArray = new ArrayList<>();
 
         for (int i = 0; i < resultsArray.length(); i++) {
             JSONObject movieObject = resultsArray.getJSONObject(i);
 
-            //Use substring because "/" is converted to %2f and causes issues
-            String poster = movieObject.getString(POSTER_PATH).substring(1);
-            Uri moviePosterUrl = NetworkUtils.buildImageUri(poster);
-
-            moviePostersArray.add(moviePosterUrl);
+            moviePostersArray.add(movieObject);
         }
         return moviePostersArray;
     }
 
+    public static ArrayList<Uri> getPosterLocationsArray(ArrayList<JSONObject> movieObjectsArray){
+
+        ArrayList<Uri> posterLocationsArray = new ArrayList<>();
+        for (int i = 0; i < movieObjectsArray.size(); i++) {
+            String posterLocation = "";
+            try {
+                posterLocation = movieObjectsArray.get(i).getString("poster_path").substring(1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Uri moviePosterUri = NetworkUtils.buildImageUri(posterLocation);
+
+            posterLocationsArray.add(moviePosterUri);
+        }
+        return posterLocationsArray;
+    }
+
+    public static String getDetails(JSONObject movieObject, String key){
+        String details = "";
+        try {
+            details = movieObject.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return details;
+    }
+
 }
+
+/*
+vote_average
+title = decimal
+title = string
+poster_path = string
+backdrop_path = string
+overview = string
+release_date = string
+
+
+ */

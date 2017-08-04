@@ -1,7 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -24,10 +26,12 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
     private static Context context;
 
+    private String movieRequestResults;
     private Uri[] moviePosterLocationsArray;
 
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final ImageView moviePoster;
+        private String movieRequest;
 
         MoviePosterAdapterViewHolder(View itemView) {
             super(itemView);
@@ -38,7 +42,13 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         @Override
         public void onClick(View view) {
             // TODO: 8/2/2017 onClick logic for moviePosters
+            Intent intent = new Intent(view.getContext(), MovieDetailsActivity.class);
+            int position = getAdapterPosition();
+            String moviePoster = moviePosterLocationsArray[position].toString();
 
+            intent.putExtra("moviePoster", moviePoster);
+            intent.putExtra("position", position);
+            context.startActivity(intent);
         }
     }
     /**
@@ -96,7 +106,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
         String currentMoviePoster = moviePosterLocationsArray[position].toString();
         Picasso.with(context)
-                .load(currentMoviePoster)
+                .load(currentMoviePoster)           // TODO: 8/3/2017 try loading image using URL
                 .fit()
                 .into(holder.moviePoster);          // TODO: 8/2/2017 Picasso isn't loading the image correctly because of the currentMoviePoster Uri
         Log.d(TAG, "onBindViewHolder() returned: " + currentMoviePoster);
@@ -114,12 +124,17 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         return moviePosterLocationsArray.length;
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-    public void setMoviePosterLocationsArray(ArrayList<Uri> moviePosterLocationsArray) {
+    public void setMovieData(String movieRequestResults, ArrayList<Uri> moviePosterLocationsArray) {
         int size = moviePosterLocationsArray.size();
         this.moviePosterLocationsArray = moviePosterLocationsArray.toArray(new Uri[size]);
+        this.movieRequestResults = movieRequestResults;
 
         notifyDataSetChanged();
-        Log.d(TAG, "setMoviePosterLocationsArray() returned: " + this.moviePosterLocationsArray[1]);
+        Log.d(TAG, "setMovieData() returned: " + this.moviePosterLocationsArray[1]);
     }
 }

@@ -21,6 +21,7 @@ import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private MoviePosterAdapter moviePosterAdapter;
     private String sortBySelection = "popular";
     private String apiKey;
-    private ArrayList<Uri> moviePosterLocationsArray;
+
+    private static ArrayList<JSONObject> movieObjectsArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +51,13 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
 
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-//        rvMoviePosters.setLayoutManager(layoutManager);
-
         moviePosterAdapter = new MoviePosterAdapter();
         rvMoviePosters.setAdapter(moviePosterAdapter);
         //uncomment when using API set
+//        apiKey = ****SET YOUR OWN*****;
 //        setUpSpinner();
 //        getMovies();
+        // TODO: 8/3/2017 check for internet connection before continuing
 
         requestApiKey();
     }
@@ -153,8 +154,10 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 // TODO: 8/2/2017 populate ArrayList to pass to RecyclerView.Adapter
                 try {
-                    moviePosterLocationsArray = JSONDataHandler.getMoviePosters(movieRequestResults);
-                    moviePosterAdapter.setMoviePosterLocationsArray(moviePosterLocationsArray);
+                    movieObjectsArray = JSONDataHandler.getMovieObjectsArray(movieRequestResults);
+                    ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
+
+                    moviePosterAdapter.setMovieData(movieRequestResults, posterLocationsArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -167,5 +170,9 @@ public class MainActivity extends AppCompatActivity {
     private void notifyApiKeyError() {
         Toast.makeText(getApplicationContext(), "Please enter a valid API Key", Toast.LENGTH_LONG).show();
         requestApiKey();
+    }
+
+    public static ArrayList<JSONObject> getMovieObjectsArray(){
+        return movieObjectsArray;
     }
 }
