@@ -122,11 +122,6 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         return moviePosterLocationsArray.length;
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
     public void setMovieData(String movieRequestResults, ArrayList<Uri> moviePosterLocationsArray) {
         int size = moviePosterLocationsArray.size();
         this.moviePosterLocationsArray = moviePosterLocationsArray.toArray(new Uri[size]);
