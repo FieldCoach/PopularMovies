@@ -11,10 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.utilities.JSONDataHandler;
@@ -31,21 +29,22 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private Spinner spnrSortBy;
+    private ProgressBar progressBar;
 
     private MoviePosterAdapter moviePosterAdapter;
     private String sortBySelectionString = "popular";
     private String apiKey;
 
     private static ArrayList<JSONObject> movieObjectsArray;
+    private RecyclerView rvMoviePosters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
-        spnrSortBy = (Spinner) findViewById(R.id.spinner);
+        rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
@@ -54,30 +53,20 @@ public class MainActivity extends AppCompatActivity {
         rvMoviePosters.setAdapter(moviePosterAdapter);
         //uncomment when using API set
         apiKey = "35a2c8b5ef8960c539ecc989877bc80e";
-        setUpSpinner();
         getMovies();
 //        requestApiKey();
         // TODO: 8/3/2017 check for internet connection before continuing
 
     }
 
-    private void setUpSpinner() {
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.sort_by_array, android.R.layout.simple_spinner_item);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnrSortBy.setAdapter(arrayAdapter);
+    private void showLoadingIndicator(){
+        rvMoviePosters.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
-        spnrSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                sortBySelectionString = adapterView.getItemAtPosition(i).toString();
-//                getMovies();      // TODO: 8/2/2017 figure out if getMovies() should be called here
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //Do nothing
-            }
-        });
+    private void showMoviePosters(){
+        progressBar.setVisibility(View.INVISIBLE);
+        rvMoviePosters.setVisibility(View.VISIBLE);
     }
 
     private void getMovies() {
@@ -106,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "requestApi.onClick() returned: " + apiKey);
 
                         if (apiKey != null && !apiKey.equals("")) {
-                            setUpSpinner();
                             getMovies();
                         } else {
                             notifyApiInputError();        // TODO: 8/2/2017 handle API key error in onPostExecute
@@ -129,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            showLoadingIndicator();
         }
 
         @Override
@@ -147,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String movieRequestResults) {
             super.onPostExecute(movieRequestResults);
+            //if nothing is returned, hide loadingIndicator. RecyclerView will remain empty
+            showMoviePosters();
             if (movieRequestResults == null){
                 notifyApiInputError();
             } else {
