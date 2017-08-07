@@ -60,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
         moviePosterAdapter = new MoviePosterAdapter();
         rvMoviePosters.setAdapter(moviePosterAdapter);
         //uncomment when using API set
-//        apiKey = "***REMOVED***";
+        //********For Testing********//
+//        apiKey = -REMOVED-;
+        //********For Testing********//
+
         requestApiKey();
         // TODO: 8/3/2017 check for internet connection before continuing
 
