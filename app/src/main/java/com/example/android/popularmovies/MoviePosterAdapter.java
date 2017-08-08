@@ -22,14 +22,14 @@ import java.util.ArrayList;
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder>{
 
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
+    public static final String MOVIE_POSTER = "moviePoster";
+    public static final String POSITION = "position";
     private static Context context;
 
-    private String movieRequestResults;         // TODO: 8/4/2017 remove per code inspection (memory leak)
     private Uri[] moviePosterLocationsArray;
 
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final ImageView moviePoster;
-        private String movieRequest;
 
         MoviePosterAdapterViewHolder(View itemView) {
             super(itemView);
@@ -37,17 +37,22 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
             itemView.setOnClickListener(this);
         }
 
+        /**
+         * Creates an intent, passes it the location of the moviePoster and the current adapter position
+         * @param view The moviePoster ImageView that was clicked
+         */
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), MovieDetailsActivity.class);
             int position = getAdapterPosition();
             String moviePoster = moviePosterLocationsArray[position].toString();
 
-            intent.putExtra("moviePoster", moviePoster);
-            intent.putExtra("position", position);
+            intent.putExtra(MOVIE_POSTER, moviePoster);
+            intent.putExtra(POSITION, position);
             context.startActivity(intent);
         }
     }
+
     /**
      * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
      * an item.
@@ -121,12 +126,11 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         return moviePosterLocationsArray.length;
     }
 
-    public void setMovieData(String movieRequestResults, ArrayList<Uri> moviePosterLocationsArray) {
+    public void setMoviePosterLocationsArray(ArrayList<Uri> moviePosterLocationsArray) {
         int size = moviePosterLocationsArray.size();
         this.moviePosterLocationsArray = moviePosterLocationsArray.toArray(new Uri[size]);
-        this.movieRequestResults = movieRequestResults;
 
         notifyDataSetChanged();
-        Log.d(TAG, "setMovieData() returned: " + this.moviePosterLocationsArray[1]);
+        Log.d(TAG, "setMoviePosterLocationsArray() returned: " + this.moviePosterLocationsArray[1]);
     }
 }

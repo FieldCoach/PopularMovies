@@ -36,6 +36,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String ENTER_API_KEY = "Enter API Key";
+    public static final String POSITIVE_BUTTON_OK = "OK";
+    public static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
+    public static final String POPULAR = "popular";
+    public static final String TOP_RATED = "top_rated";
+    public static final String ENTER_VALID_API = "Please enter a valid API Key";
 
     private ProgressBar progressBar;
 
@@ -65,9 +71,8 @@ public class MainActivity extends AppCompatActivity {
         //********For Testing********//
 
         requestApiKey();
-        // TODO: 8/3/2017 check for internet connection before continuing
-
     }
+
 
     @Override
     protected void onRestart() {
@@ -75,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
         getMovies();
     }
 
+    /**
+     * Checks whether the device is online or connecting
+     * @return
+     */
     private boolean isOnline() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -82,16 +91,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Show loading indicator during doInBackground()
+     */
     private void showLoadingIndicator(){
         rvMoviePosters.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Show movie posters after doInBackgound() is done
+     */
     private void showMoviePosters(){
         progressBar.setVisibility(View.INVISIBLE);
         rvMoviePosters.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Gets the URL to request movies then executes doInBackground()
+     */
     private void getMovies() {
         URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, apiKey);
         new GetMoviesTask().execute(movieRequestUrl);
@@ -107,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
         final EditText etApiInput = (EditText) apiDialogLayout.findViewById(R.id.et_api_dialog);
 
         AlertDialog.Builder apiDialogView = new AlertDialog.Builder(this);
-        apiDialogView.setMessage("Enter API Key")
+        apiDialogView.setMessage(ENTER_API_KEY)
                 .setView(apiDialogLayout)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(POSITIVE_BUTTON_OK, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Get the API Key from the user
@@ -136,6 +154,11 @@ public class MainActivity extends AppCompatActivity {
             showLoadingIndicator();
         }
 
+        /**
+         * Retrieves a String of the JSON data from a GET request of the API
+         * @param params the URL to use for the GET request
+         * @return String of the JSON data
+         */
         @Override
         protected String doInBackground(URL... params) {
             URL movieRequestUrl = params[0];
@@ -149,37 +172,57 @@ public class MainActivity extends AppCompatActivity {
             return movieResultsString;
         }
 
+        /**
+         * Gets movie JSONObjects and posterLocations to set data in RecyclerView.Adapter.
+         * Notifies the user if there was an error with the internet connection or the API Key input.
+         * @param movieRequestResults String of JSON data from the GET request of the API
+         */
         @Override
         protected void onPostExecute(String movieRequestResults) {
             super.onPostExecute(movieRequestResults);
             //if nothing is returned, hide loadingIndicator. RecyclerView will remain empty
             showMoviePosters();
 
-                // TODO: 8/2/2017 populate ArrayList to pass to RecyclerView.Adapter
-                try {
-                    movieObjectsArray = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
-                    ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
+            try {
+                movieObjectsArray = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
+                ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
 
-                    moviePosterAdapter.setMovieData(movieRequestResults, posterLocationsArray);
-                } catch (NullPointerException e) {     //catching JSONException and NullPointerException
-                    e.printStackTrace();
-                    if (isOnline()) {
-                        notifyApiInputError();
-                    }else {
-                        notifyConnectionError();
-                    }
-                } catch (JSONException e){
-                    e.printStackTrace();
+                moviePosterAdapter.setMoviePosterLocationsArray(posterLocationsArray);
+            } catch (NullPointerException e) {     //catching JSONException and NullPointerException
+                e.printStackTrace();
+                if (isOnline()) {
+                    notifyApiInputError();
+                }else {
+                    notifyConnectionError();
                 }
-
-
-
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
         }
     }
 
+    /**
+     * Notifies the user if the device isn't connected to the internet then opens the wifi settings.
+     */
     private void notifyConnectionError() {
-        Toast.makeText(getApplicationContext(), "Please connect to the Internet to continue", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), CONNECT_TO_CONTINUE, Toast.LENGTH_LONG).show();
         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+    }
+
+    /**
+     * Notifies the user if the API key input was invalid.
+     */
+    private void notifyApiInputError() {
+        Toast.makeText(getApplicationContext(), ENTER_VALID_API, Toast.LENGTH_LONG).show();
+        requestApiKey();
+    }
+
+    /**
+     * Called by the RecyclerView.Adapter
+     * @return ArrayList of movie JSONObjects
+     */
+    public static ArrayList<JSONObject> getMovieObjectsArray(){
+        return movieObjectsArray;
     }
 
     @Override
@@ -195,26 +238,17 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.popular){
-            sortBySelectionString = "popular";
+            sortBySelectionString = POPULAR;
             getMovies();
             return true;
         }
 
         if (id == R.id.top_rated){
-            sortBySelectionString = "top_rated";
+            sortBySelectionString = TOP_RATED;
             getMovies();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void notifyApiInputError() {
-        Toast.makeText(getApplicationContext(), "Please enter a valid API Key", Toast.LENGTH_LONG).show();
-        requestApiKey();
-    }
-
-    public static ArrayList<JSONObject> getMovieObjectsArray(){
-        return movieObjectsArray;
     }
 }

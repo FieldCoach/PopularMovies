@@ -14,9 +14,17 @@ import java.util.ArrayList;
 
 public class JSONDataHandler {
 
-    public static ArrayList<JSONObject> getMovieJSONObjectsArray(String movieRequestResults) throws JSONException{
+    public static final String POSTER_PATH = "poster_path";
+    public static final String RESULTS = "results";
 
-        final String RESULTS = "results";
+    /**
+     * Makes the JSON data easier to work with by taking the data from the String, creating JSONObjects,
+     * then putting those objects into an ArrayList to later pass to RecyclerView.Adapter
+     * @param movieRequestResults String containing JSON data
+     * @return ArrayList of movie JSONObjects
+     * @throws JSONException
+     */
+    public static ArrayList<JSONObject> getMovieJSONObjectsArray(String movieRequestResults) throws JSONException{
 
         JSONObject movieResultsJSONObject = new JSONObject(movieRequestResults);
         JSONArray movieResultsJSONArray = movieResultsJSONObject.getJSONArray(RESULTS);
@@ -31,6 +39,11 @@ public class JSONDataHandler {
         return movieJSONObjectsArray;
     }
 
+    /**
+     * Creates an ArrayList of Uri's of the poster locations to later pass to RecyclerView.Adapter
+     * @param movieJSONObjectsArray
+     * @return
+     */
     public static ArrayList<Uri> getPosterLocationsArray(ArrayList<JSONObject> movieJSONObjectsArray){
 
         ArrayList<Uri> posterLocationsArray = new ArrayList<>();
@@ -38,7 +51,7 @@ public class JSONDataHandler {
             String posterLocationString = "";
             try {
                 //substring is used to prevent error caused by forward slash at he beginning of the path
-                posterLocationString = movieJSONObjectsArray.get(i).getString("poster_path").substring(1);
+                posterLocationString = movieJSONObjectsArray.get(i).getString(POSTER_PATH).substring(1);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -49,7 +62,13 @@ public class JSONDataHandler {
         return posterLocationsArray;
     }
 
-    public static String getDetails(JSONObject movieObject, String key){
+    /**
+     * Conviniece method for MovieDetailsAcitvity to catch any JSONExceptions when using moviewObject.getString()
+     * @param movieObject the current movieObject of the MovieDetailsActivity
+     * @param key the desired detail to retrieve for the movieObject
+     * @return the details requested
+     */
+    public static String getDetailsString(JSONObject movieObject, String key){
         String detailsString = "";
         try {
             detailsString = movieObject.getString(key);
@@ -60,15 +79,3 @@ public class JSONDataHandler {
     }
 
 }
-
-/*
-vote_average
-title = decimal
-title = string
-poster_path = string
-backdrop_path = string
-overview = string
-release_date = string
-
-
- */

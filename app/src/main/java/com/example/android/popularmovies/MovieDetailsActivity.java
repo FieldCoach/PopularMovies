@@ -16,6 +16,13 @@ import java.util.ArrayList;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
+    public static final String MOVIE_POSTER = "moviePoster";
+    public static final String POSITION = "position";
+    public static final String TITLE = "title";
+    public static final String VOTE_AVERAGE = "vote_average";
+    public static final String OVERVIEW = "overview";
+    public static final String RELEASE_DATE = "release_date";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,11 +36,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         Intent intentFromMainActivity = getIntent();
 
-        if (intentFromMainActivity.hasExtra("position") &&
-                intentFromMainActivity.hasExtra("moviePoster")) {
+        if (intentFromMainActivity.hasExtra(POSITION) &&
+                intentFromMainActivity.hasExtra(MOVIE_POSTER)) {
 
-            int position = intentFromMainActivity.getIntExtra("position", 0);
-            String moviePoster = intentFromMainActivity.getStringExtra("moviePoster");
+            int position = intentFromMainActivity.getIntExtra(POSITION, 0);
+            String moviePoster = intentFromMainActivity.getStringExtra(MOVIE_POSTER);
 
             ArrayList<JSONObject> movieObjectsArray = MainActivity.getMovieObjectsArray();
             JSONObject movieObject = movieObjectsArray.get(position);
@@ -43,14 +50,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     .fit()
                     .into(detailsPoster);
 
-            title.setText(JSONDataHandler.getDetails(movieObject, "title"));
+            title.setText(JSONDataHandler.getDetailsString(movieObject, TITLE));
             try {
-                rating.setText(String.valueOf(movieObject.getDouble("vote_average")));
+                rating.setText(String.valueOf(movieObject.getDouble(VOTE_AVERAGE)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            overview.setText(JSONDataHandler.getDetails(movieObject, "overview"));
-            releaseDate.setText(JSONDataHandler.getDetails(movieObject, "release_date"));
+            overview.setText(JSONDataHandler.getDetailsString(movieObject, OVERVIEW));
+            releaseDate.setText(JSONDataHandler.getDetailsString(movieObject, RELEASE_DATE));
         }
     }
 }
