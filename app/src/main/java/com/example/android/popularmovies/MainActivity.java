@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                         if (apiKey != null && !apiKey.equals("")) {
                             getMovies();
                         } else {
-                            notifyApiInputError();        // TODO: 8/2/2017 handle API key error in onPostExecute
+                            notifyApiInputError();
                         }
                     }
                 })
