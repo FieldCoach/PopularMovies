@@ -16,12 +16,12 @@ import java.util.ArrayList;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
-    public static final String MOVIE_POSTER = "moviePoster";
-    public static final String POSITION = "position";
-    public static final String TITLE = "title";
-    public static final String VOTE_AVERAGE = "vote_average";
-    public static final String OVERVIEW = "overview";
-    public static final String RELEASE_DATE = "release_date";
+    private static final String MOVIE_POSTER = "moviePoster";
+    private static final String POSITION = "position";
+    private static final String TITLE = "title";
+    private static final String VOTE_AVERAGE = "vote_average";
+    private static final String OVERVIEW = "overview";
+    private static final String RELEASE_DATE = "release_date";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

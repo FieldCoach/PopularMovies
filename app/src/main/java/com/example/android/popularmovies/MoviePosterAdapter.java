@@ -22,11 +22,15 @@ import java.util.ArrayList;
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder>{
 
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
-    public static final String MOVIE_POSTER = "moviePoster";
-    public static final String POSITION = "position";
-    private static Context context;
+    private static final String MOVIE_POSTER = "moviePoster";
+    private static final String POSITION = "position";
+    private Context context;
 
     private Uri[] moviePosterLocationsArray;
+
+    MoviePosterAdapter(Context context){
+        this.context = context;
+    }
 
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final ImageView moviePoster;
@@ -49,7 +53,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
             intent.putExtra(MOVIE_POSTER, moviePoster);
             intent.putExtra(POSITION, position);
-            context.startActivity(intent);
+            view.getContext().startActivity(intent);
         }
     }
 
@@ -75,9 +79,8 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public MoviePosterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
         int movieListItemId = R.layout.movie_list_item;
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
         View view = layoutInflater.inflate(movieListItemId, parent, false);
 

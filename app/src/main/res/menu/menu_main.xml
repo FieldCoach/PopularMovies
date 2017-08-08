@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:title="Sort By:">
+        android:title="@string/sort_by">
         <menu>
         <item
             android:id="@+id/popular"
-            android:title="Popular" />
+            android:title="@string/popular" />
         <item
             android:id="@+id/top_rated"
-            android:title="Top Rated"/>
+            android:title="@string/top_rated"/>
 
         </menu>
 

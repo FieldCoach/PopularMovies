@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class JSONDataHandler {
 
-    public static final String POSTER_PATH = "poster_path";
-    public static final String RESULTS = "results";
+    private static final String POSTER_PATH = "poster_path";
+    private static final String RESULTS = "results";
 
     /**
      * Makes the JSON data easier to work with by taking the data from the String, creating JSONObjects,
@@ -41,8 +41,8 @@ public class JSONDataHandler {
 
     /**
      * Creates an ArrayList of Uri's of the poster locations to later pass to RecyclerView.Adapter
-     * @param movieJSONObjectsArray
-     * @return
+     * @param movieJSONObjectsArray the ArrayList of movie JSONObjects
+     * @return ArrayList of Uri's of the poster locations
      */
     public static ArrayList<Uri> getPosterLocationsArray(ArrayList<JSONObject> movieJSONObjectsArray){
 
@@ -63,7 +63,7 @@ public class JSONDataHandler {
     }
 
     /**
-     * Conviniece method for MovieDetailsAcitvity to catch any JSONExceptions when using moviewObject.getString()
+     * Convenience method for MovieDetailsAcitvity to catch any JSONExceptions when using moviewObject.getString()
      * @param movieObject the current movieObject of the MovieDetailsActivity
      * @param key the desired detail to retrieve for the movieObject
      * @return the details requested

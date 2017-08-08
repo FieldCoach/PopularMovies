@@ -36,12 +36,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String ENTER_API_KEY = "Enter API Key";
-    public static final String POSITIVE_BUTTON_OK = "OK";
-    public static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
-    public static final String POPULAR = "popular";
-    public static final String TOP_RATED = "top_rated";
-    public static final String ENTER_VALID_API = "Please enter a valid API Key";
+    private static final String ENTER_API_KEY = "Enter API Key";
+    private static final String POSITIVE_BUTTON_OK = "OK";
+    private static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
+    private static final String POPULAR = "popular";
+    private static final String TOP_RATED = "top_rated";
+    private static final String ENTER_VALID_API = "Please enter a valid API Key";
 
     private ProgressBar progressBar;
 
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
 
-        moviePosterAdapter = new MoviePosterAdapter();
+        moviePosterAdapter = new MoviePosterAdapter(this);
         rvMoviePosters.setAdapter(moviePosterAdapter);
         //uncomment when using API set
         //********For Testing********//
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Show movie posters after doInBackgound() is done
+     * Show movie posters after doInBackground() is done
      */
     private void showMoviePosters(){
         progressBar.setVisibility(View.INVISIBLE);
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class GetMoviesTask extends AsyncTask<URL, Void, String> {
+    private class GetMoviesTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
