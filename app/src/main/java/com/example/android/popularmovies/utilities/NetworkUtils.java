@@ -18,12 +18,13 @@ import java.util.Scanner;
 public final class NetworkUtils {
 
     private final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
-    private final static String QUERY_PARAMETER = "api_key";
+    private final static String API_KEY = "api_key";
 
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String IMAGE_SIZE = "w342";
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
+    private static final String PAGE = "page";
 
     /**
      * Builds the url used to fetch popular movies from the API of themoviedb.org
@@ -31,10 +32,11 @@ public final class NetworkUtils {
      * @param apiKey request this from the user to prevent issues with GitHub
      * @return the built url
      */
-    public static URL buildMovieDbUrl(String sortOrder, String apiKey) {
+    public static URL buildMovieDbUrl(String sortOrder, String apiKey, String page) {
         Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
                 .appendPath(sortOrder.toLowerCase())
-                .appendQueryParameter(QUERY_PARAMETER, apiKey)
+                .appendQueryParameter(API_KEY, apiKey)
+                .appendQueryParameter(PAGE, page)
                 .build();
 
         URL url = null;

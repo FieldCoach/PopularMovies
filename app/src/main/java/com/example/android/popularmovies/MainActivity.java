@@ -24,7 +24,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.android.popularmovies.utilities.EndlessScrollListener;
+import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static ArrayList<JSONObject> movieObjectsArray;
     private RecyclerView rvMoviePosters;
-    private EndlessScrollListener scrollListener;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private String page = "1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +71,14 @@ public class MainActivity extends AppCompatActivity {
         moviePosterAdapter = new MoviePosterAdapter(this);
         rvMoviePosters.setAdapter(moviePosterAdapter);
 
-        scrollListener = new EndlessScrollListener() {
+        scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-
-                return false;
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                setPage(page);
+                getMovies();
             }
         };
+        rvMoviePosters.addOnScrollListener(scrollListener);
         //uncomment when using API set
         //********For Testing********//
 //        apiKey = -REMOVED-;
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
      * Gets the URL to request movies then executes doInBackground()
      */
     private void getMovies() {
-        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, apiKey);
+        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, apiKey, page);
         new GetMoviesTask().execute(movieRequestUrl);
     }
 
@@ -165,13 +167,17 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    public void setPage(int page) {
+        this.page = String.valueOf(page);
+    }
+
 
     private class GetMoviesTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showLoadingIndicator();
+//            showLoadingIndicator();
         }
 
         /**
@@ -204,10 +210,16 @@ public class MainActivity extends AppCompatActivity {
             showMoviePosters();
 
             try {
-                movieObjectsArray = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
-                ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
+                if (movieObjectsArray == null) {
+                    movieObjectsArray = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
+                } else {
+                    ArrayList<JSONObject> moreMovies = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
+                    movieObjectsArray.addAll(moreMovies);
+                }
 
+                ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
                 moviePosterAdapter.setMoviePosterLocationsArray(posterLocationsArray);
+
             } catch (NullPointerException e) {     //catching JSONException and NullPointerException
                 e.printStackTrace();
                 if (isOnline()) {
