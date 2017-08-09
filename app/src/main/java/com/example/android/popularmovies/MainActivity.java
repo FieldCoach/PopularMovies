@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.utilities.EndlessScrollListener;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static ArrayList<JSONObject> movieObjectsArray;
     private RecyclerView rvMoviePosters;
+    private EndlessScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
         moviePosterAdapter = new MoviePosterAdapter(this);
         rvMoviePosters.setAdapter(moviePosterAdapter);
+
+        scrollListener = new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+
+                return false;
+            }
+        };
         //uncomment when using API set
         //********For Testing********//
 //        apiKey = -REMOVED-;
