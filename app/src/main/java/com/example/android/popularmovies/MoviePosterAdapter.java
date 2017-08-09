@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,16 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         MoviePosterAdapterViewHolder(View itemView) {
             super(itemView);
             moviePoster = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
+
+            int noOfColumns = MainActivity.calculateNoOfColumns(context);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            int width = displayMetrics.widthPixels/noOfColumns;
+            //moviePoster will have 9:16 aspect ratio
+            int height = (width * 16)/9;
+
+            moviePoster.setMinimumHeight(height);
+            moviePoster.setMinimumWidth(width);
+
             itemView.setOnClickListener(this);
         }
 

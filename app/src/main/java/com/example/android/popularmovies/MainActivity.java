@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
         rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        int noOfColumns = calculateNoOfColumns(this);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, noOfColumns);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
 
         moviePosterAdapter = new MoviePosterAdapter(this);
@@ -71,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
         //********For Testing********//
 
         requestApiKey();
+    }
+
+    public static int calculateNoOfColumns (Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 180;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        return noOfColumns;
     }
 
 
