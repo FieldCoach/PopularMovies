@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
     private static final String ENTER_VALID_API = "Please enter a valid API Key";
+    private static final String CURRENT_SCROLL_POSITION = "currentScrollPosition";
+    private static final String PAGE = "page";
+    private static final String SORT_BY = "sortBy";
+    private static final String API_KEY = "apiKey";
 
     private ProgressBar progressBar;
 
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvMoviePosters;
     private EndlessRecyclerViewScrollListener scrollListener;
     private String page = "1";
+    private GridLayoutManager gridLayoutManager;
+    private int currentScrollPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         int noOfColumns = calculateNoOfColumns(this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, noOfColumns);
+        gridLayoutManager = new GridLayoutManager(this, noOfColumns);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
 
         moviePosterAdapter = new MoviePosterAdapter(this);
@@ -95,11 +101,31 @@ public class MainActivity extends AppCompatActivity {
         return noOfColumns;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_SCROLL_POSITION, gridLayoutManager.findFirstVisibleItemPosition());
+        outState.putString(PAGE, page);
+        outState.putString(API_KEY, apiKey);
+        outState.putString(SORT_BY, sortBySelectionString);
+    }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
+        page = savedInstanceState.getString(PAGE);
+        apiKey = savedInstanceState.getString(API_KEY);
+        sortBySelectionString = savedInstanceState.getString(SORT_BY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getMovies();
+        if (currentScrollPosition != 0){
+           rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+        }
     }
 
     /**

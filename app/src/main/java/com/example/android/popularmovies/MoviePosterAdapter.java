@@ -66,6 +66,10 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
             intent.putExtra(POSITION, position);
             view.getContext().startActivity(intent);
         }
+
+        public int getAdapterPostion(){
+            return getAdapterPostion();
+        }
     }
 
     /**
