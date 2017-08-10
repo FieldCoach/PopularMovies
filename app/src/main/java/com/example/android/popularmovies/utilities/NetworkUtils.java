@@ -21,7 +21,7 @@ public final class NetworkUtils {
     private final static String API_KEY = "api_key";
 
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private final static String IMAGE_SIZE = "w342";
+    private final static String IMAGE_SIZE = "w185";
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
     private static final String PAGE = "page";

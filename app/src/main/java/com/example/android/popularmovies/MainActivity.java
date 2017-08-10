@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -80,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                setPage(page);
+                setPage(page+1);
+                Log.d(TAG, "onLoadMore.page: " + page+1);
                 getMovies();
             }
         };
@@ -90,7 +92,16 @@ public class MainActivity extends AppCompatActivity {
 //        apiKey = -REMOVED-;
         //********For Testing********//
 
-        requestApiKey();
+
+        if (savedInstanceState == null) {
+            Log.d(TAG, "onCreate.apiKey: " + apiKey);
+            requestApiKey();
+        } else {
+            page = savedInstanceState.getString(PAGE);
+            apiKey = savedInstanceState.getString(API_KEY);
+            sortBySelectionString = savedInstanceState.getString(SORT_BY);
+            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION, 0);
+        }
     }
 
     public static int calculateNoOfColumns (Context context){
@@ -103,28 +114,48 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_SCROLL_POSITION, gridLayoutManager.findFirstVisibleItemPosition());
+        outState.putInt(CURRENT_SCROLL_POSITION, currentScrollPosition);
         outState.putString(PAGE, page);
         outState.putString(API_KEY, apiKey);
         outState.putString(SORT_BY, sortBySelectionString);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
-        page = savedInstanceState.getString(PAGE);
-        apiKey = savedInstanceState.getString(API_KEY);
-        sortBySelectionString = savedInstanceState.getString(SORT_BY);
+//        getMovies();
+        rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentScrollPosition = gridLayoutManager.findFirstVisibleItemPosition();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getMovies();
-        if (currentScrollPosition != 0){
-           rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+        if (apiKey != null){
+            if (!apiKey.equals("")) {
+                Log.d(TAG, "onResume: was called");
+                getMovies();
+                Log.d(TAG, "onResume.currentScrollPosition: " + String.valueOf(currentScrollPosition));
+
+                //crude solution but it's the only thing that would work every time. Seems like this line of code
+                //needs to be executed slightly after the images have loaded. There is a common issue with
+                //smoothScrollToPosition and scrollToPosition working inconsistently
+                /** https://stackoverflow.com/questions/30845742/smoothscrolltoposition-doesnt-work-properly-with-recyclerview **/
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+                    }
+                }, 5);
+
+                rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+            }
         }
     }
 
@@ -183,9 +214,10 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "requestApi.onClick() returned: " + apiKey);
 
                         if (apiKey != null && !apiKey.equals("")) {
+                            Log.d(TAG, "requestApi.onClick: was called");
                             getMovies();
                         } else {
-                            notifyApiInputError();
+//                            notifyApiInputError();
                         }
                     }
                 })
@@ -249,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (NullPointerException e) {     //catching JSONException and NullPointerException
                 e.printStackTrace();
                 if (isOnline()) {
+                    Log.d(TAG, "onPostExecute: notifyApiInputError was called");
                     notifyApiInputError();
                 }else {
                     notifyConnectionError();
@@ -297,12 +330,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.popular){
             sortBySelectionString = POPULAR;
+            Log.d(TAG, "onOptionsItemSelected: popular was called");
             getMovies();
             return true;
         }
 
         if (id == R.id.top_rated){
             sortBySelectionString = TOP_RATED;
+            Log.d(TAG, "onOptionsItemSelected: top rated was called");
             getMovies();
             return true;
         }
