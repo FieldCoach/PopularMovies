@@ -22,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
@@ -50,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String SORT_BY = "sortBy";
     private static final String API_KEY = "apiKey";
 
-    private ProgressBar progressBar;
-
     private MoviePosterAdapter moviePosterAdapter;
     private String sortBySelectionString = "popular";
     private String apiKey;
@@ -63,13 +60,17 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager gridLayoutManager;
     private int currentScrollPosition;
 
+    /**
+     * Creates and format the RecyclerView, adds an EndlessRecyclerViewScrollListener to allow endless
+     * scrolling, and if an API Key hasn't been provided, requests one.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         int noOfColumns = calculateNoOfColumns(this);
         gridLayoutManager = new GridLayoutManager(this, noOfColumns);
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 setPage(page+1);
-                Log.d(TAG, "onLoadMore.page: " + page+1);
+                Log.d(TAG, "onLoadMore.page: " + String.valueOf(page+1));
                 getMovies();
             }
         };
@@ -117,6 +118,10 @@ public class MainActivity extends AppCompatActivity {
         return noOfColumns;
     }
 
+    /**
+     * Saves the data needed to restore the RecyclerView's previous state
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(CURRENT_SCROLL_POSITION, currentScrollPosition);
@@ -126,18 +131,25 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    // TODO: 8/17/17 does smoothScrollToPosition need to be called in onRestoreInstanceState?
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
     }
 
+    /**
+     * Saves the current scroll position
+     */
     @Override
     protected void onPause() {
         super.onPause();
         currentScrollPosition = gridLayoutManager.findFirstVisibleItemPosition();
     }
 
+    /**
+     * Restores movie results to the RecyclerView and the previous scroll position
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -175,22 +187,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Show loading indicator during doInBackground()
-     */
-    private void showLoadingIndicator(){
-        rvMoviePosters.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Show movie posters after doInBackground() is done
-     */
-    private void showMoviePosters(){
-        progressBar.setVisibility(View.INVISIBLE);
-        rvMoviePosters.setVisibility(View.VISIBLE);
-    }
-
-    /**
      * Gets the URL to request movies then executes doInBackground()
      */
     private void getMovies() {
@@ -220,8 +216,15 @@ public class MainActivity extends AppCompatActivity {
                         if (apiKey != null && !apiKey.equals("")) {
                             Log.d(TAG, "requestApi.onClick: was called");
                             getMovies();
-                        } else {
-//                            notifyApiInputError();
+                        }
+                    }
+                })
+                //can't dismiss without entering an API key
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (apiKey == null || apiKey.equals("")){
+                            notifyApiInputError();
                         }
                     }
                 })
@@ -235,12 +238,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private class GetMoviesTask extends AsyncTask<URL, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-//            showLoadingIndicator();
-        }
 
         /**
          * Retrieves a String of the JSON data from a GET request of the API
@@ -268,8 +265,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String movieRequestResults) {
             super.onPostExecute(movieRequestResults);
-            //if nothing is returned, hide loadingIndicator. RecyclerView will remain empty
-            showMoviePosters();
 
             try {
                 if (movieObjectsArray == null) {
@@ -320,6 +315,11 @@ public class MainActivity extends AppCompatActivity {
         return movieObjectsArray;
     }
 
+    /**
+     * Inflates the main menu
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -328,18 +328,22 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Changes the selectionString to the value of the selected menu item, clears the current movies
+     * from the ArrayList, notifies the Adapter, resets the page count, then gets new movie results
+     * with the updated selectionString.
+     * @param item menu item that was selected
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        int size = movieObjectsArray.size();
         if (id == R.id.popular){
             sortBySelectionString = POPULAR;
             Log.d(TAG, "onOptionsItemSelected: popular was called");
 
-            movieObjectsArray.clear();
-            moviePosterAdapter.notifyItemRangeRemoved(0, size);
-            getMovies();
+            getNewMovieResults();
             return true;
         }
 
@@ -347,12 +351,22 @@ public class MainActivity extends AppCompatActivity {
             sortBySelectionString = TOP_RATED;
             Log.d(TAG, "onOptionsItemSelected: top rated was called");
 
-            movieObjectsArray.clear();
-            moviePosterAdapter.notifyItemRangeRemoved(0, size);
-            getMovies();
+            getNewMovieResults();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getNewMovieResults() {
+        int size = movieObjectsArray.size();
+
+        //removes old movie results before getting new results
+        movieObjectsArray.clear();
+        moviePosterAdapter.notifyItemRangeRemoved(0, size);
+
+        //resets page count for new movie results
+        setPage(1);
+        getMovies();
     }
 }
