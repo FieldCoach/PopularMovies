@@ -131,13 +131,6 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    // TODO: 8/17/17 does smoothScrollToPosition need to be called in onRestoreInstanceState?
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
-    }
-
     /**
      * Saves the current scroll position
      */
@@ -169,8 +162,6 @@ public class MainActivity extends AppCompatActivity {
                         rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
                     }
                 }, 5);
-
-//                rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
             }
         }
     }
