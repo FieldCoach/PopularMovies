@@ -104,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Calculates the number of columns for the GridLayoutManager
+     * @param context
+     * @return the number of columns
+     */
     public static int calculateNoOfColumns (Context context){
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
@@ -124,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-//        getMovies();
         rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
     }
 
@@ -154,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }, 5);
 
-                rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+//                rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
             }
         }
     }
@@ -328,9 +332,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        int size = movieObjectsArray.size();
         if (id == R.id.popular){
             sortBySelectionString = POPULAR;
             Log.d(TAG, "onOptionsItemSelected: popular was called");
+
+            movieObjectsArray.clear();
+            moviePosterAdapter.notifyItemRangeRemoved(0, size);
             getMovies();
             return true;
         }
@@ -338,6 +346,9 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.top_rated){
             sortBySelectionString = TOP_RATED;
             Log.d(TAG, "onOptionsItemSelected: top rated was called");
+
+            movieObjectsArray.clear();
+            moviePosterAdapter.notifyItemRangeRemoved(0, size);
             getMovies();
             return true;
         }
