@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
 
         int noOfColumns = calculateNoOfColumns(this);
@@ -260,9 +262,15 @@ public class MainActivity extends AppCompatActivity {
             try {
                 if (movieObjectsArray == null) {
                     movieObjectsArray = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
+
+//                    ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
+//                    moviePosterAdapter.setMoviePosterLocationsArray(posterLocationsArray);
                 } else {
                     ArrayList<JSONObject> moreMovies = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
                     movieObjectsArray.addAll(moreMovies);
+
+//                    ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
+//                    moviePosterAdapter.appendMoviePosterLocationsArray(posterLocationsArray);
                 }
 
                 ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);

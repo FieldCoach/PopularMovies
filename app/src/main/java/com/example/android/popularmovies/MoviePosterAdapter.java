@@ -27,7 +27,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private static final String POSITION = "position";
     private Context context;
 
-    private Uri[] moviePosterLocationsArray;
+    private ArrayList<Uri> moviePosterLocationsArray = new ArrayList<>();
 
     MoviePosterAdapter(Context context){
         this.context = context;
@@ -60,7 +60,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), MovieDetailsActivity.class);
             int position = getAdapterPosition();
-            String moviePoster = moviePosterLocationsArray[position].toString();
+            String moviePoster = moviePosterLocationsArray.get(position).toString();
 
             intent.putExtra(MOVIE_POSTER, moviePoster);
             intent.putExtra(POSITION, position);
@@ -124,7 +124,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
-        String currentMoviePoster = moviePosterLocationsArray[position].toString();
+        String currentMoviePoster = moviePosterLocationsArray.get(position).toString();
         Picasso.with(context)
                 .load(currentMoviePoster)
                 .fit()
@@ -140,15 +140,21 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     @Override
     public int getItemCount() {
         if (null == moviePosterLocationsArray) return 0;
-        Log.d(TAG, "getItemCount() returned: " + moviePosterLocationsArray.length);
-        return moviePosterLocationsArray.length;
+        Log.d(TAG, "getItemCount() returned: " + moviePosterLocationsArray.size());
+        return moviePosterLocationsArray.size();
     }
 
     public void setMoviePosterLocationsArray(ArrayList<Uri> moviePosterLocationsArray) {
-        int size = moviePosterLocationsArray.size();
-        this.moviePosterLocationsArray = moviePosterLocationsArray.toArray(new Uri[size]);
+        this.moviePosterLocationsArray.clear();
+        this.moviePosterLocationsArray.addAll(moviePosterLocationsArray);
 
         notifyDataSetChanged();
-        Log.d(TAG, "setMoviePosterLocationsArray() returned: " + this.moviePosterLocationsArray[1]);
+        Log.d(TAG, "setMoviePosterLocationsArray() returned: " + this.moviePosterLocationsArray);
+    }
+
+    public void appendMoviePosterLocationsArray(ArrayList<Uri> posterLocationsArray) {
+        this.moviePosterLocationsArray.addAll(posterLocationsArray);
+
+        notifyDataSetChanged();
     }
 }
