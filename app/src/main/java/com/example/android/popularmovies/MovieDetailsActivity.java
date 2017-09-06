@@ -8,43 +8,61 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String POSITION = "position";
-    private static final String MOVIE_ARRAY_LIST = "moviesArrayList";
+    private static final String MOVIE = "movie";
 
+    /**
+     * Gets the Intent from the MainActivity to retrieve Extras containing the details to display
+     * in the UI
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
         ImageView detailsPoster = (ImageView) findViewById(R.id.iv_details_poster);
-        TextView title = (TextView) findViewById(R.id.tv_title);
-        TextView rating = (TextView) findViewById(R.id.tv_rating);
-        TextView overview = (TextView) findViewById(R.id.tv_overview);
-        TextView releaseDate = (TextView) findViewById(R.id.tv_release_date);
+        TextView titleTextView = (TextView) findViewById(R.id.tv_title);
+        TextView ratingTextView = (TextView) findViewById(R.id.tv_rating);
+        TextView overviewTextView = (TextView) findViewById(R.id.tv_overview);
+        TextView releaseDateTextView = (TextView) findViewById(R.id.tv_release_date);
 
         Intent intentFromMainActivity = getIntent();
 
-        if (intentFromMainActivity.hasExtra(POSITION) &&
-                intentFromMainActivity.hasExtra(MOVIE_ARRAY_LIST)) {
+        //Only attempt to get Extras from the intent if it has the Extras needed
+        if (intentFromMainActivity.hasExtra(MOVIE)) {
 
-            int position = intentFromMainActivity.getIntExtra(POSITION, 0);
-            ArrayList<Movie> movieArrayList = intentFromMainActivity.getParcelableArrayListExtra(MOVIE_ARRAY_LIST);
+            Movie movie = intentFromMainActivity.getParcelableExtra(MOVIE);
 
-            Movie movie = movieArrayList.get(position);
-
+            //Load the poster into the ImageView
             Picasso.with(this)
                     .load(movie.getPosterLocationUriString())
                     .fit()
                     .into(detailsPoster);
 
-            title.setText(movie.getTitle());
-            rating.setText(String.valueOf(movie.getVoteAverage()));
-            overview.setText(movie.getOverview());
-            releaseDate.setText(movie.getReleaseDate());
+            //Set the text on the TextView to show the Movie details
+            titleTextView.setText(movie.getTitle());
+            ratingTextView.setText(String.valueOf(movie.getVoteAverage()));
+            overviewTextView.setText(movie.getOverview());
+
+            //Format the date before calling setText on the Text View
+            Date date = null;
+            try {
+                date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(movie.getReleaseDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String dateString = new SimpleDateFormat("MMMM d, yyyy").format(date);
+
+            releaseDateTextView.setText(dateString);
         }
     }
 }

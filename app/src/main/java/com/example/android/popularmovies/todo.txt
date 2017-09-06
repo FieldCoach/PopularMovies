@@ -2,7 +2,7 @@
     Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
 
 -JSON of popular
-"page" : 1,
+"mPage" : 1,
 "total_results": 19606,
 "total_pages": 981,
 "results": [

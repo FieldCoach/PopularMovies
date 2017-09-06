@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by aaroncrutchfield on 9/5/17.
+ * Contains all of the details of a Movie that will be displayed in the UI
  */
 
 public class Movie implements Parcelable {
@@ -37,8 +37,6 @@ public class Movie implements Parcelable {
         dest.writeString(this.releaseDate);
     }
 
-    public Movie() {
-    }
 
     protected Movie(Parcel in) {
         this.posterLocationUriString = in.readString();
