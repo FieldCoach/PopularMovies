@@ -1,6 +1,6 @@
 package com.example.android.popularmovies.utilities;
 
-import android.net.Uri;
+import com.example.android.popularmovies.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,68 +14,49 @@ import java.util.ArrayList;
 
 public class JSONDataHandler {
 
-    private static final String POSTER_PATH = "poster_path";
     private static final String RESULTS = "results";
+    private static final String POSTER_PATH = "poster_path";
+    private static final String TITLE = "title";
+    private static final String VOTE_AVERAGE = "vote_average";
+    private static final String OVERVIEW = "overview";
+    private static final String RELEASE_DATE = "release_date";
 
     /**
-     * Makes the JSON data easier to work with by taking the data from the String, creating JSONObjects,
-     * then putting those objects into an ArrayList to later pass to RecyclerView.Adapter
-     * @param movieRequestResults String containing JSON data
-     * @return ArrayList of movie JSONObjects
+     * Retrieves details from the JSON String and stores them as fields within multiple Movie Objects.
+     * @param movieRequestResults String representation of JSON data
+     * @return ArrayList of Movie Objects
      * @throws JSONException
      */
-    public static ArrayList<JSONObject> getMovieJSONObjectsArray(String movieRequestResults) throws JSONException{
+    public static ArrayList<Movie> getMovieArrayList(String movieRequestResults) throws JSONException{
 
-        JSONObject movieResultsJSONObject = new JSONObject(movieRequestResults);
-        JSONArray movieResultsJSONArray = movieResultsJSONObject.getJSONArray(RESULTS);
+        //Convert the JSON String into a JSON Object. Then get a JSON Array from the JSON Object
+        JSONObject jsonObject = new JSONObject(movieRequestResults);
+        JSONArray jsonArray = jsonObject.getJSONArray(RESULTS);
 
-        ArrayList<JSONObject> movieJSONObjectsArray = new ArrayList<>();
+        //Create an ArrayList to hold all of the Movie Objects
+        ArrayList<Movie> moviesArray = new ArrayList<>();
 
-        for (int i = 0; i < movieResultsJSONArray.length(); i++) {
-            JSONObject movieObject = movieResultsJSONArray.getJSONObject(i);
+        //Iterate over the JSON Array
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject JSONMovieObject = jsonArray.getJSONObject(i);
 
-            movieJSONObjectsArray.add(movieObject);
+            //Get a String representation of the poster path Uri
+            String posterPath = JSONMovieObject.getString(POSTER_PATH).substring(1);
+            String moviePosterUriString = NetworkUtils.buildImageUriString(posterPath);
+
+            //Store all of the details as fields within a Movie Object
+            Movie movie = new Movie.Builder()
+                    .posterLocationUriString(moviePosterUriString)
+                    .title(JSONMovieObject.getString(TITLE))
+                    .voteAverage(JSONMovieObject.getString(VOTE_AVERAGE))
+                    .overview(JSONMovieObject.getString(OVERVIEW))
+                    .releaseDate(JSONMovieObject.getString(RELEASE_DATE))
+                    .build();
+
+            //Add the Movie Object to the ArrayList
+            moviesArray.add(movie);
         }
-        return movieJSONObjectsArray;
-    }
-
-    /**
-     * Creates an ArrayList of Uri's of the poster locations to later pass to RecyclerView.Adapter
-     * @param movieJSONObjectsArray the ArrayList of movie JSONObjects
-     * @return ArrayList of Uri's of the poster locations
-     */
-    public static ArrayList<Uri> getPosterLocationsArray(ArrayList<JSONObject> movieJSONObjectsArray){
-
-        ArrayList<Uri> posterLocationsArray = new ArrayList<>();
-        for (int i = 0; i < movieJSONObjectsArray.size(); i++) {
-            String posterLocationString = "";
-            try {
-                //substring is used to prevent error caused by forward slash at he beginning of the path
-                posterLocationString = movieJSONObjectsArray.get(i).getString(POSTER_PATH).substring(1);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            Uri moviePosterUri = NetworkUtils.buildImageUri(posterLocationString);
-
-            posterLocationsArray.add(moviePosterUri);
-        }
-        return posterLocationsArray;
-    }
-
-    /**
-     * Convenience method for MovieDetailsAcitvity to catch any JSONExceptions when using moviewObject.getString()
-     * @param movieObject the current movieObject of the MovieDetailsActivity
-     * @param key the desired detail to retrieve for the movieObject
-     * @return the details requested
-     */
-    public static String getDetailsString(JSONObject movieObject, String key){
-        String detailsString = "";
-        try {
-            detailsString = movieObject.getString(key);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return detailsString;
+        return moviesArray;
     }
 
 }

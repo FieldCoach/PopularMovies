@@ -17,23 +17,24 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
-    private final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
     private final static String API_KEY = "api_key";
+    private static final String PAGE = "page";
 
+    private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie";
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String IMAGE_SIZE = "w185";
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
-    private static final String PAGE = "page";
 
     /**
-     * Builds the url used to fetch popular movies from the API of themoviedb.org
+     * Builds the url used to fetch movies from the API of themoviedb.org
      * @param sortOrder must be either popular or top_rated
      * @param apiKey request this from the user to prevent issues with GitHub
      * @return the built url
      */
     public static URL buildMovieDbUrl(String sortOrder, String apiKey, String page) {
-        Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
+        //Build a Uri with the base URL and the query parameters
+        Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendPath(sortOrder.toLowerCase())
                 .appendQueryParameter(API_KEY, apiKey)
                 .appendQueryParameter(PAGE, page)
@@ -41,6 +42,7 @@ public final class NetworkUtils {
 
         URL url = null;
         try {
+            //Construct a new URL by passing it a String representation of the Uri
             url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -52,17 +54,16 @@ public final class NetworkUtils {
     /**
      * Builds the url used to show the poster of a movie
      * @param imageToDisplay the file name of the image to be shown
-     * @return the builtUri
+     * @return a String representation of the builtUri
      */
-    public static Uri buildImageUri(String imageToDisplay) {
-        Log.d(TAG, "buildImageUri.imageToDisplay: " + imageToDisplay);
+    //Returning a String because its usage is more versatile than Uri in usage in this project
+    public static String buildImageUriString(String imageToDisplay) {
         Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon()
                 .appendPath(IMAGE_SIZE)
                 .appendPath(imageToDisplay)
                 .build();
 
-        Log.d(TAG, "buildImageUri() returned: " + builtUri);
-        return builtUri;
+        return builtUri.toString();
     }
 
     /**

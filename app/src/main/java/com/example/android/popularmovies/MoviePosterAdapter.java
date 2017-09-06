@@ -25,9 +25,10 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
     private static final String MOVIE_POSTER = "moviePoster";
     private static final String POSITION = "position";
+    private static final String MOVIES_ARRAY_LIST = "moviesArrayList";
     private Context context;
 
-    private ArrayList<Uri> moviePosterLocationsArray = new ArrayList<>();
+    private ArrayList<Movie> movieArrayList = new ArrayList<>();
 
     MoviePosterAdapter(Context context){
         this.context = context;
@@ -60,9 +61,8 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), MovieDetailsActivity.class);
             int position = getAdapterPosition();
-            String moviePoster = moviePosterLocationsArray.get(position).toString();
 
-            intent.putExtra(MOVIE_POSTER, moviePoster);
+            intent.putExtra(MOVIES_ARRAY_LIST, movieArrayList);
             intent.putExtra(POSITION, position);
             view.getContext().startActivity(intent);
         }
@@ -124,12 +124,14 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
-        String currentMoviePoster = moviePosterLocationsArray.get(position).toString();
+        String currentMoviePoster = movieArrayList.get(position).getPosterLocationUriString();
+
         Picasso.with(context)
                 .load(currentMoviePoster)
                 .fit()
                 .into(holder.moviePoster);
-        Log.d(TAG, "onBindViewHolder() returned: " + currentMoviePoster);
+        Log.d(TAG, "onBindViewHolder() returned: " + currentMoviePoster + "\n" +
+                "at position: " + String.valueOf(position));
     }
 
     /**
@@ -139,22 +141,15 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public int getItemCount() {
-        if (null == moviePosterLocationsArray) return 0;
-        Log.d(TAG, "getItemCount() returned: " + moviePosterLocationsArray.size());
-        return moviePosterLocationsArray.size();
+        if (null == movieArrayList) return 0;
+        return movieArrayList.size();
     }
 
-    public void setMoviePosterLocationsArray(ArrayList<Uri> moviePosterLocationsArray) {
-        this.moviePosterLocationsArray.clear();
-        this.moviePosterLocationsArray.addAll(moviePosterLocationsArray);
+    public void setMoviesArrayList(ArrayList<Movie> moviesArrayList) {
+        this.movieArrayList.clear();
+        this.movieArrayList.addAll(moviesArrayList);
 
         notifyDataSetChanged();
-        Log.d(TAG, "setMoviePosterLocationsArray() returned: " + this.moviePosterLocationsArray);
-    }
-
-    public void appendMoviePosterLocationsArray(ArrayList<Uri> posterLocationsArray) {
-        this.moviePosterLocationsArray.addAll(posterLocationsArray);
-
-        notifyDataSetChanged();
+        Log.d(TAG, "setMoviesArrayList() size: " + String.valueOf(moviesArrayList.size()));
     }
 }

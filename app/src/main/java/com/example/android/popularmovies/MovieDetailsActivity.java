@@ -6,22 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
-    private static final String MOVIE_POSTER = "moviePoster";
     private static final String POSITION = "position";
-    private static final String TITLE = "title";
-    private static final String VOTE_AVERAGE = "vote_average";
-    private static final String OVERVIEW = "overview";
-    private static final String RELEASE_DATE = "release_date";
+    private static final String MOVIE_ARRAY_LIST = "moviesArrayList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,27 +29,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Intent intentFromMainActivity = getIntent();
 
         if (intentFromMainActivity.hasExtra(POSITION) &&
-                intentFromMainActivity.hasExtra(MOVIE_POSTER)) {
+                intentFromMainActivity.hasExtra(MOVIE_ARRAY_LIST)) {
 
             int position = intentFromMainActivity.getIntExtra(POSITION, 0);
-            String moviePoster = intentFromMainActivity.getStringExtra(MOVIE_POSTER);
+            ArrayList<Movie> movieArrayList = intentFromMainActivity.getParcelableArrayListExtra(MOVIE_ARRAY_LIST);
 
-            ArrayList<JSONObject> movieObjectsArray = MainActivity.getMovieObjectsArray();
-            JSONObject movieObject = movieObjectsArray.get(position);
+            Movie movie = movieArrayList.get(position);
 
             Picasso.with(this)
-                    .load(moviePoster)
+                    .load(movie.getPosterLocationUriString())
                     .fit()
                     .into(detailsPoster);
 
-            title.setText(JSONDataHandler.getDetailsString(movieObject, TITLE));
-            try {
-                rating.setText(String.valueOf(movieObject.getDouble(VOTE_AVERAGE)));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            overview.setText(JSONDataHandler.getDetailsString(movieObject, OVERVIEW));
-            releaseDate.setText(JSONDataHandler.getDetailsString(movieObject, RELEASE_DATE));
+            title.setText(movie.getTitle());
+            rating.setText(String.valueOf(movie.getVoteAverage()));
+            overview.setText(movie.getOverview());
+            releaseDate.setText(movie.getReleaseDate());
         }
     }
 }

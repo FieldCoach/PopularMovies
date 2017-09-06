@@ -1,27 +1,20 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
@@ -29,7 +22,6 @@ import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,32 +29,30 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String ENTER_API_KEY = "Enter API Key";
-    private static final String POSITIVE_BUTTON_OK = "OK";
-    private static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
-    private static final String ENTER_VALID_API = "Please enter a valid API Key";
-    private static final String CURRENT_SCROLL_POSITION = "currentScrollPosition";
     private static final String PAGE = "page";
     private static final String SORT_BY = "sortBy";
-    private static final String API_KEY = "apiKey";
+    private static final String MOVIES_ARRAY_LIST = "moviesArrayList";
+    private static final String CURRENT_SCROLL_POSITION = "currentScrollPosition";
+    private static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
 
-    private MoviePosterAdapter moviePosterAdapter;
+    private static ArrayList<Movie> moviesArrayList = new ArrayList<>();
+    private static final String apiKey = ApiKeyFile.API_KEY;
     private String sortBySelectionString = "popular";
-    private String apiKey;
-
-    private static ArrayList<JSONObject> movieObjectsArray;
-    private RecyclerView rvMoviePosters;
-    private EndlessRecyclerViewScrollListener scrollListener;
     private String page = "1";
-    private GridLayoutManager gridLayoutManager;
     private int currentScrollPosition;
 
+    private RecyclerView rvMoviePosters;
+    private MoviePosterAdapter moviePosterAdapter;
+    private GridLayoutManager gridLayoutManager;
+    private EndlessRecyclerViewScrollListener scrollListener;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     /**
-     * Creates and format the RecyclerView, adds an EndlessRecyclerViewScrollListener to allow endless
-     * scrolling, and if an API Key hasn't been provided, requests one.
+     * Creates and format the RecyclerView and adds an EndlessRecyclerViewScrollListener to allow endless
+     * scrolling.
      * @param savedInstanceState
      */
     @Override
@@ -74,13 +64,16 @@ public class MainActivity extends AppCompatActivity {
 
         rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
 
+        //Configure the GridLayoutManager then set it as the layout manager of the RecyclerView
         int noOfColumns = calculateNoOfColumns(this);
         gridLayoutManager = new GridLayoutManager(this, noOfColumns);
         rvMoviePosters.setLayoutManager(gridLayoutManager);
 
+        //Construct and set the adapter for the RecyclerView
         moviePosterAdapter = new MoviePosterAdapter(this);
         rvMoviePosters.setAdapter(moviePosterAdapter);
 
+        //Construct a new Endless Scroll Listener and pass it the GridLayoutManager
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -89,21 +82,24 @@ public class MainActivity extends AppCompatActivity {
                 getMovies();
             }
         };
+        //Add an OnScrollListener to the RecyclerView and pass it the Endless Scroll Listener
         rvMoviePosters.addOnScrollListener(scrollListener);
-        //uncomment when using API set
-        //********For Testing********//
-//        apiKey = -REMOVED-;
-        //********For Testing********//
 
-
-        if (savedInstanceState == null) {
-            Log.d(TAG, "onCreate.apiKey: " + apiKey);
-            requestApiKey();
-        } else {
+        //If savedInstanceState isn't null, restore the app's previous state
+        if (savedInstanceState != null) {
             page = savedInstanceState.getString(PAGE);
-            apiKey = savedInstanceState.getString(API_KEY);
             sortBySelectionString = savedInstanceState.getString(SORT_BY);
             currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION, 0);
+
+            //Clear the ArrayList to ensure no duplicates
+//            moviesArrayList.clear();
+            moviesArrayList = savedInstanceState.getParcelableArrayList(MOVIES_ARRAY_LIST);
+            moviePosterAdapter.setMoviesArrayList(moviesArrayList);
+
+            rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+        } else {
+            moviesArrayList.clear();
+            getMovies();
         }
     }
 
@@ -127,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(CURRENT_SCROLL_POSITION, currentScrollPosition);
+        outState.putParcelableArrayList(MOVIES_ARRAY_LIST , moviesArrayList);
         outState.putString(PAGE, page);
-        outState.putString(API_KEY, apiKey);
         outState.putString(SORT_BY, sortBySelectionString);
         super.onSaveInstanceState(outState);
     }
@@ -148,24 +144,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (apiKey != null){
-            if (!apiKey.equals("")) {
-                Log.d(TAG, "onResume: was called");
-                getMovies();
-                Log.d(TAG, "onResume.currentScrollPosition: " + String.valueOf(currentScrollPosition));
-
-                //crude solution but it's the only thing that would work every time. Seems like this line of code
-                //needs to be executed slightly after the images have loaded. There is a common issue with
-                //smoothScrollToPosition and scrollToPosition working inconsistently
-                /** https://stackoverflow.com/questions/30845742/smoothscrolltoposition-doesnt-work-properly-with-recyclerview **/
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
-                    }
-                }, 5);
-            }
-        }
+        Log.d(TAG, "onResume.currentScrollPosition: " + String.valueOf(currentScrollPosition));
+//        rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
     }
 
     /**
@@ -185,44 +165,7 @@ public class MainActivity extends AppCompatActivity {
     private void getMovies() {
         URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, apiKey, page);
         new GetMoviesTask().execute(movieRequestUrl);
-    }
-
-    /**
-     * Prompts the user for their API Key. The dialog won't dismiss unless they enter one
-     */
-    private void requestApiKey() {
-
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
-        View apiDialogLayout = layoutInflater.inflate(R.layout.api_dialog_layout, null);
-        final EditText etApiInput = (EditText) apiDialogLayout.findViewById(R.id.et_api_dialog);
-
-        AlertDialog.Builder apiDialogView = new AlertDialog.Builder(this);
-        apiDialogView.setMessage(ENTER_API_KEY)
-                .setView(apiDialogLayout)
-                .setPositiveButton(POSITIVE_BUTTON_OK, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Get the API Key from the user
-                        apiKey = etApiInput.getText().toString();
-                        Log.d(TAG, "requestApi.onClick() returned: " + apiKey);
-
-                        if (apiKey != null && !apiKey.equals("")) {
-                            Log.d(TAG, "requestApi.onClick: was called");
-                            getMovies();
-                        }
-                    }
-                })
-                //can't dismiss without entering an API key
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if (apiKey == null || apiKey.equals("")){
-                            notifyApiInputError();
-                        }
-                    }
-                })
-
-                .show();
+        Log.d(TAG, "getMovies: was called");
     }
 
     public void setPage(int page) {
@@ -260,28 +203,18 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(movieRequestResults);
 
             try {
-                if (movieObjectsArray == null) {
-                    movieObjectsArray = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
-
-//                    ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
-//                    moviePosterAdapter.setMoviePosterLocationsArray(posterLocationsArray);
+                if (moviesArrayList == null) {
+                    moviesArrayList = JSONDataHandler.getMovieArrayList(movieRequestResults);
                 } else {
-                    ArrayList<JSONObject> moreMovies = JSONDataHandler.getMovieJSONObjectsArray(movieRequestResults);
-                    movieObjectsArray.addAll(moreMovies);
-
-//                    ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
-//                    moviePosterAdapter.appendMoviePosterLocationsArray(posterLocationsArray);
+                    ArrayList<Movie> moreMovies = JSONDataHandler.getMovieArrayList(movieRequestResults);
+                    moviesArrayList.addAll(moreMovies);
                 }
 
-                ArrayList<Uri> posterLocationsArray = JSONDataHandler.getPosterLocationsArray(movieObjectsArray);
-                moviePosterAdapter.setMoviePosterLocationsArray(posterLocationsArray);
+                moviePosterAdapter.setMoviesArrayList(moviesArrayList);
 
             } catch (NullPointerException e) {     //catching JSONException and NullPointerException
                 e.printStackTrace();
-                if (isOnline()) {
-                    Log.d(TAG, "onPostExecute: notifyApiInputError was called");
-                    notifyApiInputError();
-                }else {
+                if (!isOnline()) {
                     notifyConnectionError();
                 }
             } catch (JSONException e){
@@ -296,22 +229,6 @@ public class MainActivity extends AppCompatActivity {
     private void notifyConnectionError() {
         Toast.makeText(getApplicationContext(), CONNECT_TO_CONTINUE, Toast.LENGTH_LONG).show();
         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-    }
-
-    /**
-     * Notifies the user if the API key input was invalid.
-     */
-    private void notifyApiInputError() {
-        Toast.makeText(getApplicationContext(), ENTER_VALID_API, Toast.LENGTH_LONG).show();
-        requestApiKey();
-    }
-
-    /**
-     * Called by the RecyclerView.Adapter
-     * @return ArrayList of movie JSONObjects
-     */
-    public static ArrayList<JSONObject> getMovieObjectsArray(){
-        return movieObjectsArray;
     }
 
     /**
@@ -358,10 +275,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getNewMovieResults() {
-        int size = movieObjectsArray.size();
+        int size = moviesArrayList.size();
 
         //removes old movie results before getting new results
-        movieObjectsArray.clear();
+        moviesArrayList.clear();
         moviePosterAdapter.notifyItemRangeRemoved(0, size);
 
         //resets page count for new movie results
