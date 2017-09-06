@@ -9,11 +9,11 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable {
 
-    private String posterLocationUriString;
-    private String title;
-    private String voteAverage;
-    private String overview;
-    private String releaseDate;
+    private final String posterLocationUriString;
+    private final String title;
+    private final String voteAverage;
+    private final String overview;
+    private final String releaseDate;
 
     private Movie(Builder builder) {
         posterLocationUriString = builder.posterLocationUriString;
@@ -38,7 +38,7 @@ public class Movie implements Parcelable {
     }
 
 
-    protected Movie(Parcel in) {
+    private Movie(Parcel in) {
         this.posterLocationUriString = in.readString();
         this.title = in.readString();
         this.voteAverage = in.readString();

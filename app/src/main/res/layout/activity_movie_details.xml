@@ -45,11 +45,11 @@
         android:id="@+id/tv_title"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="36dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="36dp"
         android:layout_marginTop="16dp"
         android:maxLines="3"
-        android:text="Title"
+        tools:text="4 Your Eyez Only"
         android:textAlignment="textStart"
         android:textAppearance="@android:style/TextAppearance.Material.Large"
         android:textSize="30sp"
@@ -71,7 +71,7 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         tools:layout_constraintLeft_creator="1"
-        android:layout_marginLeft="36dp"
+        android:layout_marginStart="36dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
@@ -82,7 +82,7 @@
         android:layout_marginRight="36dp"
         android:layout_marginTop="-1dp"
         android:paddingBottom="36dp"
-        android:text="TextView"
+        tools:text="zsdifhaporfnvfdniaotnvfhaukdrawe"
         android:textAlignment="textStart"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -96,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="5dp"
-        android:text="@string/rating"
+        tools:text="7.5"
         android:textAlignment="textStart"
         app:layout_constraintLeft_toRightOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
@@ -122,10 +122,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="5dp"
-        android:text="TextView"
         app:layout_constraintLeft_toRightOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/tv_rating"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        tools:text="January 28, 1985" />
 </android.support.constraint.ConstraintLayout>
 </ScrollView>

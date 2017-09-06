@@ -15,7 +15,6 @@ import java.util.Locale;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
-    private static final String POSITION = "position";
     private static final String MOVIE = "movie";
 
     /**
@@ -60,7 +59,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            String dateString = new SimpleDateFormat("MMMM d, yyyy").format(date);
+            String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
 
             releaseDateTextView.setText(dateString);
         }

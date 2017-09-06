@@ -43,10 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private String mPage = "1";
     private int currentScrollPosition;
 
-    private RecyclerView rvMoviePosters;
     private MoviePosterAdapter moviePosterAdapter;
     private GridLayoutManager gridLayoutManager;
-    private EndlessRecyclerViewScrollListener scrollListener;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
+        RecyclerView rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
 
         //Configure the GridLayoutManager then set it as the layout manager of the RecyclerView
         int noOfColumns = calculateNoOfColumns(this);
@@ -74,14 +72,14 @@ public class MainActivity extends AppCompatActivity {
         rvMoviePosters.setAdapter(moviePosterAdapter);
 
         //Construct a new Endless Scroll Listener and pass it the GridLayoutManager
-        scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 //Use field page instead of the parameter for this method
                 //Using the parameter page caused the same page of result to be loaded multiple times
-                setmPage(Integer.valueOf(mPage)+1);
-                Log.d(TAG, "onLoadMore.page: " + String.valueOf(page+1));
-                Log.d(TAG, "onLoadMore.mPage: " + String.valueOf(mPage+1));
+                setmPage(Integer.valueOf(mPage) + 1);
+                Log.d(TAG, "onLoadMore.page: " + String.valueOf(page + 1));
+                Log.d(TAG, "onLoadMore.mPage: " + String.valueOf(mPage + 1));
                 getMovies();
             }
         };
@@ -114,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int scalingFactor = 180;
-        int noOfColumns = (int) (dpWidth / scalingFactor);
-        return noOfColumns;
+        return (int) (dpWidth / scalingFactor);
     }
 
     /**
@@ -155,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
      * Gets the URL used to request movies then executes doInBackground()
      */
     private void getMovies() {
-        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, apiKey, mPage);
+        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, mPage);
         new GetMoviesTask().execute(movieRequestUrl);
         Log.d(TAG, "getMovies: was called");
     }
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
      * Sets which mPage of results to display
      * @param mPage
      */
-    public void setmPage(int mPage) {
+    private void setmPage(int mPage) {
         this.mPage = String.valueOf(mPage);
     }
 

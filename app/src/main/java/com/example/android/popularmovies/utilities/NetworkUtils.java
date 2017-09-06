@@ -3,6 +3,8 @@ package com.example.android.popularmovies.utilities;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.android.popularmovies.ApiKeyFile;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -17,7 +19,7 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
-    private final static String API_KEY = "api_key";
+    private final static String API_KEY_STRING = "api_key";
     private static final String PAGE = "page";
 
     private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie";
@@ -29,14 +31,13 @@ public final class NetworkUtils {
     /**
      * Builds the url used to fetch movies from the API of themoviedb.org
      * @param sortOrder must be either popular or top_rated
-     * @param apiKey request this from the user to prevent issues with GitHub
      * @return the built url
      */
-    public static URL buildMovieDbUrl(String sortOrder, String apiKey, String page) {
+    public static URL buildMovieDbUrl(String sortOrder, String page) {
         //Build a Uri with the base URL and the query parameters
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendPath(sortOrder.toLowerCase())
-                .appendQueryParameter(API_KEY, apiKey)
+                .appendQueryParameter(API_KEY_STRING, ApiKeyFile.API_KEY)
                 .appendQueryParameter(PAGE, page)
                 .build();
 
