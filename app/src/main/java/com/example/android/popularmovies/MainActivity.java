@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.databinding.ActivityMainBinding;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private String mPage = "1";
     private int currentScrollPosition;
 
+    private ActivityMainBinding mainBinding;
     private MoviePosterAdapter moviePosterAdapter;
     private GridLayoutManager gridLayoutManager;
 
@@ -56,20 +59,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        RecyclerView rvMoviePosters = (RecyclerView) findViewById(R.id.rv_movie_posters);
 
         //Configure the GridLayoutManager then set it as the layout manager of the RecyclerView
         int noOfColumns = calculateNoOfColumns(this);
         gridLayoutManager = new GridLayoutManager(this, noOfColumns);
-        rvMoviePosters.setLayoutManager(gridLayoutManager);
+        mainBinding.rvMoviePosters.setLayoutManager(gridLayoutManager);
 
         //Construct and set the adapter for the RecyclerView
         moviePosterAdapter = new MoviePosterAdapter(this);
-        rvMoviePosters.setAdapter(moviePosterAdapter);
+        mainBinding.rvMoviePosters.setAdapter(moviePosterAdapter);
 
         //Construct a new Endless Scroll Listener and pass it the GridLayoutManager
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         //Add an OnScrollListener to the RecyclerView and pass it the Endless Scroll Listener
-        rvMoviePosters.addOnScrollListener(scrollListener);
+        mainBinding.rvMoviePosters.addOnScrollListener(scrollListener);
 
         //If savedInstanceState isn't null, restore the app's previous state
         if (savedInstanceState != null) {
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             moviePosterAdapter.setMoviesArrayList(moviesArrayList);
 
             //Scroll to the previous position
-            rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+            mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
         } else {
             moviesArrayList.clear();
             getMovies();

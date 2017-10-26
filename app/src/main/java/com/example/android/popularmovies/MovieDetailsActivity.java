@@ -1,11 +1,11 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -16,6 +16,7 @@ import java.util.Locale;
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String MOVIE = "movie";
+    private ActivityMovieDetailsBinding detailsBinding;
 
     /**
      * Gets the Intent from the MainActivity to retrieve Extras containing the details to display
@@ -25,13 +26,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_details);
-
-        ImageView detailsPoster = (ImageView) findViewById(R.id.iv_details_poster);
-        TextView titleTextView = (TextView) findViewById(R.id.tv_title);
-        TextView ratingTextView = (TextView) findViewById(R.id.tv_rating);
-        TextView overviewTextView = (TextView) findViewById(R.id.tv_overview);
-        TextView releaseDateTextView = (TextView) findViewById(R.id.tv_release_date);
+        detailsBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_details);
 
         Intent intentFromMainActivity = getIntent();
 
@@ -44,12 +39,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
             Picasso.with(this)
                     .load(movie.getPosterLocationUriString())
                     .fit()
-                    .into(detailsPoster);
+                    .into(detailsBinding.ivDetailsPoster);
 
             //Set the text on the TextView to show the Movie details
-            titleTextView.setText(movie.getTitle());
-            ratingTextView.setText(String.valueOf(movie.getVoteAverage()));
-            overviewTextView.setText(movie.getOverview());
+            detailsBinding.tvTitle.setText(movie.getTitle());
+            detailsBinding.tvRating.setText(String.valueOf(movie.getVoteAverage()));
+            detailsBinding.tvOverview.setText(movie.getOverview());
 
             //Format the date before calling setText on the Text View
             Date date = null;
@@ -61,7 +56,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
 
-            releaseDateTextView.setText(dateString);
+            detailsBinding.tvReleaseDate.setText(dateString);
         }
     }
 }
