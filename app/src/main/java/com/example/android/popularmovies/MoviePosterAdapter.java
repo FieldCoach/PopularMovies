@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -32,11 +33,13 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     }
 
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public final ImageView moviePoster;
+        final ImageView moviePoster;
+        final TextView tvTitle;
 
         MoviePosterAdapterViewHolder(View itemView) {
             super(itemView);
             moviePoster = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
+            tvTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);      // TODO: 10/29/2017 rename tv_title
 
             //Calculate the number of columns and get the display metrics to prevent white space between posters
             int noOfColumns = MainActivity.calculateNoOfColumns(context);
@@ -90,11 +93,14 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
         String currentMoviePoster = movieArrayList.get(position).getPosterLocationUriString();
+        String movieTitle = movieArrayList.get(position).getTitle();
 
         Picasso.with(context)
                 .load(currentMoviePoster)
                 .fit()
                 .into(holder.moviePoster);
+
+        holder.tvTitle.setText(movieTitle);
         Log.d(TAG, "onBindViewHolder() returned: " + movieArrayList.get(position).getTitle() + "\n" +
                 "at position: " + String.valueOf(position));
     }
@@ -111,7 +117,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     }
 
     //Clears previous data from the ArrayList of Movies, adds new Movies, then notifies the Adapter
-    public void setMoviesArrayList(ArrayList<Movie> moviesArrayList) {
+    void setMoviesArrayList(ArrayList<Movie> moviesArrayList) {
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
 

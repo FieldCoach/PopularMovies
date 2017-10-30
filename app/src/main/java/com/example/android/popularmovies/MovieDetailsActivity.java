@@ -42,9 +42,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     .into(detailsBinding.ivDetailsPoster);
 
             //Set the text on the TextView to show the Movie details
-            detailsBinding.tvTitle.setText(movie.getTitle());
-            detailsBinding.tvRating.setText(String.valueOf(movie.getVoteAverage()));
-            detailsBinding.tvOverview.setText(movie.getOverview());
+            detailsBinding.inTitle.tvTitle.setText(movie.getTitle());
+            detailsBinding.inTitle.tvRating.setText(String.valueOf(movie.getVoteAverage()));
+            detailsBinding.inOverview.tvOverview.setText(movie.getOverview());
 
             //Format the date before calling setText on the Text View
             Date date = null;
@@ -56,7 +56,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
 
-            detailsBinding.tvReleaseDate.setText(dateString);
+            detailsBinding.inTitle.tvReleaseDate.setText(dateString);
         }
     }
 }

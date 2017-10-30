@@ -1,0 +1,9 @@
+TASKS:
+// TODO: 10/30/2017 change movie poster to include genre instead of title
+
+
+
+
+BUGS:
+// FIXME: 10/30/2017 improve size of movie posters to reduce cropping in activity_main.xml
+// FIXME: 10/30/2017 improve spacing of layout:title in activity_movie_details.xml
