@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class Movie implements Parcelable {
 
     private final String posterLocationUriString;
+    private final String backdropLocationUriString;
     private final String title;
     private final String voteAverage;
     private final String overview;
@@ -17,6 +18,7 @@ public class Movie implements Parcelable {
 
     private Movie(Builder builder) {
         posterLocationUriString = builder.posterLocationUriString;
+        backdropLocationUriString = builder.backdropLocationUriString;
         title = builder.title;
         voteAverage = builder.voteAverage;
         overview = builder.overview;
@@ -31,6 +33,7 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.posterLocationUriString);
+        dest.writeString(this.backdropLocationUriString);
         dest.writeString(this.title);
         dest.writeString(this.voteAverage);
         dest.writeString(this.overview);
@@ -40,6 +43,7 @@ public class Movie implements Parcelable {
 
     private Movie(Parcel in) {
         this.posterLocationUriString = in.readString();
+        this.backdropLocationUriString = in.readString();
         this.title = in.readString();
         this.voteAverage = in.readString();
         this.overview = in.readString();
@@ -60,6 +64,7 @@ public class Movie implements Parcelable {
 
     public static final class Builder {
         private String posterLocationUriString;
+        private String backdropLocationUriString;
         private String title;
         private String voteAverage;
         private String overview;
@@ -70,6 +75,11 @@ public class Movie implements Parcelable {
 
         public Builder posterLocationUriString(String val) {
             posterLocationUriString = val;
+            return this;
+        }
+
+        public Builder backdropLocationUriString(String val) {
+            backdropLocationUriString = val;
             return this;
         }
 
@@ -98,23 +108,27 @@ public class Movie implements Parcelable {
         }
     }
 
-    public String getPosterLocationUriString() {
+    String getPosterLocationUriString() {
         return posterLocationUriString;
     }
 
-    public String getTitle() {
+    String getBackdropLocationUriString() {
+        return backdropLocationUriString;
+    }
+
+    String getTitle() {
         return title;
     }
 
-    public String getVoteAverage() {
+    String getVoteAverage() {
         return voteAverage;
     }
 
-    public String getOverview() {
+    String getOverview() {
         return overview;
     }
 
-    public String getReleaseDate() {
+    String getReleaseDate() {
         return releaseDate;
     }
 }

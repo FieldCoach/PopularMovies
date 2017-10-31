@@ -41,6 +41,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     .fit()
                     .into(detailsBinding.ivDetailsPoster);
 
+            //Load the backdrop into its ImageView
+            Picasso.with(this)
+                    .load(movie.getBackdropLocationUriString())
+                    .fit()
+                    .into(detailsBinding.ivBackDrop);
+
             //Set the text on the TextView to show the Movie details
             detailsBinding.inTitle.tvTitle.setText(movie.getTitle());
             detailsBinding.inTitle.tvRating.setText(String.valueOf(movie.getVoteAverage()));

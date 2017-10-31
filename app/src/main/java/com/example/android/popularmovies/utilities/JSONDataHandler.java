@@ -16,6 +16,7 @@ public class JSONDataHandler {
 
     private static final String RESULTS = "results";
     private static final String POSTER_PATH = "poster_path";
+    private static final String BACKDROP_PATH = "backdrop_path";
     private static final String TITLE = "title";
     private static final String VOTE_AVERAGE = "vote_average";
     private static final String OVERVIEW = "overview";
@@ -44,9 +45,14 @@ public class JSONDataHandler {
             String posterPath = JSONMovieObject.getString(POSTER_PATH).substring(1);
             String moviePosterUriString = NetworkUtils.buildImageUriString(posterPath);
 
+            //Get a String representation of the backdrop path Uri
+            String backdropPath = JSONMovieObject.getString(BACKDROP_PATH).substring(1);
+            String backdropUriString = NetworkUtils.buildImageUriString(backdropPath);
+
             //Store all of the details as fields within a Movie Object
             Movie movie = new Movie.Builder()
                     .posterLocationUriString(moviePosterUriString)
+                    .backdropLocationUriString(backdropUriString)
                     .title(JSONMovieObject.getString(TITLE))
                     .voteAverage(JSONMovieObject.getString(VOTE_AVERAGE))
                     .overview(JSONMovieObject.getString(OVERVIEW))

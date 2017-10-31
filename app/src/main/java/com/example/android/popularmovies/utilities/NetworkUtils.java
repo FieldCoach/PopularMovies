@@ -24,7 +24,7 @@ public final class NetworkUtils {
 
     private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie";
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private final static String IMAGE_SIZE = "w185";
+    private final static String IMAGE_SIZE = "w342";
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 

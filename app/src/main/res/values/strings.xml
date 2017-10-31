@@ -8,7 +8,8 @@
     <string name="top_rated">Top Rated</string>
     <string name="title">Title</string>
     <string name="rating_suffix">/10</string>
-    <string name="poster_content_description">movie poster</string>
+    <string name="poster_content_description">movie poster image</string>
     <string name="reviews_label">Reviews</string>
     <string name="trailers_label">Trailers</string>
+    <string name="back_drop_content_description">back drop image</string>
 </resources>
