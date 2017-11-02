@@ -19,10 +19,14 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
 
+    private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie";
+
     private final static String API_KEY_STRING = "api_key";
     private static final String PAGE = "page";
 
-    private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie";
+    private static final String REVIEWS = "reviews";
+    private static final String APPEND_STRING = "append_to_response";
+
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String IMAGE_SIZE = "w342";
 
@@ -65,6 +69,25 @@ public final class NetworkUtils {
                 .build();
 
         return builtUri.toString();
+    }
+
+    public static URL buildReviewsDbUrl(String movieId) {
+        //Build a Uri with the base URL and the path endpoints
+        Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendQueryParameter(API_KEY_STRING, ApiKeyFile.API_KEY)
+                .appendQueryParameter(APPEND_STRING, REVIEWS)
+                .build();
+
+        URL url = null;
+        try {
+            //Construct a new URL
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "buildReviewsDbUrl() returned: " + url);
+        return url;
     }
 
     /**

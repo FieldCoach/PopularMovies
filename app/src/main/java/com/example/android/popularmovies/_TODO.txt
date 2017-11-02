@@ -1,6 +1,17 @@
 TASKS:
 // TODO: 10/30/2017 change movie poster to include genre instead of title
+// TODO: 11/2/2017 fix spacing at the end of cv_reviews
 
+    Movie.java
+    // DONE: 11/1/2017 add id member
+
+    MovieDetailsActivity.java
+    // DONE: 11/1/2017 construct Uri using Movie.id
+    // DONE: 11/1/2017 retrieve JSON results with Uri
+    // DONE: 11/1/2017 parse JSON results into Review object
+
+     // DONE: 11/1/2017 construct a ReviewsAdapter class for a RecyclerView (Maybe do a ListView?)
+     // DONE: 11/1/2017 retrieve data from the reviewArrayList and set it on the RecyclerView/ListView
 
 
 

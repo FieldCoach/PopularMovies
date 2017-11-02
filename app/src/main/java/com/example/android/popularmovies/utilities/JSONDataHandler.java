@@ -1,6 +1,7 @@
 package com.example.android.popularmovies.utilities;
 
 import com.example.android.popularmovies.Movie;
+import com.example.android.popularmovies.Review;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +15,9 @@ import java.util.ArrayList;
 
 public class JSONDataHandler {
 
+    private static final String TAG = JSONDataHandler.class.getSimpleName();
+
+    private static final String ID = "id";
     private static final String RESULTS = "results";
     private static final String POSTER_PATH = "poster_path";
     private static final String BACKDROP_PATH = "backdrop_path";
@@ -21,6 +25,10 @@ public class JSONDataHandler {
     private static final String VOTE_AVERAGE = "vote_average";
     private static final String OVERVIEW = "overview";
     private static final String RELEASE_DATE = "release_date";
+
+    private static final String REVIEWS = "reviews";
+    private static final String AUTHOR = "author";
+    private static final String CONTENT = "content";
 
     /**
      * Retrieves details from the JSON String and stores them as fields within multiple Movie Objects.
@@ -51,6 +59,7 @@ public class JSONDataHandler {
 
             //Store all of the details as fields within a Movie Object
             Movie movie = new Movie.Builder()
+                    .id(JSONMovieObject.getString(ID))
                     .posterLocationUriString(moviePosterUriString)
                     .backdropLocationUriString(backdropUriString)
                     .title(JSONMovieObject.getString(TITLE))
@@ -65,4 +74,25 @@ public class JSONDataHandler {
         return moviesArray;
     }
 
+    public static ArrayList<Review> getReviewArrayList(String reviewsResultsString) throws JSONException{
+        JSONObject jsonObject = new JSONObject(reviewsResultsString);
+
+        JSONObject JSONReviews = jsonObject.getJSONObject(REVIEWS);
+        JSONArray JSONResults = JSONReviews.getJSONArray(RESULTS);
+
+        ArrayList<Review> reviewArray = new ArrayList<>();
+
+        for (int i = 0; i < JSONResults.length(); i++){
+            JSONObject JSONReviewObject = JSONResults.getJSONObject(i);
+
+            String author = JSONReviewObject.getString(AUTHOR);
+            String content = JSONReviewObject.getString(CONTENT);
+
+            Review review = new Review(author, content);
+
+            reviewArray.add(review);
+        }
+
+        return reviewArray;
+    }
 }

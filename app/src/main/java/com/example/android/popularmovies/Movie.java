@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable {
 
+    private final String id;
     private final String posterLocationUriString;
     private final String backdropLocationUriString;
     private final String title;
@@ -17,6 +18,7 @@ public class Movie implements Parcelable {
     private final String releaseDate;
 
     private Movie(Builder builder) {
+        id = builder.id;
         posterLocationUriString = builder.posterLocationUriString;
         backdropLocationUriString = builder.backdropLocationUriString;
         title = builder.title;
@@ -32,6 +34,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
         dest.writeString(this.posterLocationUriString);
         dest.writeString(this.backdropLocationUriString);
         dest.writeString(this.title);
@@ -42,6 +45,7 @@ public class Movie implements Parcelable {
 
 
     private Movie(Parcel in) {
+        this.id = in.readString();
         this.posterLocationUriString = in.readString();
         this.backdropLocationUriString = in.readString();
         this.title = in.readString();
@@ -63,6 +67,7 @@ public class Movie implements Parcelable {
     };
 
     public static final class Builder {
+        private String id;
         private String posterLocationUriString;
         private String backdropLocationUriString;
         private String title;
@@ -71,6 +76,11 @@ public class Movie implements Parcelable {
         private String releaseDate;
 
         public Builder() {
+        }
+
+        public Builder id(String val) {
+            id = val;
+            return this;
         }
 
         public Builder posterLocationUriString(String val) {
@@ -106,6 +116,10 @@ public class Movie implements Parcelable {
         public Movie build() {
             return new Movie(this);
         }
+    }
+
+    String getId() {
+        return id;
     }
 
     String getPosterLocationUriString() {

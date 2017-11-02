@@ -2,21 +2,36 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 
 import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
+import com.example.android.popularmovies.utilities.JSONDataHandler;
+import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
+    private static final String TAG = MovieDetailsActivity.class.getSimpleName();
+
     private static final String MOVIE = "movie";
+
     private ActivityMovieDetailsBinding detailsBinding;
+    private ArrayList<Review> reviewArrayList = new ArrayList<>();
+    private ReviewAdapter reviewAdapter;
 
     /**
      * Gets the Intent from the MainActivity to retrieve Extras containing the details to display
@@ -63,6 +78,51 @@ public class MovieDetailsActivity extends AppCompatActivity {
             String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
 
             detailsBinding.inTitle.tvReleaseDate.setText(dateString);
+
+            //Construct URL for reviews using Movie id
+            getReviews(movie.getId());
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            reviewAdapter = new ReviewAdapter(this);
+
+            detailsBinding.inReviews.rvReviews.setLayoutManager(layoutManager);
+            detailsBinding.inReviews.rvReviews.setAdapter(reviewAdapter);
+        }
+    }
+
+    private void getReviews(String movieId) {
+            URL reviewsRequestUrl = NetworkUtils.buildReviewsDbUrl(movieId);
+            new GetReviewsTask().execute(reviewsRequestUrl);
+            Log.d(TAG, "getReviews: was called");
+    }
+
+    private class GetReviewsTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            URL reviewsRequestUrl = urls[0];
+            String reviewsResultsString = null;
+
+            try {
+                reviewsResultsString = NetworkUtils.getResponseFromHttpUrl(reviewsRequestUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return reviewsResultsString;
+        }
+
+        @Override
+        protected void onPostExecute(String reviewsResultsString) {
+            super.onPostExecute(reviewsResultsString);
+
+            try {
+                reviewArrayList = JSONDataHandler.getReviewArrayList(reviewsResultsString);
+                reviewAdapter.setmReviewArrayList(reviewArrayList);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
