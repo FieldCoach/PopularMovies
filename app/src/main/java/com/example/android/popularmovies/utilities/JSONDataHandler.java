@@ -26,9 +26,12 @@ public class JSONDataHandler {
     private static final String OVERVIEW = "overview";
     private static final String RELEASE_DATE = "release_date";
 
+    private static final String VIDEOS = "videos";
     private static final String REVIEWS = "reviews";
+
     private static final String AUTHOR = "author";
     private static final String CONTENT = "content";
+    private static final String KEY = "key";
 
     /**
      * Retrieves details from the JSON String and stores them as fields within multiple Movie Objects.
@@ -94,5 +97,23 @@ public class JSONDataHandler {
         }
 
         return reviewArray;
+    }
+
+    public static ArrayList<String> getTrailerArrayList(String resultsString) throws JSONException {
+        JSONObject jsonObject = new JSONObject(resultsString);
+
+
+        JSONObject JSONTrailers = jsonObject.getJSONObject(VIDEOS);
+        JSONArray JSONResults = JSONTrailers.getJSONArray(RESULTS);
+
+
+        ArrayList<String> trailerArray = new ArrayList<>();
+
+        for (int i = 0; i < JSONResults.length(); i++){
+            JSONObject JSONTrailerObject = JSONResults.getJSONObject(i);
+
+            trailerArray.add(JSONTrailerObject.getString(KEY));
+        }
+        return trailerArray;
     }
 }

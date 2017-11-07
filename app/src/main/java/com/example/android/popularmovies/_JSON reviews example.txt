@@ -1,96 +1,115 @@
 https://api.themoviedb.org/3/movie/343611?api_key=35a2c8b5ef8960c539ecc989877bc80e&append_to_response=reviews
 
 
-{
-                                                                                            "adult": false,
-                                                                                            "backdrop_path": "\/uX7LXnsC7bZJZjn048UCOwkPXWJ.jpg",
-                                                                                            "belongs_to_collection": {
-                                                                                                 "id": 86066,
-                                                                                                 "name": "Despicable Me Collection",
-                                                                                                 "poster_path": "\/xIXhIlZDRmSSfNbpN7kBCm5hg39.jpg",
-                                                                                                 "backdrop_path": "\/15IZl405E664QDVxpFJBl7TtLmw.jpg"
+ {
+                                                                                       "adult": false,
+                                                                                       "backdrop_path": "\/wBzMnQ01R9w58W6ucltdYfOyP4j.jpg",
+                                                                                       "belongs_to_collection": {
+                                                                                            "id": 131296,
+                                                                                            "name": "Thor Collection",
+                                                                                            "poster_path": "\/yw7gr7DhHHVTLlO8Se8uH17TDMA.jpg",
+                                                                                            "backdrop_path": "\/3KL8UNKFWgIKXzLHjwY0uwgjzYl.jpg"
+                                                                                       },
+                                                                                       "budget": 180000000,
+                                                                                       "genres": [
+                                                                                            {
+                                                                                                 "id": 28,
+                                                                                                 "name": "Action"
                                                                                             },
-                                                                                            "budget": 74000000,
-                                                                                            "genres": [
-                                                                                                 {
-                                                                                                      "id": 10751,
-                                                                                                      "name": "Family"
-                                                                                                 },
-                                                                                                 {
-                                                                                                      "id": 16,
-                                                                                                      "name": "Animation"
-                                                                                                 },
-                                                                                                 {
-                                                                                                      "id": 12,
-                                                                                                      "name": "Adventure"
-                                                                                                 },
-                                                                                                 {
-                                                                                                      "id": 35,
-                                                                                                      "name": "Comedy"
-                                                                                                 }
-                                                                                            ],
-                                                                                            "homepage": "http:\/\/www.minionsmovie.com\/",
-                                                                                            "id": 211672,
-                                                                                            "imdb_id": "tt2293640",
-                                                                                            "original_language": "en",
-                                                                                            "original_title": "Minions",
-                                                                                            "overview": "Minions Stuart, Kevin and Bob are recruited by Scarlet Overkill, a super-villain who, alongside her inventor husband Herb, hatches a plot to take over the world.",
-                                                                                            "popularity": 651.873671,
-                                                                                            "poster_path": "\/q0R4crx2SehcEEQEkYObktdeFy.jpg",
-                                                                                            "production_companies": [
-                                                                                                 {
-                                                                                                      "name": "Universal Pictures",
-                                                                                                      "id": 33
-                                                                                                 },
-                                                                                                 {
-                                                                                                      "name": "Illumination Entertainment",
-                                                                                                      "id": 6704
-                                                                                                 }
-                                                                                            ],
-                                                                                            "production_countries": [
-                                                                                                 {
-                                                                                                      "iso_3166_1": "US",
-                                                                                                      "name": "United States of America"
-                                                                                                 }
-                                                                                            ],
-                                                                                            "release_date": "2015-06-17",
-                                                                                            "revenue": 1156730962,
-                                                                                            "runtime": 91,
-                                                                                            "spoken_languages": [
-                                                                                                 {
-                                                                                                      "iso_639_1": "en",
-                                                                                                      "name": "English"
-                                                                                                 }
-                                                                                            ],
-                                                                                            "status": "Released",
-                                                                                            "tagline": "Before Gru, they had a history of bad bosses",
-                                                                                            "title": "Minions",
-                                                                                            "video": false,
-                                                                                            "vote_average": 6.4,
-                                                                                            "vote_count": 4883,
-                                                                                            "reviews": {
-                                                                                                 "page": 1,
-                                                                                                 "results": [
-                                                                                                      {
-                                                                                                           "id": "55a58e46c3a3682bb2000065",
-                                                                                                           "author": "Andres Gomez",
-                                                                                                           "content": "The minions are a nice idea and the animation and London recreation is really good, but that's about it.\r\n\r\nThe script is boring and the jokes not really funny.",
-                                                                                                           "url": "https:\/\/www.themoviedb.org\/review\/55a58e46c3a3682bb2000065"
-                                                                                                      },
-                                                                                                      {
-                                                                                                           "id": "55e108c89251416c0b0006dd",
-                                                                                                           "author": "movizonline.com",
-                                                                                                           "content": "a nice idea and the animation.the new thing in animation field.a movie that every one should like an kid or old man.",
-                                                                                                           "url": "https:\/\/www.themoviedb.org\/review\/55e108c89251416c0b0006dd"
-                                                                                                      },
-                                                                                                      {
-                                                                                                           "id": "59c38385c3a368141e00e1f2",
-                                                                                                           "author": "Tom Morvolo Riddle",
-                                                                                                           "content": "I enjoyed it a lot with my nephews. It's a fun family movie to watch with young'uns and there are some adult flavored jokes here and there.",
-                                                                                                           "url": "https:\/\/www.themoviedb.org\/review\/59c38385c3a368141e00e1f2"
-                                                                                                      }
-                                                                                                 ],
-                                                                                                 "total_pages": 1,
-                                                                                                 "total_results": 3
+                                                                                            {
+                                                                                                 "id": 12,
+                                                                                                 "name": "Adventure"
+                                                                                            },
+                                                                                            {
+                                                                                                 "id": 35,
+                                                                                                 "name": "Comedy"
+                                                                                            },
+                                                                                            {
+                                                                                                 "id": 14,
+                                                                                                 "name": "Fantasy"
+                                                                                            },
+                                                                                            {
+                                                                                                 "id": 878,
+                                                                                                 "name": "Science Fiction"
                                                                                             }
-                                                                                       }
+                                                                                       ],
+                                                                                       "homepage": "https:\/\/marvel.com\/movies\/movie\/222\/thor_ragnarok",
+                                                                                       "id": 284053,
+                                                                                       "imdb_id": "tt3501632",
+                                                                                       "original_language": "en",
+                                                                                       "original_title": "Thor: Ragnarok",
+                                                                                       "overview": "Thor is imprisoned on the other side of the universe and finds himself in a race against time to get back to Asgard to stop Ragnarok, the destruction of his homeworld and the end of Asgardian civilization, at the hands of an all-powerful new threat, the ruthless Hela.",
+                                                                                       "popularity": 746.768912,
+                                                                                       "poster_path": "\/oSLd5GYGsiGgzDPKTwQh7wamO8t.jpg",
+                                                                                       "production_companies": [
+                                                                                            {
+                                                                                                 "name": "Walt Disney Pictures",
+                                                                                                 "id": 2
+                                                                                            },
+                                                                                            {
+                                                                                                 "name": "Marvel Studios",
+                                                                                                 "id": 420
+                                                                                            }
+                                                                                       ],
+                                                                                       "production_countries": [
+                                                                                            {
+                                                                                                 "iso_3166_1": "US",
+                                                                                                 "name": "United States of America"
+                                                                                            }
+                                                                                       ],
+                                                                                       "release_date": "2017-10-25",
+                                                                                       "revenue": 0,
+                                                                                       "runtime": 130,
+                                                                                       "spoken_languages": [
+                                                                                            {
+                                                                                                 "iso_639_1": "en",
+                                                                                                 "name": "English"
+                                                                                            },
+                                                                                            {
+                                                                                                 "iso_639_1": "it",
+                                                                                                 "name": "Italiano"
+                                                                                            }
+                                                                                       ],
+                                                                                       "status": "Released",
+                                                                                       "tagline": "",
+                                                                                       "title": "Thor: Ragnarok",
+                                                                                       "video": false,
+                                                                                       "vote_average": 7.7,
+                                                                                       "vote_count": 1024,
+                                                                                       "reviews": {
+                                                                                            "page": 1,
+                                                                                            "results": [
+                                                                                                 {
+                                                                                                      "id": "59f09b979251416ac10169f7",
+                                                                                                      "author": "Gimly",
+                                                                                                      "content": "_Ragnarok_ is a tough one to review completely without spoiler, so I'll keep this brief:\r\n\r\n* I was bothered by a small number of things that happened in this movie.\r\n* I was in love with a large number of things that happened in this movie.\r\n* _Thor: Ragnarok_ is not the MCU's best movie.\r\n* _Thor: Ragnarok_ is the MCU's most fun movie.\r\n* Can we **please** have a worldwide ban on putting anything that happens in the third act of your movie, in said movie's trailers?\r\nThank you for your time. 4 stars.\r\n\r\n\r\n_Final rating:★★★★ - Very strong appeal. A personal favourite._",
+                                                                                                      "url": "https:\/\/www.themoviedb.org\/review\/59f09b979251416ac10169f7"
+                                                                                                 }
+                                                                                            ],
+                                                                                            "total_pages": 1,
+                                                                                            "total_results": 1
+                                                                                       },
+                                                                                       "videos": {
+                                                                                            "results": [
+                                                                                                 {
+                                                                                                      "id": "59742b34925141584300c1a7",
+                                                                                                      "iso_639_1": "en",
+                                                                                                      "iso_3166_1": "US",
+                                                                                                      "key": "ue80QwXMRHg",
+                                                                                                      "name": "Official Trailer",
+                                                                                                      "site": "YouTube",
+                                                                                                      "size": 1080,
+                                                                                                      "type": "Trailer"
+                                                                                                 },
+                                                                                                 {
+                                                                                                      "id": "59f03ac49251416a9e00eb05",
+                                                                                                      "iso_639_1": "en",
+                                                                                                      "iso_3166_1": "US",
+                                                                                                      "key": "INUvFbLkZNU",
+                                                                                                      "name": "Hindi",
+                                                                                                      "site": "YouTube",
+                                                                                                      "size": 1080,
+                                                                                                      "type": "Trailer"
+                                                                                                 },
+                                                                                                 {
+                                                                                                      "id": "59742b5192514157ec00c23e",

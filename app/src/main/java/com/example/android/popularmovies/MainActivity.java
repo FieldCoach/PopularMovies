@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
 
     private static ArrayList<Movie> moviesArrayList = new ArrayList<>();
-    private static final String apiKey = ApiKeyFile.API_KEY;
+    private static final String apiKey = ApiKeyFile.MOVIE_DB_API_KEY;
     private String sortBySelectionString = "popular";
     private String mPage = "1";
     private int currentScrollPosition;
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         this.mPage = String.valueOf(mPage);
     }
 
-
+    // TODO: 11/7/2017 GetMoviesTakes - make static
     private class GetMoviesTask extends AsyncTask<URL, Void, String> {
 
         /**

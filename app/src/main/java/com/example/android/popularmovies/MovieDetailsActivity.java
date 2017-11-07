@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 
 import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
@@ -32,6 +34,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private ActivityMovieDetailsBinding detailsBinding;
     private ArrayList<Review> reviewArrayList = new ArrayList<>();
     private ReviewAdapter reviewAdapter;
+
+    private ArrayList<String> trailerArrayList;
+    private MovieTrailerAdapter movieTrailerAdapter;
 
     /**
      * Gets the Intent from the MainActivity to retrieve Extras containing the details to display
@@ -87,6 +92,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             detailsBinding.inReviews.rvReviews.setLayoutManager(layoutManager);
             detailsBinding.inReviews.rvReviews.setAdapter(reviewAdapter);
+
+            LinearLayoutManager horizontalManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            movieTrailerAdapter = new MovieTrailerAdapter(this);
+            SnapHelper snapHelper = new LinearSnapHelper();
+
+            detailsBinding.inTrailers.rvMovieTrailers.setLayoutManager(horizontalManager);
+            detailsBinding.inTrailers.rvMovieTrailers.setAdapter(movieTrailerAdapter);
+            snapHelper.attachToRecyclerView(detailsBinding.inTrailers.rvMovieTrailers);
         }
     }
 
@@ -96,6 +109,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             Log.d(TAG, "getReviews: was called");
     }
 
+    // TODO: 11/7/2017 GetReviewsTask - rename and make static
     private class GetReviewsTask extends AsyncTask<URL, Void, String> {
 
         @Override
@@ -119,6 +133,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
             try {
                 reviewArrayList = JSONDataHandler.getReviewArrayList(reviewsResultsString);
                 reviewAdapter.setmReviewArrayList(reviewArrayList);
+
+                trailerArrayList = JSONDataHandler.getTrailerArrayList(reviewsResultsString);
+                movieTrailerAdapter.setTrailerArrayList(trailerArrayList);
 
             } catch (JSONException e) {
                 e.printStackTrace();

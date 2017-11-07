@@ -24,8 +24,9 @@ public final class NetworkUtils {
     private final static String API_KEY_STRING = "api_key";
     private static final String PAGE = "page";
 
-    private static final String REVIEWS = "reviews";
     private static final String APPEND_STRING = "append_to_response";
+    private static final String REVIEWS = "reviews";
+    private static final String TRAILERS = ",videos";
 
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private final static String IMAGE_SIZE = "w342";
@@ -41,7 +42,7 @@ public final class NetworkUtils {
         //Build a Uri with the base URL and the query parameters
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendPath(sortOrder.toLowerCase())
-                .appendQueryParameter(API_KEY_STRING, ApiKeyFile.API_KEY)
+                .appendQueryParameter(API_KEY_STRING, ApiKeyFile.MOVIE_DB_API_KEY)
                 .appendQueryParameter(PAGE, page)
                 .build();
 
@@ -71,12 +72,13 @@ public final class NetworkUtils {
         return builtUri.toString();
     }
 
-    public static URL buildReviewsDbUrl(String movieId) {
+    // TODO: 11/7/2017 buildReviewsDbUrl() - rename
+        public static URL buildReviewsDbUrl(String movieId) {
         //Build a Uri with the base URL and the path endpoints
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendPath(movieId)
-                .appendQueryParameter(API_KEY_STRING, ApiKeyFile.API_KEY)
-                .appendQueryParameter(APPEND_STRING, REVIEWS)
+                .appendQueryParameter(API_KEY_STRING, ApiKeyFile.MOVIE_DB_API_KEY)
+                .appendQueryParameter(APPEND_STRING, REVIEWS + TRAILERS)
                 .build();
 
         URL url = null;

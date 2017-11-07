@@ -18,3 +18,10 @@ TASKS:
 BUGS:
 // FIXME: 10/30/2017 improve size of movie posters to reduce cropping in activity_main.xml
 // FIXME: 10/30/2017 improve spacing of layout:title in activity_movie_details.xml
+
+
+
+IMPROVEMENTS
+// TODO: 11/7/2017 add trasparent arrows to the trailer_card_view (so the user knows there are more trailers)
+// TODO: 11/7/2017 add a snapToPosition helper for scrolling the trailers
+// TODO: 11/7/2017 format the text better
