@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Icon;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.SnapHelper;
 import android.util.Log;
+import android.view.View;
 
 import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
@@ -37,6 +39,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private ArrayList<String> trailerArrayList;
     private MovieTrailerAdapter movieTrailerAdapter;
+
+    private Boolean favorite = false;
 
     /**
      * Gets the Intent from the MainActivity to retrieve Extras containing the details to display
@@ -100,6 +104,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
             detailsBinding.inTrailers.rvMovieTrailers.setLayoutManager(horizontalManager);
             detailsBinding.inTrailers.rvMovieTrailers.setAdapter(movieTrailerAdapter);
             snapHelper.attachToRecyclerView(detailsBinding.inTrailers.rvMovieTrailers);
+
+            detailsBinding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Icon icon;
+                    if (favorite){
+                        icon = Icon.createWithResource(view.getContext(), R.drawable.ic_favorite_black_48dp);
+                        favorite = false;
+                    } else {
+                        icon = Icon.createWithResource(view.getContext(), R.drawable.ic_favorite_red_48dp);
+                        favorite = true;
+                    }
+
+                    detailsBinding.floatingActionButton.setImageIcon(icon);
+                }
+            });
         }
     }
 

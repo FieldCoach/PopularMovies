@@ -9,17 +9,25 @@
 
         <TextView
             android:id="@+id/tv_author"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:textStyle="bold|italic"
             tools:text="Andres Gomez" />
 
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="24dp"
+            android:paddingBottom="8dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             tools:text="a nice idea and the animation.the new thing in animation field.a movie that every one should like an kid or old man." />
+
+        <View
+            android:id="@+id/v_seperator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="24dp"
+            android:background="#616161" />
     </LinearLayout>
 </layout>

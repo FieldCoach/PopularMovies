@@ -17,6 +17,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
     private Context mContext;
     private ArrayList<Review> mReviewArrayList = new ArrayList<>();
+    private final static String TAG = ReviewAdapter.class.getSimpleName();
 
     ReviewAdapter(Context context) {
         mContext = context;
@@ -26,12 +27,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
         private TextView author;
         private TextView content;
+        private View view;
 
         ReviewAdapterViewHolder(View itemView) {
             super(itemView);
 
             author = (TextView) itemView.findViewById(R.id.tv_author);
             content = (TextView) itemView.findViewById(R.id.tv_content);
+            view = itemView.findViewById(R.id.v_seperator);
         }
     }
 
@@ -50,6 +53,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
         holder.author.setText(review.getAuthor());
         holder.content.setText(review.getContent());
+
+        if (position == mReviewArrayList.size() - 1){
+            holder.view.setVisibility(View.GONE);
+        }
     }
 
     @Override

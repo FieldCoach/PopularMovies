@@ -10,17 +10,14 @@
 
         <TextView
             android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:text="@string/overview"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            android:textStyle="bold" />
+            style="@style/Header"
+            android:text="@string/overview" />
 
         <TextView
             android:id="@+id/tv_overview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             tools:text="zsdifhaporfnvfdniaotnvfhaukdrawe" />
     </LinearLayout>
 </layout>

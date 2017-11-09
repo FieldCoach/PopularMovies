@@ -9,15 +9,11 @@
 
         <TextView
             android:id="@+id/textView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
-            android:paddingBottom="8dp"
             android:text="@string/trailers_label"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            android:textStyle="bold"
+            style="@style/Header"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,6 +24,8 @@
             android:layout_marginLeft="0dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
+            android:scrollIndicators="bottom"
+            android:scrollbars="horizontal"
             android:weightSum="1"
             app:layout_constraintLeft_toLeftOf="@+id/textView11"
             app:layout_constraintTop_toBottomOf="@+id/textView11"
