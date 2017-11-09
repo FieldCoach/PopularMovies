@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -83,6 +84,18 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
                     .load(movie.getBackdropLocationUriString())
                     .fit()
                     .into(detailsBinding.ivBackDrop);
+
+            //Find out if this movie is already a favorite
+            Cursor cursor = getContentResolver().query(MovieEntry.CONTENT_URI,
+                    null,
+                    MovieEntry.COLUMN_TITLE + "=?",
+                    new String[]{movie.getTitle()},
+                    null);
+
+            if (cursor.getCount() > 0){
+                Icon icon = Icon.createWithResource(this, R.drawable.ic_favorite_red_48dp);
+                detailsBinding.floatingActionButton.setImageIcon(icon);
+            }
 
             //Set the text on the TextView to show the Movie details
             detailsBinding.inTitle.tvTitle.setText(movie.getTitle());
