@@ -12,4 +12,5 @@
     <string name="reviews_label">Reviews</string>
     <string name="trailers_label">Trailers</string>
     <string name="back_drop_content_description">back drop image</string>
+    <string name="favorites">Favorites</string>
 </resources>

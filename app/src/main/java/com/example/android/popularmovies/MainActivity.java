@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
+    private static final String FAVORITES = "favorites";
     private static final String PAGE = "mPage";
     private static final String SORT_BY = "sortBy";
     private static final String MOVIES_ARRAY_LIST = "moviesArrayList";
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
                 if (!isOnline()) {
                     notifyConnectionError();
+                    // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
                 }
             } catch (JSONException e){
                 e.printStackTrace();
@@ -262,6 +264,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onOptionsItemSelected: top rated was called");
 
             getNewMovieResults();
+            return true;
+        }
+        if (id == R.id.favorites){
+            Log.d(TAG, "onOptionsItemSelected: favorites was called");
+
+            // TODO: 11/9/2017 onOptionsItemSelected() - load favorite movies
             return true;
         }
 

@@ -102,7 +102,7 @@ public class MovieContentProvider  extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+    public int delete(@NonNull Uri uri, @Nullable String whereClause, @Nullable String[] args) {
         final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
@@ -110,9 +110,8 @@ public class MovieContentProvider  extends ContentProvider {
         int moviesDeleted;
 
         switch (match){
-            case MOVIE_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-                moviesDeleted = db.delete(MovieEntry.TABLE_NAME, "_id=?", new String[]{id});
+            case MOVIES:
+                moviesDeleted = db.delete(MovieEntry.TABLE_NAME, whereClause, args);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
