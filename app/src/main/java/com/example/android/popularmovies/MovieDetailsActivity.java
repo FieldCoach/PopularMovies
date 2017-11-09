@@ -95,6 +95,7 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
             if (cursor.getCount() > 0){
                 Icon icon = Icon.createWithResource(this, R.drawable.ic_favorite_red_48dp);
                 detailsBinding.floatingActionButton.setImageIcon(icon);
+                favorite = true;
             }
 
             //Set the text on the TextView to show the Movie details
