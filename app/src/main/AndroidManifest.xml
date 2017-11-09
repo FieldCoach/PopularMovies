@@ -31,8 +31,8 @@
                 android:value=".MainActivity"/>
         </activity>
         <provider
-            android:authorities="com.example.android.popularmovies"
-            android:name=".data.MovieContentProvider"/>
+            android:name="com.example.android.popularmovies.data.MovieContentProvider"
+            android:authorities="com.example.android.popularmovies"/>
     </application>
 
 </manifest>

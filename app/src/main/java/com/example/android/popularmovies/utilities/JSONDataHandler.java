@@ -35,14 +35,14 @@ public class JSONDataHandler {
 
     /**
      * Retrieves details from the JSON String and stores them as fields within multiple Movie Objects.
-     * @param movieRequestResults String representation of JSON data
+     * @param jsonResultString String representation of JSON data
      * @return ArrayList of Movie Objects
      * @throws JSONException
      */
-    public static ArrayList<Movie> getMovieArrayList(String movieRequestResults) throws JSONException{
+    public static ArrayList<Movie> getMovieArrayList(String jsonResultString) throws JSONException{
 
         //Convert the JSON String into a JSON Object. Then get a JSON Array from the JSON Object
-        JSONObject jsonObject = new JSONObject(movieRequestResults);
+        JSONObject jsonObject = new JSONObject(jsonResultString);
         JSONArray jsonArray = jsonObject.getJSONArray(RESULTS);
 
         //Create an ArrayList to hold all of the Movie Objects
@@ -77,8 +77,8 @@ public class JSONDataHandler {
         return moviesArray;
     }
 
-    public static ArrayList<Review> getReviewArrayList(String reviewsResultsString) throws JSONException{
-        JSONObject jsonObject = new JSONObject(reviewsResultsString);
+    public static ArrayList<Review> getReviewArrayList(String jsonResultString) throws JSONException{
+        JSONObject jsonObject = new JSONObject(jsonResultString);
 
         JSONObject JSONReviews = jsonObject.getJSONObject(REVIEWS);
         JSONArray JSONResults = JSONReviews.getJSONArray(RESULTS);

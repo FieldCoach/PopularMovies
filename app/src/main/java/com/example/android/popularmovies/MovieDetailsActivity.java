@@ -6,8 +6,11 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
@@ -35,11 +38,13 @@ import java.util.Locale;
 
 import static com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity  implements LoaderManager.LoaderCallbacks<String>{
 
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
     private static final String MOVIE = "movie";
+    private static final int DETAILS_LOADER = 2;
+    private static final String DETAILS_REQUEST_URL = "details_request_url";
 
     private ActivityMovieDetailsBinding detailsBinding;
     private ArrayList<Review> reviewArrayList = new ArrayList<>();
@@ -145,7 +150,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         InputStream inputStream;
 
         try {
-            posterUrl = new URL(movie.getPosterLocationUriString().toString());
+            posterUrl = new URL(movie.getPosterLocationUriString());
             inputStream = posterUrl.openStream();
             Bitmap poster = BitmapFactory.decodeStream(inputStream);
 
@@ -174,42 +179,68 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void getReviews(String movieId) {
-            URL reviewsRequestUrl = NetworkUtils.buildReviewsDbUrl(movieId);
-            new GetReviewsTask().execute(reviewsRequestUrl);
-            Log.d(TAG, "getReviews: was called");
+        URL reviewsRequestUrl = NetworkUtils.buildReviewsDbUrl(movieId);
+
+        Bundle urlBundle = new Bundle();
+        urlBundle.putString(DETAILS_REQUEST_URL, reviewsRequestUrl.toString());
+
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<String> detailsLoader = loaderManager.getLoader(DETAILS_LOADER);
+
+        if (detailsLoader == null) {
+            loaderManager.initLoader(DETAILS_LOADER, urlBundle, this);
+        } else {
+            loaderManager.restartLoader(DETAILS_LOADER, urlBundle, this);
+        }
+        Log.d(TAG, "getReviews: was called");
     }
 
-    // TODO: 11/7/2017 GetReviewsTask - rename and make static
-    private class GetReviewsTask extends AsyncTask<URL, Void, String> {
+    @Override
+    public Loader<String> onCreateLoader(int id, final Bundle bundle) {
+        return new AsyncTaskLoader<String>(this) {
 
-        @Override
-        protected String doInBackground(URL... urls) {
-            URL reviewsRequestUrl = urls[0];
-            String reviewsResultsString = null;
-
-            try {
-                reviewsResultsString = NetworkUtils.getResponseFromHttpUrl(reviewsRequestUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                forceLoad();
             }
 
-            return reviewsResultsString;
-        }
+            @Nullable
+            @Override
+            public String loadInBackground() {
+                String detailsRequestString = bundle.getString(DETAILS_REQUEST_URL);
 
-        @Override
-        protected void onPostExecute(String reviewsResultsString) {
-            super.onPostExecute(reviewsResultsString);
+                if (detailsRequestString == null || detailsRequestString.equals("")) return null;
 
-            try {
-                reviewArrayList = JSONDataHandler.getReviewArrayList(reviewsResultsString);
-                reviewAdapter.setmReviewArrayList(reviewArrayList);
+                try {
+                    URL detailsRequestUrl = new URL(detailsRequestString);
+                    String jsonResultString = NetworkUtils.getResponseFromHttpUrl(detailsRequestUrl);
 
-                trailerArrayList = JSONDataHandler.getTrailerArrayList(reviewsResultsString);
-                movieTrailerAdapter.setTrailerArrayList(trailerArrayList);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    return jsonResultString;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String jsonResultString) {
+        try {
+            reviewArrayList = JSONDataHandler.getReviewArrayList(jsonResultString);
+            reviewAdapter.setmReviewArrayList(reviewArrayList);
+
+            trailerArrayList = JSONDataHandler.getTrailerArrayList(jsonResultString);
+            movieTrailerAdapter.setTrailerArrayList(trailerArrayList);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
     }
 }

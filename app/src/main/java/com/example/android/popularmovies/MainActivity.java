@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String MOVIES_ARRAY_LIST = "moviesArrayList";
     private static final String CURRENT_SCROLL_POSITION = "currentScrollPosition";
     private static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
+    private static final String MOVIE_REQUEST_URL = "movie_request_url";
 
     private static ArrayList<Movie> moviesArrayList = new ArrayList<>();
     private static final String apiKey = ApiKeyFile.MOVIE_DB_API_KEY;
@@ -49,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mainBinding;
     private MoviePosterAdapter moviePosterAdapter;
     private GridLayoutManager gridLayoutManager;
+
+    public static final int MOVIES_LOADER = 1;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -103,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             moviesArrayList.clear();
             getMovies();
         }
+        getSupportLoaderManager().initLoader(MOVIES_LOADER, null, this);
     }
 
     /**
@@ -155,7 +162,18 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getMovies() {
         URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, mPage);
-        new GetMoviesTask().execute(movieRequestUrl);
+
+        Bundle urlBundle = new Bundle();
+        urlBundle.putString(MOVIE_REQUEST_URL, movieRequestUrl.toString());
+
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<String> movieLoader = loaderManager.getLoader(MOVIES_LOADER);
+
+        if (movieLoader == null){
+            loaderManager.initLoader(MOVIES_LOADER, urlBundle, this);
+        } else {
+            loaderManager.restartLoader(MOVIES_LOADER, urlBundle, this);
+        }
         Log.d(TAG, "getMovies: was called");
     }
 
@@ -167,56 +185,64 @@ public class MainActivity extends AppCompatActivity {
         this.mPage = String.valueOf(mPage);
     }
 
-    // TODO: 11/7/2017 GetMoviesTakes - make static
-    private class GetMoviesTask extends AsyncTask<URL, Void, String> {
+    @Override
+    public Loader<String> onCreateLoader(int id, final Bundle bundle) {
+        Log.d(TAG, "onCreateLoader() returned: " + "was called");
+        return new AsyncTaskLoader<String>(this) {
 
-        /**
-         * Retrieves a String of the JSON data from a GET request of the API
-         * @param params the URL to use for the GET request
-         * @return String of the JSON data
-         */
-        @Override
-        protected String doInBackground(URL... params) {
-            URL movieRequestUrl = params[0];
-            String movieResultsString = null;
-            try {
-                movieResultsString = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                forceLoad();
+                // TODO: 11/9/2017 onStartLoading() - handle loading progressbar
             }
 
-            return movieResultsString;
-        }
+            @Nullable
+            @Override
+            public String loadInBackground() {
+                String movieRequestUrlString = bundle.getString(MOVIE_REQUEST_URL);
 
-        /**
-         * Gets movie JSONObjects and posterLocations to set data in RecyclerView.Adapter.
-         * Notifies the user if there was an error with the internet connection or the API Key input.
-         * @param movieRequestResults String of JSON data from the GET request of the API
-         */
-        @Override
-        protected void onPostExecute(String movieRequestResults) {
-            super.onPostExecute(movieRequestResults);
+                if (movieRequestUrlString == null || movieRequestUrlString.equals("")) return null;
 
-            try {
-                if (moviesArrayList == null) {
-                    moviesArrayList = JSONDataHandler.getMovieArrayList(movieRequestResults);
-                } else {
-                    ArrayList<Movie> moreMovies = JSONDataHandler.getMovieArrayList(movieRequestResults);
-                    moviesArrayList.addAll(moreMovies);
+                try {
+                    URL movieRequestUrl = new URL(movieRequestUrlString);
+                    String jsonResultString = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
+                    Log.d(TAG, "loadInBackground() returned: " + jsonResultString);
+                    return jsonResultString;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
                 }
-
-                moviePosterAdapter.setMoviesArrayList(moviesArrayList);
-
-            } catch (NullPointerException e) {     //catching JSONException and NullPointerException
-                e.printStackTrace();
-                if (!isOnline()) {
-                    notifyConnectionError();
-                    // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
-                }
-            } catch (JSONException e){
-                e.printStackTrace();
             }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String jsonResultString) {
+        try {
+            if (moviesArrayList == null) {
+                moviesArrayList = JSONDataHandler.getMovieArrayList(jsonResultString);
+            } else {
+                ArrayList<Movie> moreMovies = JSONDataHandler.getMovieArrayList(jsonResultString);
+                moviesArrayList.addAll(moreMovies);
+            }
+
+            moviePosterAdapter.setMoviesArrayList(moviesArrayList);
+
+        } catch (NullPointerException e) {     //catching JSONException and NullPointerException
+            e.printStackTrace();
+            if (!isOnline()) {
+                notifyConnectionError();
+                // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
+            }
+        } catch (JSONException e){
+            e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
     }
 
     /**
