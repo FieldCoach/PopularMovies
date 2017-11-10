@@ -2,14 +2,14 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
@@ -28,11 +29,10 @@ import com.example.android.popularmovies.utilities.NetworkUtils;
 
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks  {
 
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private GridLayoutManager gridLayoutManager;
 
     public static final int MOVIES_LOADER = 1;
+    private static final int FAVORITES_LOADER = 3;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -85,10 +86,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 //Use field page instead of the parameter for this method
                 //Using the parameter page caused the same page of result to be loaded multiple times
-                setmPage(Integer.valueOf(mPage) + 1);
-                Log.d(TAG, "onLoadMore.page: " + String.valueOf(page + 1));
-                Log.d(TAG, "onLoadMore.mPage: " + String.valueOf(mPage + 1));
-                getMovies();
+                if (sortBySelectionString != FAVORITES){
+                    setmPage(Integer.valueOf(mPage) + 1);
+                    Log.d(TAG, "onLoadMore.page: " + String.valueOf(page + 1));
+                    Log.d(TAG, "onLoadMore.mPage: " + String.valueOf(mPage + 1));
+                    getMovies();
+
+                } else {
+                    // TODO: 11/10/2017 onLoadMore() - load more favorites?
+                }
             }
         };
         //Add an OnScrollListener to the RecyclerView and pass it the Endless Scroll Listener
@@ -170,9 +176,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Loader<String> movieLoader = loaderManager.getLoader(MOVIES_LOADER);
 
         if (movieLoader == null){
-            loaderManager.initLoader(MOVIES_LOADER, urlBundle, this);
+            loaderManager.initLoader(MOVIES_LOADER, urlBundle, this).forceLoad();
         } else {
-            loaderManager.restartLoader(MOVIES_LOADER, urlBundle, this);
+            loaderManager.restartLoader(MOVIES_LOADER, urlBundle, this).forceLoad();
         }
         Log.d(TAG, "getMovies: was called");
     }
@@ -186,62 +192,76 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<String> onCreateLoader(int id, final Bundle bundle) {
+    public Loader onCreateLoader(final int id, final Bundle bundle) {
         Log.d(TAG, "onCreateLoader() returned: " + "was called");
-        return new AsyncTaskLoader<String>(this) {
 
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                forceLoad();
-                // TODO: 11/9/2017 onStartLoading() - handle loading progressbar
-            }
+        switch (id){
+            case MOVIES_LOADER:
+                return new MovieTaskLoader(this, MOVIE_REQUEST_URL, bundle);
 
-            @Nullable
-            @Override
-            public String loadInBackground() {
-                String movieRequestUrlString = bundle.getString(MOVIE_REQUEST_URL);
-
-                if (movieRequestUrlString == null || movieRequestUrlString.equals("")) return null;
-
-                try {
-                    URL movieRequestUrl = new URL(movieRequestUrlString);
-                    String jsonResultString = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                    Log.d(TAG, "loadInBackground() returned: " + jsonResultString);
-                    return jsonResultString;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<String> loader, String jsonResultString) {
-        try {
-            if (moviesArrayList == null) {
-                moviesArrayList = JSONDataHandler.getMovieArrayList(jsonResultString);
-            } else {
-                ArrayList<Movie> moreMovies = JSONDataHandler.getMovieArrayList(jsonResultString);
-                moviesArrayList.addAll(moreMovies);
-            }
-
-            moviePosterAdapter.setMoviesArrayList(moviesArrayList);
-
-        } catch (NullPointerException e) {     //catching JSONException and NullPointerException
-            e.printStackTrace();
-            if (!isOnline()) {
-                notifyConnectionError();
-                // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
-            }
-        } catch (JSONException e){
-            e.printStackTrace();
+            case FAVORITES_LOADER:
+                return new CursorLoader(this,
+                        MovieEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        MovieEntry.COLUMN_TITLE);
+            default:
+                return null;
         }
+
     }
 
     @Override
-    public void onLoaderReset(Loader<String> loader) {
+    public void onLoadFinished(Loader loader, Object data) {
+        switch (loader.getId()){
+            case MOVIES_LOADER:
+                try {
+                    String jsonResultString = (String) data;
+                    if (moviesArrayList == null) {
+                        moviesArrayList = JSONDataHandler.getMovieArrayList(jsonResultString);
+                    } else {
+                        ArrayList<Movie> moreMovies = JSONDataHandler.getMovieArrayList(jsonResultString);
+                        moviesArrayList.addAll(moreMovies);
+                    }
+
+                    moviePosterAdapter.setMoviesArrayList(moviesArrayList);
+
+                } catch (NullPointerException e) {     //catching JSONException and NullPointerException
+                    e.printStackTrace();
+                    if (!isOnline()) {
+                        notifyConnectionError();
+                        // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
+                    }
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+                break;
+            case FAVORITES_LOADER:
+                if (moviesArrayList != null)
+                    moviesArrayList.clear();
+
+                Cursor cursor = (Cursor)data;
+
+                // TODO: 11/10/2017 onLoadFinished() - add backdrop and poster byteArray/bitmaps
+                while (cursor.moveToNext()){
+                    Movie movie = new Movie.Builder()
+                            .title(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_TITLE)))
+                            .overview(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_PLOT)))
+                            .releaseDate(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RELEASE)))
+                            .voteAverage(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RATING)))
+                            .build();
+                    moviesArrayList.add(movie);
+                }
+                moviePosterAdapter.setMoviesArrayList(moviesArrayList);
+                break;
+
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
 
     }
 
@@ -294,12 +314,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         if (id == R.id.favorites){
             Log.d(TAG, "onOptionsItemSelected: favorites was called");
-
+            sortBySelectionString = FAVORITES;
             // TODO: 11/9/2017 onOptionsItemSelected() - load favorite movies
+            getFavoriteMovies();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getFavoriteMovies() {
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<String> favoritesLoader = loaderManager.getLoader(FAVORITES_LOADER);
+
+        if (favoritesLoader == null){
+            loaderManager.initLoader(FAVORITES_LOADER, null, this);
+        } else {
+            loaderManager.restartLoader(FAVORITES_LOADER, null, this);
+        }
+        Log.d(TAG, "getFavoriteMovies: was called");
     }
 
     /**

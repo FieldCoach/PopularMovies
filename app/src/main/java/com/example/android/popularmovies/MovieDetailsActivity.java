@@ -250,6 +250,8 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
 
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
+            //No reviews
         }
     }
 
