@@ -1,5 +1,8 @@
 package com.example.android.popularmovies.utilities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -114,6 +117,20 @@ public final class NetworkUtils {
         } finally {
                 urlConnection.disconnect();
         }
+    }
+
+    /**
+     * Checks whether the device is online or currently connecting
+     * @return
+     */
+    public static boolean isOnline(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = null;
+        if (connectivityManager != null) {
+            networkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+
     }
 
 }

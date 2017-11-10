@@ -73,18 +73,6 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
 
             final Movie movie = intentFromMainActivity.getParcelableExtra(MOVIE);
 
-            //Load the poster into the ImageView
-            Picasso.with(this)
-                    .load(movie.getPosterLocationUriString())
-                    .fit()
-                    .into(detailsBinding.ivDetailsPoster);
-
-            //Load the backdrop into its ImageView
-            Picasso.with(this)
-                    .load(movie.getBackdropLocationUriString())
-                    .fit()
-                    .into(detailsBinding.ivBackDrop);
-
             //Find out if this movie is already a favorite
             Cursor cursor = getContentResolver().query(MovieEntry.CONTENT_URI,
                     null,
@@ -97,6 +85,29 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
                 detailsBinding.floatingActionButton.setImageIcon(icon);
                 favorite = true;
             }
+
+            if (!favorite) {
+                //Load the poster into the ImageView
+                Picasso.with(this)
+                        .load(movie.getPosterLocationUriString())
+                        .fit()
+                        .into(detailsBinding.ivDetailsPoster);
+
+                //Load the backdrop into its ImageView
+                Picasso.with(this)
+                        .load(movie.getBackdropLocationUriString())
+                        .fit()
+                        .into(detailsBinding.ivBackDrop);
+            } else {
+                // DONE: 11/10/2017 onCreate() - Load byteArrays from Movie object
+                cursor.moveToFirst();
+                Bitmap poster = bitmapFromBytes(cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_POSTER)));
+                Bitmap backdrop = bitmapFromBytes(cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_BACKDROP)));
+
+                detailsBinding.ivDetailsPoster.setImageBitmap(poster);
+                detailsBinding.ivBackDrop.setImageBitmap(backdrop);
+            }
+
 
             //Set the text on the TextView to show the Movie details
             detailsBinding.inTitle.tvTitle.setText(movie.getTitle());
@@ -160,23 +171,20 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
     private void insertFavoriteToDb(Movie movie) {
         ContentValues values = new ContentValues();
 
-        URL posterUrl;
-        InputStream inputStream;
-
         try {
-            posterUrl = new URL(movie.getPosterLocationUriString());
-            inputStream = posterUrl.openStream();
-            Bitmap poster = BitmapFactory.decodeStream(inputStream);
+            URL posterUrl = new URL(movie.getPosterLocationUriString());
+            URL backdropUrl = new URL(movie.getBackdropLocationUriString());
 
-            //convert bitmap to byte array
-            //https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
-            byte[] posterBytes = bytesFromBitmap(poster);
+            byte[] posterBytes = bytesFromImageUrl(posterUrl);
+            byte[] backdropBytes = bytesFromImageUrl(backdropUrl);
 
             values.put(MovieEntry.COLUMN_POSTER, posterBytes);
+            values.put(MovieEntry.COLUMN_BACKDROP, backdropBytes);
             values.put(MovieEntry.COLUMN_PLOT, movie.getOverview());
             values.put(MovieEntry.COLUMN_RATING, movie.getVoteAverage());
             values.put(MovieEntry.COLUMN_RELEASE, movie.getReleaseDate());
             values.put(MovieEntry.COLUMN_TITLE, movie.getTitle());
+            values.put(MovieEntry.COLUMN_MOVIE_ID, movie.getId());
 
             getContentResolver().insert(MovieEntry.CONTENT_URI, values);
         } catch (MalformedURLException e) {
@@ -186,10 +194,18 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
         }
     }
 
-    private byte[] bytesFromBitmap(Bitmap poster) {
+    //convert bitmap to byte array
+    //https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
+    private byte[] bytesFromImageUrl(URL imageUrl) throws IOException{
+        InputStream inputStream = imageUrl.openStream();
+        Bitmap image = BitmapFactory.decodeStream(inputStream);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        poster.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        image.compress(Bitmap.CompressFormat.PNG, 0, stream);
         return stream.toByteArray();
+    }
+
+    private Bitmap bitmapFromBytes(byte[] bytes){
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
     private void getReviews(String movieId) {

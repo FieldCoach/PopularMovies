@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.LoaderManager;
@@ -107,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION, 0);
 
             moviesArrayList = savedInstanceState.getParcelableArrayList(MOVIES_ARRAY_LIST);
-            moviePosterAdapter.setMoviesArrayList(moviesArrayList);
+            moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
 
             //Scroll to the previous position
             mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
@@ -150,17 +148,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onPause() {
         super.onPause();
         currentScrollPosition = gridLayoutManager.findFirstVisibleItemPosition();
-    }
-
-    /**
-     * Checks whether the device is online or currently connecting
-     * @return
-     */
-    private boolean isOnline() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnectedOrConnecting();
-
     }
 
     /**
@@ -225,11 +212,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         moviesArrayList.addAll(moreMovies);
                     }
 
-                    moviePosterAdapter.setMoviesArrayList(moviesArrayList);
+                    moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
 
                 } catch (NullPointerException e) {     //catching JSONException and NullPointerException
                     e.printStackTrace();
-                    if (!isOnline()) {
+                    if (!NetworkUtils.isOnline(this)) {
                         notifyConnectionError();
                         // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
                     }
@@ -242,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     moviesArrayList.clear();
 
                 Cursor cursor = (Cursor)data;
-
+                ArrayList<byte[]> posterBytes = new ArrayList<>();
                 // TODO: 11/10/2017 onLoadFinished() - add backdrop and poster byteArray/bitmaps
                 while (cursor.moveToNext()){
                     Movie movie = new Movie.Builder()
@@ -252,8 +239,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             .voteAverage(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RATING)))
                             .build();
                     moviesArrayList.add(movie);
+                    posterBytes.add(cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_POSTER)));
                 }
-                moviePosterAdapter.setMoviesArrayList(moviesArrayList);
+                moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
+                moviePosterAdapter.setFavoritesPosterArray(posterBytes);
                 break;
 
         }

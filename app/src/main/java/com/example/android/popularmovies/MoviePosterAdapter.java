@@ -2,6 +2,8 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -27,6 +29,8 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private static final String MOVIE = "movie";
 
     private static final String TAG = MoviePosterAdapter.class.getSimpleName();
+    private Boolean viewingFavorites;
+    private ArrayList<byte[]> favoritesPosterArray = new ArrayList<>();
 
     MoviePosterAdapter(Context context){
         this.context = context;
@@ -92,14 +96,22 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
-        String currentMoviePoster = movieArrayList.get(position).getPosterLocationUriString();
+        Movie currentMovie = movieArrayList.get(position);
+        String currentMoviePoster = currentMovie.getPosterLocationUriString();
         String movieTitle = movieArrayList.get(position).getTitle();
 
-        Picasso.with(context)
-                .load(currentMoviePoster)
-                .fit()
-                .into(holder.moviePoster);
+        if (!viewingFavorites) {
+            Picasso.with(context)
+                    .load(currentMoviePoster)
+                    .fit()
+                    .into(holder.moviePoster);
+        } else {
+            // TODO: 11/10/2017 onBindViewHolder() - load images from byte array
+            byte[] imageBytes = favoritesPosterArray.get(position);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
+            holder.moviePoster.setImageBitmap(bitmap);
+        }
         holder.tvTitle.setText(movieTitle);
         Log.d(TAG, "onBindViewHolder() returned: " + movieArrayList.get(position).getTitle() + "\n" +
                 "at position: " + String.valueOf(position));
@@ -117,11 +129,21 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     }
 
     //Clears previous data from the ArrayList of Movies, adds new Movies, then notifies the Adapter
-    void setMoviesArrayList(ArrayList<Movie> moviesArrayList) {
+    void setMoviesArrayList(ArrayList<Movie> moviesArrayList, String sortBySelectionString) {
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
 
+        if (sortBySelectionString.equals("favorites"))
+            viewingFavorites = true;
+        else
+            viewingFavorites = false;
+
         notifyDataSetChanged();
         Log.d(TAG, "setMoviesArrayList() size: " + String.valueOf(moviesArrayList.size()));
+    }
+
+    void setFavoritesPosterArray(ArrayList<byte[]> posterBytes){
+        this.favoritesPosterArray.clear();
+        this.favoritesPosterArray.addAll(posterBytes);
     }
 }
