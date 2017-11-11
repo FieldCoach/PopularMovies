@@ -2,20 +2,10 @@ CURRENT TASKS:
 // TODO: 10/30/2017 change movie poster to include genre instead of title
 // TODO: 11/2/2017 fix spacing at the end of cv_reviews
 
-// DONE: 11/10/2017 () - Make method for verifying connection static
-// TODO: 11/10/2017 () - store poster in Movie object
-// TODO: 11/10/2017 () - store favorites in Movie object and database
-    // TODO: 11/10/2017 () - implement update in ContentProvider
-    
-// TODO: 11/10/2017 () - Send Boolean to MoviePosterAdapter if viewing favorites
-// TODO: 11/10/2017 () - Check for favorite in  onBind method
-
 
 
 BUGS:
-// DONE: 11/10/2017 - Add to Database movieId, backdropBitmap/byteArray
-// DONE: 11/10/2017 - Add to Movie object backdropBitmap/byteArray, posterBitmap/byteArray
-// DONE: 11/10/2017 - Convert images to bitmap to be displayed
+
 // FIXME: 11/10/2017 - After loading favorites, loading something else, favoriting a movie then exitting, favorites are loaded into recyclerview
     -issue may be with sortBySelectionString
 

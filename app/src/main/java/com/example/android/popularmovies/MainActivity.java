@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
@@ -9,6 +10,7 @@ import android.provider.Settings;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
@@ -97,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         };
         //Add an OnScrollListener to the RecyclerView and pass it the Endless Scroll Listener
         mainBinding.rvMoviePosters.addOnScrollListener(scrollListener);
+
+        checkConnectionStatus();
 
         //If savedInstanceState isn't null, restore the app's previous state
         if (savedInstanceState != null) {
@@ -216,10 +219,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 } catch (NullPointerException e) {     //catching JSONException and NullPointerException
                     e.printStackTrace();
-                    if (!NetworkUtils.isOnline(this)) {
-                        notifyConnectionError();
+//                    if (sortBySelectionString != FAVORITES) {
+//                        checkConnectionStatus();
+//                    }
                         // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
-                    }
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -254,12 +257,30 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    /**
-     * Notifies the user if the device isn't connected to the internet then opens the wifi settings.
-     */
-    private void notifyConnectionError() {
-        Toast.makeText(getApplicationContext(), CONNECT_TO_CONTINUE, Toast.LENGTH_LONG).show();
-        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+
+    private boolean checkConnectionStatus() {
+        boolean connected = NetworkUtils.isOnline(this);
+        if (!connected) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this)
+                    .setMessage("No internet. Favorites can still be viewed. Would you like to continue?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            getFavoriteMovies();
+                        }
+                    })
+                    // TODO: 11/11/2017 checkConnectionStatus() - negative button may need to be neutral instead
+                    .setNegativeButton("Connect to Wifi", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                        }
+                    });
+            // TODO: 11/11/2017 checkConnectionStatus() - might need an onDissmiss listener to check if another dialog exists
+            final AlertDialog dialog = alert.create();
+            dialog.show();
+        }
+        return connected;
     }
 
     /**
@@ -289,22 +310,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (id == R.id.popular){
             sortBySelectionString = POPULAR;
             Log.d(TAG, "onOptionsItemSelected: popular was called");
+            if (checkConnectionStatus())
+                getNewMovieResults();
 
-            getNewMovieResults();
             return true;
         }
 
         if (id == R.id.top_rated){
             sortBySelectionString = TOP_RATED;
             Log.d(TAG, "onOptionsItemSelected: top rated was called");
+            if (checkConnectionStatus())
+                getNewMovieResults();
 
-            getNewMovieResults();
             return true;
         }
         if (id == R.id.favorites){
             Log.d(TAG, "onOptionsItemSelected: favorites was called");
-            sortBySelectionString = FAVORITES;
-            // TODO: 11/9/2017 onOptionsItemSelected() - load favorite movies
+
             getFavoriteMovies();
             return true;
         }
@@ -313,6 +335,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void getFavoriteMovies() {
+        sortBySelectionString = FAVORITES;
+
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<String> favoritesLoader = loaderManager.getLoader(FAVORITES_LOADER);
 
