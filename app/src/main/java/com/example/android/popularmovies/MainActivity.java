@@ -217,13 +217,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                     moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
 
-                } catch (NullPointerException e) {     //catching JSONException and NullPointerException
-                    e.printStackTrace();
-//                    if (sortBySelectionString != FAVORITES) {
-//                        checkConnectionStatus();
-//                    }
-                        // TODO: 11/9/2017 onPostExecute() - get movies from the favorites database
-                } catch (JSONException e){
+                } catch (NullPointerException | JSONException e) {
                     e.printStackTrace();
                 }
                 break;
@@ -233,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 Cursor cursor = (Cursor)data;
                 ArrayList<byte[]> posterBytes = new ArrayList<>();
-                // TODO: 11/10/2017 onLoadFinished() - add backdrop and poster byteArray/bitmaps
                 while (cursor.moveToNext()){
                     Movie movie = new Movie.Builder()
                             .title(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_TITLE)))
@@ -269,14 +262,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             getFavoriteMovies();
                         }
                     })
-                    // TODO: 11/11/2017 checkConnectionStatus() - negative button may need to be neutral instead
                     .setNegativeButton("Connect to Wifi", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                         }
                     });
-            // TODO: 11/11/2017 checkConnectionStatus() - might need an onDissmiss listener to check if another dialog exists
             final AlertDialog dialog = alert.create();
             dialog.show();
         }
