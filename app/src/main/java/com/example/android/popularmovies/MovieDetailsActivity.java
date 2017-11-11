@@ -18,6 +18,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
@@ -209,6 +210,13 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
     }
 
     private void getReviews(String movieId) {
+        if (!NetworkUtils.isOnline(this)){
+            Toast.makeText(this,"Sorry, can't load trailers and reviews offline", Toast.LENGTH_SHORT).show();
+            detailsBinding.cvTrailers.setVisibility(View.GONE);
+            detailsBinding.cvReviews.setVisibility(View.GONE);
+            return;
+        }
+
         URL reviewsRequestUrl = NetworkUtils.buildReviewsDbUrl(movieId);
 
         Bundle urlBundle = new Bundle();
