@@ -40,16 +40,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String SORT_BY = "sortBy";
     private static final String MOVIES_ARRAY_LIST = "moviesArrayList";
     private static final String CURRENT_SCROLL_POSITION = "currentScrollPosition";
-    private static final String CONNECT_TO_CONTINUE = "Please connect to the Internet to continue";
     private static final String MOVIE_REQUEST_URL = "movie_request_url";
 
     private static ArrayList<Movie> moviesArrayList = new ArrayList<>();
-    private static final String apiKey = ApiKeyFile.MOVIE_DB_API_KEY;
     private String sortBySelectionString = "popular";
     private String mPage = "1";
     private int currentScrollPosition;
 
-    private ActivityMainBinding mainBinding;
     private MoviePosterAdapter moviePosterAdapter;
     private GridLayoutManager gridLayoutManager;
 
@@ -66,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        ActivityMainBinding mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -85,14 +82,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 //Use field page instead of the parameter for this method
                 //Using the parameter page caused the same page of result to be loaded multiple times
-                if (sortBySelectionString != FAVORITES){
+                if (!sortBySelectionString.equals(FAVORITES)){
                     setmPage(Integer.valueOf(mPage) + 1);
                     Log.d(TAG, "onLoadMore.page: " + String.valueOf(page + 1));
                     Log.d(TAG, "onLoadMore.mPage: " + String.valueOf(mPage + 1));
                     getMovies();
 
-                } else {
-                    // TODO: 11/10/2017 onLoadMore() - load more favorites?
                 }
             }
         };
@@ -229,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 ArrayList<byte[]> posterBytes = new ArrayList<>();
                 while (cursor.moveToNext()){
                     Movie movie = new Movie.Builder()
+                            .movieId(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID)))
                             .title(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_TITLE)))
                             .overview(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_PLOT)))
                             .releaseDate(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RELEASE)))
@@ -236,6 +232,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             .build();
                     moviesArrayList.add(movie);
                     posterBytes.add(cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_POSTER)));
+                    // FIXME: 11/11/2017 onLoadFinished() - movieId != null here
+                    Log.d(TAG, "onLoadFinished.movieId " + cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID)));
                 }
                 moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
                 moviePosterAdapter.setFavoritesPosterArray(posterBytes);
@@ -255,14 +253,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         boolean connected = NetworkUtils.isOnline(this);
         if (!connected) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this)
-                    .setMessage("No internet. Favorites can still be viewed. Would you like to continue?")
+                    .setTitle("Offline")
+                    .setMessage("Favorites can still be viewed. Would you like to continue?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             getFavoriteMovies();
                         }
                     })
-                    .setNegativeButton("Connect to Wifi", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("Network Settings", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));

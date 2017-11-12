@@ -62,7 +62,7 @@ public class JSONDataHandler {
 
             //Store all of the details as fields within a Movie Object
             Movie movie = new Movie.Builder()
-                    .id(JSONMovieObject.getString(ID))
+                    .movieId(JSONMovieObject.getString(ID))
                     .posterLocationUriString(moviePosterUriString)
                     .backdropLocationUriString(backdropUriString)
                     .title(JSONMovieObject.getString(TITLE))

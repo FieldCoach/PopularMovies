@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable {
 
-    private final String id;
+    private final String movieId;
     private final String posterLocationUriString;
     private final String backdropLocationUriString;
     private final String title;
@@ -18,7 +18,7 @@ public class Movie implements Parcelable {
     private final String releaseDate;
 
     private Movie(Builder builder) {
-        id = builder.id;
+        movieId = builder.movieId;
         posterLocationUriString = builder.posterLocationUriString;
         backdropLocationUriString = builder.backdropLocationUriString;
         title = builder.title;
@@ -34,7 +34,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
+        dest.writeString(this.movieId);
         dest.writeString(this.posterLocationUriString);
         dest.writeString(this.backdropLocationUriString);
         dest.writeString(this.title);
@@ -45,7 +45,7 @@ public class Movie implements Parcelable {
 
 
     private Movie(Parcel in) {
-        this.id = in.readString();
+        this.movieId = in.readString();
         this.posterLocationUriString = in.readString();
         this.backdropLocationUriString = in.readString();
         this.title = in.readString();
@@ -67,7 +67,7 @@ public class Movie implements Parcelable {
     };
 
     public static final class Builder {
-        private String id;
+        private String movieId;
         private String posterLocationUriString;
         private String backdropLocationUriString;
         private String title;
@@ -78,8 +78,8 @@ public class Movie implements Parcelable {
         public Builder() {
         }
 
-        public Builder id(String val) {
-            id = val;
+        public Builder movieId(String val) {
+            movieId = val;
             return this;
         }
 
@@ -118,8 +118,8 @@ public class Movie implements Parcelable {
         }
     }
 
-    String getId() {
-        return id;
+    String getMovieId() {
+        return movieId;
     }
 
     String getPosterLocationUriString() {

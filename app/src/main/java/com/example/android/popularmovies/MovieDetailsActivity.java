@@ -30,7 +30,6 @@ import org.json.JSONException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,10 +48,8 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
     private static final String DETAILS_REQUEST_URL = "details_request_url";
 
     private ActivityMovieDetailsBinding detailsBinding;
-    private ArrayList<Review> reviewArrayList = new ArrayList<>();
     private ReviewAdapter reviewAdapter;
 
-    private ArrayList<String> trailerArrayList;
     private MovieTrailerAdapter movieTrailerAdapter;
 
     private Boolean favorite = false;
@@ -108,6 +105,7 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
                 detailsBinding.ivDetailsPoster.setImageBitmap(poster);
                 detailsBinding.ivBackDrop.setImageBitmap(backdrop);
             }
+            cursor.close();
 
 
             //Set the text on the TextView to show the Movie details
@@ -127,8 +125,8 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
 
             detailsBinding.inTitle.tvReleaseDate.setText(dateString);
 
-            //Construct URL for reviews using Movie id
-            getReviews(movie.getId());
+            //Construct URL for reviews using Movie movieId
+            getReviews(movie.getMovieId());
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             reviewAdapter = new ReviewAdapter(this);
@@ -185,11 +183,9 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
             values.put(MovieEntry.COLUMN_RATING, movie.getVoteAverage());
             values.put(MovieEntry.COLUMN_RELEASE, movie.getReleaseDate());
             values.put(MovieEntry.COLUMN_TITLE, movie.getTitle());
-            values.put(MovieEntry.COLUMN_MOVIE_ID, movie.getId());
+            values.put(MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
 
             getContentResolver().insert(MovieEntry.CONTENT_URI, values);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -226,9 +222,9 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
         Loader<String> detailsLoader = loaderManager.getLoader(DETAILS_LOADER);
 
         if (detailsLoader == null) {
-            loaderManager.initLoader(DETAILS_LOADER, urlBundle, this);
+            loaderManager.initLoader(DETAILS_LOADER, urlBundle, this).forceLoad();
         } else {
-            loaderManager.restartLoader(DETAILS_LOADER, urlBundle, this);
+            loaderManager.restartLoader(DETAILS_LOADER, urlBundle, this).forceLoad();
         }
         Log.d(TAG, "getReviews: was called");
     }
@@ -240,7 +236,6 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                forceLoad();
             }
 
             @Nullable
@@ -266,10 +261,10 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
     @Override
     public void onLoadFinished(Loader<String> loader, String jsonResultString) {
         try {
-            reviewArrayList = JSONDataHandler.getReviewArrayList(jsonResultString);
+            ArrayList<Review> reviewArrayList = JSONDataHandler.getReviewArrayList(jsonResultString);
             reviewAdapter.setmReviewArrayList(reviewArrayList);
 
-            trailerArrayList = JSONDataHandler.getTrailerArrayList(jsonResultString);
+            ArrayList<String> trailerArrayList = JSONDataHandler.getTrailerArrayList(jsonResultString);
             movieTrailerAdapter.setTrailerArrayList(trailerArrayList);
 
         } catch (JSONException e) {
