@@ -146,6 +146,10 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
                 @Override
                 public void onClick(View view) {
                     Icon icon;
+                    if (!NetworkUtils.isOnline(MovieDetailsActivity.this)) {
+                        Toast.makeText(MovieDetailsActivity.this, "Favorites can't be modified offline", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (favorite){
                         icon = Icon.createWithResource(view.getContext(), R.drawable.ic_favorite_black_48dp);
                         deleteFavoriteFromDb(movie.getTitle());
@@ -207,7 +211,7 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
 
     private void getReviews(String movieId) {
         if (!NetworkUtils.isOnline(this)){
-            Toast.makeText(this,"Sorry, can't load trailers and reviews offline", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Trailers and reviews offline can't be viewed offline", Toast.LENGTH_SHORT).show();
             detailsBinding.cvTrailers.setVisibility(View.GONE);
             detailsBinding.cvReviews.setVisibility(View.GONE);
             return;
