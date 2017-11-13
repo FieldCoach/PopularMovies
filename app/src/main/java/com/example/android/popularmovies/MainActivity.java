@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -58,14 +59,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /**
      * Creates and format the RecyclerView and adds an EndlessRecyclerViewScrollListener to allow endless
      * scrolling.
-     * @param savedInstanceState
+     * @param savedInstanceState contains data that was persisted
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMainBinding mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        ActionBar actionBar = getSupportActionBar();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
 
         //Configure the GridLayoutManager then set it as the layout manager of the RecyclerView
         int noOfColumns = calculateNoOfColumns(this);
@@ -84,10 +87,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 //Using the parameter page caused the same page of result to be loaded multiple times
                 if (!sortBySelectionString.equals(FAVORITES)){
                     setmPage(Integer.valueOf(mPage) + 1);
-                    Log.d(TAG, "onLoadMore.page: " + String.valueOf(page + 1));
-                    Log.d(TAG, "onLoadMore.mPage: " + String.valueOf(mPage + 1));
                     getMovies();
-
                 }
             }
         };
@@ -108,15 +108,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             //Scroll to the previous position
             mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
         } else {
+            //Otherwise, the movies still need to be retrieved
             moviesArrayList.clear();
             getMovies();
         }
-        getSupportLoaderManager().initLoader(MOVIES_LOADER, null, this);
     }
 
     /**
      * Calculates the number of columns for the GridLayoutManager
-     * @param context
+     * @param context the context
      * @return the number of columns
      */
     public static int calculateNoOfColumns (Context context){
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /**
      * Saves the data needed to restore the RecyclerView's previous state
-     * @param outState
+     * @param outState the bundle containing the data to be persisted
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -149,42 +149,51 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     /**
-     * Gets the URL used to request movies then executes doInBackground()
+     * Gets the URL used to request movies then starts the MOVIE_LOADER
      */
     private void getMovies() {
         URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, mPage);
 
+        //Put the url in a bundle to be passed to MOVIES_LOADER
         Bundle urlBundle = new Bundle();
         urlBundle.putString(MOVIE_REQUEST_URL, movieRequestUrl.toString());
 
+        //Create the MOVIES_LOADER
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<String> movieLoader = loaderManager.getLoader(MOVIES_LOADER);
 
+        //Initialize/Restart the MOVIES_LOADER
         if (movieLoader == null){
             loaderManager.initLoader(MOVIES_LOADER, urlBundle, this).forceLoad();
         } else {
             loaderManager.restartLoader(MOVIES_LOADER, urlBundle, this).forceLoad();
         }
-        Log.d(TAG, "getMovies: was called");
     }
 
     /**
-     * Sets which mPage of results to display
-     * @param mPage
+     * Sets which mPage for results to display
+     * @param mPage the page to display results from
      */
     private void setmPage(int mPage) {
         this.mPage = String.valueOf(mPage);
     }
 
+    /**
+     *
+     * @param id identifies the loader
+     * @param bundle contains the movieRequestUrl for MOVIE_LOADER
+     * @return MOVIE_LOADER or FAVORITES_LOADER
+     */
     @Override
     public Loader onCreateLoader(final int id, final Bundle bundle) {
-        Log.d(TAG, "onCreateLoader() returned: " + "was called");
 
         switch (id){
             case MOVIES_LOADER:
+                //Create and return the MovieLoader. Pass in the bundle containing the MOVIE_REQUEST_URL
                 return new MovieTaskLoader(this, MOVIE_REQUEST_URL, bundle);
 
             case FAVORITES_LOADER:
+                //Create and return a CursorLoader that will load favorites from the database
                 return new CursorLoader(this,
                         MovieEntry.CONTENT_URI,
                         null,
@@ -192,24 +201,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         null,
                         MovieEntry.COLUMN_TITLE);
             default:
-                return null;
+                throw new RuntimeException("Loader Not Implemented: " + id);
         }
 
     }
 
+    /**
+     * Sets the data on moviePosterAdapter that is needed to view the movie posters
+     * @param loader the loader that was loading
+     * @param data string or cursor returned from loader
+     */
     @Override
     public void onLoadFinished(Loader loader, Object data) {
         switch (loader.getId()){
             case MOVIES_LOADER:
                 try {
+                    //Cast the return data to a String
                     String jsonResultString = (String) data;
                     if (moviesArrayList == null) {
+                        //Get an ArrayList containing the Movies
                         moviesArrayList = JSONDataHandler.getMovieArrayList(jsonResultString);
                     } else {
+                        //Get an ArrayList containing more Movies and add them to the existing Movies
                         ArrayList<Movie> moreMovies = JSONDataHandler.getMovieArrayList(jsonResultString);
                         moviesArrayList.addAll(moreMovies);
                     }
-
+                    //Send the Movies to the RecyclerView.Adapter so their posters can be displayed
                     moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
 
                 } catch (NullPointerException | JSONException e) {
@@ -220,9 +237,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (moviesArrayList != null)
                     moviesArrayList.clear();
 
-                Cursor cursor = (Cursor)data;
+                //Cast the data to a Cursor
+                Cursor cursor = (Cursor) data;
                 ArrayList<byte[]> posterBytes = new ArrayList<>();
                 while (cursor.moveToNext()){
+                    //Save the Movie properties to the Movie object
                     Movie movie = new Movie.Builder()
                             .movieId(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID)))
                             .title(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_TITLE)))
@@ -231,10 +250,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             .voteAverage(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RATING)))
                             .build();
                     moviesArrayList.add(movie);
+                    //Save the byte[] from the database to an ArrayList
                     posterBytes.add(cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_POSTER)));
-                    // FIXME: 11/11/2017 onLoadFinished() - movieId != null here
-                    Log.d(TAG, "onLoadFinished.movieId " + cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID)));
                 }
+                /*
+                Send the Movies to the RecyclerView.Adapter (to later send to MovieDetailsObject) and
+                send the ArrayList of byte[] to allow viewing of the favorite movie posters offline
+                */
                 moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
                 moviePosterAdapter.setFavoritesPosterArray(posterBytes);
                 break;
@@ -245,12 +267,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        //Not used
     }
 
-
+    /**
+     * Checks for a network connection. If there isn't one, prompts the user if they would like to
+     * view favorites offline or change the network settings.
+     * @return boolean representing connection status
+     */
     private boolean checkConnectionStatus() {
+        //Check the connection status
         boolean connected = NetworkUtils.isOnline(this);
+        //If there is no network connection, alert the user and prompt for next action
         if (!connected) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this)
                     .setTitle("Offline")
@@ -275,8 +303,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /**
      * Inflates the main menu
-     * @param menu
-     * @return
+     * @param menu the menu to be inflated
+     * @return true, representing this was done successfully
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -287,11 +315,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     /**
-     * Changes the selectionString to the value of the selected menu item, clears the current movies
-     * from the ArrayList, notifies the Adapter, resets the mPage count, then gets new movie results
-     * with the updated selectionString.
+     * Changes sortBySelection to the value of the selected menu item, checks if the device is online
+     * (except with favorites), then loads movies based off of the selected item
+     *
      * @param item menu item that was selected
-     * @return
+     * @return true representing it was done successfully
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -324,18 +352,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sets sortBySelectionString to FAVORITES, then starts the FAVORITES_LOADER
+     */
     private void getFavoriteMovies() {
         sortBySelectionString = FAVORITES;
 
+        //Create FAVORITES_LOADER
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<String> favoritesLoader = loaderManager.getLoader(FAVORITES_LOADER);
 
+        //Initialize/Restart FAVORITES_LOADER
         if (favoritesLoader == null){
             loaderManager.initLoader(FAVORITES_LOADER, null, this);
         } else {
             loaderManager.restartLoader(FAVORITES_LOADER, null, this);
         }
-        Log.d(TAG, "getFavoriteMovies: was called");
     }
 
     /**
