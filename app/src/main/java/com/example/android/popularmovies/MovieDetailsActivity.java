@@ -348,6 +348,8 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
             shareIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareUri.toString());
 
+            setShareIntent(shareIntent);
+
         } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
@@ -372,7 +374,6 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
         MenuItem item = menu.findItem(R.id.menu_item_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
-        setShareIntent(shareIntent);
         return true;
     }
 
