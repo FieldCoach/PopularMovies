@@ -9,9 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -293,34 +291,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
 
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle bundle) {
-        return new AsyncTaskLoader<String>(this) {
-
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-            }
-
-            @Nullable
-            @Override
-            public String loadInBackground() {
-                //Get the details request url
-                String detailsRequestString = bundle.getString(DETAILS_REQUEST_URL);
-
-                //If the url is null, there is nothing to load
-                if (detailsRequestString == null || detailsRequestString.equals("")) return null;
-
-                //Load the JSON response from the url
-                try {
-                    URL detailsRequestUrl = new URL(detailsRequestString);
-                    String jsonResultString = NetworkUtils.getResponseFromHttpUrl(detailsRequestUrl);
-
-                    return jsonResultString;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        };
+        return new DetailsLoader(this, bundle, DETAILS_REQUEST_URL);
     }
 
     @Override
