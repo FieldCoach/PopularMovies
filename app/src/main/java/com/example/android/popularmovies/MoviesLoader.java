@@ -16,14 +16,14 @@ import java.net.URL;
  * Created by ioutd on 11/10/2017.
  */
 
-public class MovieTaskLoader extends AsyncTaskLoader<String> {
+public class MoviesLoader extends AsyncTaskLoader<String> {
 
-    private static final String TAG = MovieTaskLoader.class.getSimpleName();
+    private static final String TAG = MoviesLoader.class.getSimpleName();
 
     private String movieRequestUrl;
     private Bundle bundle;
 
-    MovieTaskLoader(@NonNull Context context, String movieRequestUrl, Bundle bundle) {
+    MoviesLoader(@NonNull Context context, String movieRequestUrl, Bundle bundle) {
         super(context);
         this.movieRequestUrl = movieRequestUrl;
         this.bundle = bundle;

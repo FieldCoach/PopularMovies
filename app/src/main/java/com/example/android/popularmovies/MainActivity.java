@@ -189,8 +189,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         switch (id){
             case MOVIES_LOADER:
-                //Create and return the MovieLoader. Pass in the bundle containing the MOVIE_REQUEST_URL
-                return new MovieTaskLoader(this, MOVIE_REQUEST_URL, bundle);
+                //Create and return the MoviesLoader. Pass in the bundle containing the MOVIE_REQUEST_URL
+                return new MoviesLoader(this, MOVIE_REQUEST_URL, bundle);
 
             case FAVORITES_LOADER:
                 //Create and return a CursorLoader that will load favorites from the database
