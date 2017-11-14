@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetailsActivity"
+            android:name=".DetailsActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/SmallCaps">
             <meta-data

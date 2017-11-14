@@ -44,9 +44,9 @@ import java.util.Locale;
 
 import static com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
-public class MovieDetailsActivity extends AppCompatActivity  implements LoaderManager.LoaderCallbacks<String>{
+public class DetailsActivity extends AppCompatActivity  implements LoaderManager.LoaderCallbacks<String>{
 
-    private static final String TAG = MovieDetailsActivity.class.getSimpleName();
+    private static final String TAG = DetailsActivity.class.getSimpleName();
 
     private static final String MOVIE = "movie";
     private static final String DETAILS_REQUEST_URL = "details_request_url";
@@ -111,8 +111,8 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
                 public void onClick(View view) {
                     Icon icon;
                     //Prevent favorites database changes offline
-                    if (!NetworkUtils.isOnline(MovieDetailsActivity.this)) {
-                        Toast.makeText(MovieDetailsActivity.this, "Favorites can't be modified offline", Toast.LENGTH_SHORT).show();
+                    if (!NetworkUtils.isOnline(DetailsActivity.this)) {
+                        Toast.makeText(DetailsActivity.this, "Favorites can't be modified offline", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     //Remove from favorites

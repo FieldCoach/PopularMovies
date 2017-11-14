@@ -49,12 +49,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
 
         /**
          * Stores the Movie Object at the current adapter position into an intent and passes it to
-         * the MovieDetailsActivity
+         * the DetailsActivity
          * @param view The moviePoster ImageView that was clicked
          */
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), MovieDetailsActivity.class);
+            Intent intent = new Intent(view.getContext(), DetailsActivity.class);
             int position = getAdapterPosition();
 
             intent.putExtra(MOVIE, movieArrayList.get(position));
