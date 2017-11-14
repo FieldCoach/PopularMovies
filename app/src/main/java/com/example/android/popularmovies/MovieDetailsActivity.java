@@ -7,16 +7,21 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.SnapHelper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -53,6 +58,9 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
     private MovieTrailerAdapter movieTrailerAdapter;
 
     private Boolean favorite = false;
+    private ShareActionProvider mShareActionProvider;
+    private Intent shareIntent;
+    private Uri shareUri;
 
     /**
      * Gets the Intent from the MainActivity to retrieve Extras containing the details to display
@@ -271,6 +279,18 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
             ArrayList<String> trailerArrayList = JSONDataHandler.getTrailerArrayList(jsonResultString);
             movieTrailerAdapter.setTrailerArrayList(trailerArrayList);
 
+            String BASE_URL = "https://www.youtube.com/watch";
+            String trailerId = trailerArrayList.get(0);
+
+            shareUri = Uri.parse(BASE_URL).buildUpon()
+                    .appendQueryParameter("v", trailerId)
+                    .build();
+
+            shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareUri.toString());
+
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (NullPointerException e){
@@ -281,5 +301,23 @@ public class MovieDetailsActivity extends AppCompatActivity  implements LoaderMa
     @Override
     public void onLoaderReset(Loader<String> loader) {
 
+    }
+
+    //Add a share action
+    //https://developer.android.com/reference/android/support/v7/widget/ShareActionProvider.html
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_details, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        setShareIntent(shareIntent);
+        return true;
+    }
+
+    private void setShareIntent(Intent shareIntent){
+        if (mShareActionProvider != null){
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
     }
 }
