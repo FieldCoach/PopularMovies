@@ -56,7 +56,8 @@
                 <ImageView
                     android:id="@+id/iv_details_poster"
                     android:layout_width="130dp"
-                    android:layout_height="190dp"
+                    android:layout_height="195dp"
+                    android:adjustViewBounds="true"
                     android:contentDescription="@string/poster_content_description"
                     app:srcCompat="@android:color/black" />
 
