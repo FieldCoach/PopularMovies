@@ -18,12 +18,12 @@ import java.net.URL;
 
 public class MovieTaskLoader extends AsyncTaskLoader<String> {
 
-    public static final String TAG = MovieTaskLoader.class.getSimpleName();
+    private static final String TAG = MovieTaskLoader.class.getSimpleName();
 
     private String movieRequestUrl;
     private Bundle bundle;
 
-    public MovieTaskLoader(@NonNull Context context, String movieRequestUrl, Bundle bundle) {
+    MovieTaskLoader(@NonNull Context context, String movieRequestUrl, Bundle bundle) {
         super(context);
         this.movieRequestUrl = movieRequestUrl;
         this.bundle = bundle;
@@ -32,16 +32,22 @@ public class MovieTaskLoader extends AsyncTaskLoader<String> {
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        // TODO: 11/9/2017 onStartLoading() - handle loading progressbar
     }
 
+    /**
+     * Loads the movie details from its URL
+     * @return JSON results
+     */
     @Nullable
     @Override
     public String loadInBackground() {
+        //Get the movie's url
         String movieRequestUrlString = bundle.getString(movieRequestUrl);
 
+        //If the url is empty, there is nothing to load
         if (movieRequestUrlString == null || movieRequestUrlString.equals("")) return null;
 
+        //Load the JSON results from the url
         try {
             URL movieRequestUrl = new URL(movieRequestUrlString);
             String jsonResultString = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
@@ -53,10 +59,13 @@ public class MovieTaskLoader extends AsyncTaskLoader<String> {
         }
     }
 
+    /**
+     * Prevents the movie from being loaded in the background
+     * @return call to the super method
+     */
     @Override
     protected boolean onCancelLoad() {
         cancelLoadInBackground();
-        Log.d(TAG, "onCancelLoad: was called");
         return super.onCancelLoad();
     }
 }
