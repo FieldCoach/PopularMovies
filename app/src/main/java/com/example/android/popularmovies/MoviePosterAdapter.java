@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +21,15 @@ import java.util.ArrayList;
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder>{
 
-    private Context context;
-    private ArrayList<Movie> movieArrayList = new ArrayList<>();
+    private static final String TAG = MoviePosterAdapter.class.getSimpleName();
 
     private static final String MOVIE = "movie";
 
-    private static final String TAG = MoviePosterAdapter.class.getSimpleName();
-    private Boolean viewingFavorites;
+    private Context context;
+    private ArrayList<Movie> movieArrayList = new ArrayList<>();
     private ArrayList<byte[]> favoritesPosterArray = new ArrayList<>();
+
+    private Boolean viewingFavorites;
 
     MoviePosterAdapter(Context context){
         this.context = context;
@@ -42,25 +41,15 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
         MoviePosterAdapterViewHolder(View itemView) {
             super(itemView);
-            moviePoster = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
-            tvTitle = (TextView) itemView.findViewById(R.id.tv_movie_title);      // TODO: 10/29/2017 rename tv_title
-
-            //Calculate the number of columns and get the display metrics to prevent white space between posters
-            int noOfColumns = MainActivity.calculateNoOfColumns(context);
-            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            int width = displayMetrics.widthPixels/noOfColumns;
-
-            //moviePoster will have 9:16 aspect ratio
-            int height = (width * 16)/9;
-
-            moviePoster.setMinimumHeight(height);
-            moviePoster.setMinimumWidth(width);
+            moviePoster = itemView.findViewById(R.id.iv_movie_poster);
+            tvTitle = itemView.findViewById(R.id.tv_movie_title);
 
             itemView.setOnClickListener(this);
         }
 
         /**
-         * Creates an intent, passes it the Movie Object at the current adapter position
+         * Stores the Movie Object at the current adapter position into an intent and passes it to
+         * the MovieDetailsActivity
          * @param view The moviePoster ImageView that was clicked
          */
         @Override
@@ -74,10 +63,10 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     }
 
     /**
-     * Inflates the layout of the Movie list item then returns a ViewHolder containing that layout
-     * @param parent
-     * @param viewType
-     * @return
+     * Inflates the layout of the Movie list_item then returns a ViewHolder containing that layout
+     * @param parent the parent ViewGroup
+     * @param viewType identifies the type of view
+     * @return ViewHolder containing the inflated layout
      */
     @Override
     public MoviePosterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -91,8 +80,8 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     /**
      * Loads the poster image and binds it to the ImageView in the ViewHolder
-     * @param holder
-     * @param position
+     * @param holder the ViewHolder
+     * @param position the position of the ViewHolder to be bound
      */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
@@ -100,21 +89,20 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         String currentMoviePoster = currentMovie.getPosterLocationUriString();
         String movieTitle = movieArrayList.get(position).getTitle();
 
+        //Load image from the internet if this isn't a favorite movie
         if (!viewingFavorites) {
             Picasso.with(context)
                     .load(currentMoviePoster)
                     .fit()
                     .into(holder.moviePoster);
         } else {
-            // TODO: 11/10/2017 onBindViewHolder() - load images from byte array
+            //Load the image from the byteArray and convert to a bitmap
             byte[] imageBytes = favoritesPosterArray.get(position);
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
             holder.moviePoster.setImageBitmap(bitmap);
         }
         holder.tvTitle.setText(movieTitle);
-        Log.d(TAG, "onBindViewHolder() returned: " + movieArrayList.get(position).getTitle() + "\n" +
-                "at position: " + String.valueOf(position));
     }
 
     /**
@@ -128,20 +116,25 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         return movieArrayList.size();
     }
 
-    //Clears previous data from the ArrayList of Movies, adds new Movies, then notifies the Adapter
+    /**
+     * Clears previous data from the ArrayList of Movies, adds new Movies, then notifies the Adapter
+     * @param moviesArrayList arrayList containing all of the movies
+     * @param sortBySelectionString String to inform if these are favorite movies
+     */
     void setMoviesArrayList(ArrayList<Movie> moviesArrayList, String sortBySelectionString) {
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
 
-        if (sortBySelectionString.equals("favorites"))
-            viewingFavorites = true;
-        else
-            viewingFavorites = false;
+        //Set viewingFavorites for use later
+        viewingFavorites = sortBySelectionString.equals("favorites");
 
         notifyDataSetChanged();
-        Log.d(TAG, "setMoviesArrayList() size: " + String.valueOf(moviesArrayList.size()));
     }
 
+    /**
+     * Sets an arrayList containing byteArray representation of the favorite movie posters
+     * @param posterBytes byteArray representation of the poster
+     */
     void setFavoritesPosterArray(ArrayList<byte[]> posterBytes){
         this.favoritesPosterArray.clear();
         this.favoritesPosterArray.addAll(posterBytes);

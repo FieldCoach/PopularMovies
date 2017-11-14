@@ -1,20 +1,10 @@
 CURRENT TASKS:
-// TODO: 10/30/2017 change movie poster to include genre instead of title
-// TODO: 11/2/2017 fix spacing at the end of cv_reviews
 
 
 
 BUGS:
 
-// FIXME: 11/10/2017 - After loading favorites, loading something else, favoriting a movie then exitting, favorites are loaded into recyclerview
-    -issue may be with sortBySelectionString
-
-
-// FIXME: 11/10/2017 NetworkUtils.buildReviewsDbUrl() - when returning no reviews, alert trailers and reviews can't be displayed
 // FIXME: 11/10/2017 NetworkUtils.buildReviewsDbUrl() - rename method
+// FIXME: 11/13/2017 () - When there are no reviews or trailers, set that card_view to GONE and notify the user
 
 FUTURE IMPROVEMENTS
-// TODO: 11/7/2017 add trasparent arrows to the trailer_card_view (so the user knows there are more trailers)
-// TODO: 11/7/2017 add a snapToPosition helper for scrolling the trailers
-// TODO: 11/7/2017 format the text better
-// TODO: 11/10/2017 - adjust image quality in NetworkUtils
