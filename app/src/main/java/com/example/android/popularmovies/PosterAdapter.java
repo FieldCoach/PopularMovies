@@ -19,9 +19,9 @@ import java.util.ArrayList;
  * Created by AaronC on 7/26/2017.
  */
 
-public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder>{
+public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePosterAdapterViewHolder>{
 
-    private static final String TAG = MoviePosterAdapter.class.getSimpleName();
+    private static final String TAG = PosterAdapter.class.getSimpleName();
 
     private static final String MOVIE = "movie";
 
@@ -31,7 +31,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     private Boolean viewingFavorites;
 
-    MoviePosterAdapter(Context context){
+    PosterAdapter(Context context){
         this.context = context;
     }
 

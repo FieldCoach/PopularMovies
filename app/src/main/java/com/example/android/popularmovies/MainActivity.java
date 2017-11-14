@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private String mPage = "1";
     private int currentScrollPosition;
 
-    private MoviePosterAdapter moviePosterAdapter;
+    private PosterAdapter posterAdapter;
     private GridLayoutManager gridLayoutManager;
 
     public static final int MOVIES_LOADER = 1;
@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mainBinding.rvMoviePosters.setLayoutManager(gridLayoutManager);
 
         //Construct and set the adapter for the RecyclerView
-        moviePosterAdapter = new MoviePosterAdapter(this);
-        mainBinding.rvMoviePosters.setAdapter(moviePosterAdapter);
+        posterAdapter = new PosterAdapter(this);
+        mainBinding.rvMoviePosters.setAdapter(posterAdapter);
 
         //Construct a new Endless Scroll Listener and pass it the GridLayoutManager
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION, 0);
 
             moviesArrayList = savedInstanceState.getParcelableArrayList(MOVIES_ARRAY_LIST);
-            moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
+            posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
 
             //Scroll to the previous position
             mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     /**
-     * Sets the data on moviePosterAdapter that is needed to view the movie posters
+     * Sets the data on posterAdapter that is needed to view the movie posters
      * @param loader the loader that was loading
      * @param data string or cursor returned from loader
      */
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         moviesArrayList.addAll(moreMovies);
                     }
                     //Send the Movies to the RecyclerView.Adapter so their posters can be displayed
-                    moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
+                    posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
 
                 } catch (NullPointerException | JSONException e) {
                     e.printStackTrace();
@@ -257,8 +257,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Send the Movies to the RecyclerView.Adapter (to later send to MovieDetailsObject) and
                 send the ArrayList of byte[] to allow viewing of the favorite movie posters offline
                 */
-                moviePosterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
-                moviePosterAdapter.setFavoritesPosterArray(posterBytes);
+                posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
+                posterAdapter.setFavoritesPosterArray(posterBytes);
                 break;
 
         }
@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         //removes old movie results before getting new results
         moviesArrayList.clear();
-        moviePosterAdapter.notifyItemRangeRemoved(0, size);
+        posterAdapter.notifyItemRangeRemoved(0, size);
 
         //resets mPage count for new movie results
         setmPage(1);
