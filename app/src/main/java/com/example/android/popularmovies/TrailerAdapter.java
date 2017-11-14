@@ -33,8 +33,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
 
         TrailerAdapterViewHolder(final View itemView) {
             super(itemView);
-            trailerThumbnail = (YouTubeThumbnailView) itemView.findViewById(R.id.tn_youtube_trailer);
+            trailerThumbnail = itemView.findViewById(R.id.tn_youtube_trailer);
 
+            //When the thumbnail is clicked, play the video
             trailerThumbnail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -51,6 +52,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         }
     }
 
+    /**
+     * Inflates the trailer_list_item layout then returns a ViewHolder containing that layout
+     * @param parent the parent ViewGroup
+     * @param viewType identifies the type of view
+     * @return ViewHolder containing the inflated layout
+     */
     @Override
     public TrailerAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -59,6 +66,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         return new TrailerAdapterViewHolder(view);
     }
 
+    /**
+     * Loads the YouTube thumbnail image and binds it to the ImageView in the ViewHolder
+     * @param holder the ViewHolder
+     * @param position the position of the ViewHolder to be bound
+     */
     @Override
     public void onBindViewHolder(TrailerAdapterViewHolder holder, int position) {
         //query for trailer urls and attach them to thumbnail
@@ -78,12 +90,20 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         });
     }
 
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     * @return The total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
         if (null == trailerArrayList) return 0;
         return trailerArrayList.size();
     }
 
+    /**
+     * Clears previous data from the ArrayList of keys, adds new keys, then notifies the Adapter
+     * @param trailerArrayList arrayList containing the trailer video keys
+     */
     void setTrailerArrayList(ArrayList<String> trailerArrayList) {
         this.trailerArrayList.clear();
         this.trailerArrayList.addAll(trailerArrayList);
