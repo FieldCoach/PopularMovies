@@ -75,8 +75,7 @@ public final class NetworkUtils {
         return builtUri.toString();
     }
 
-    // TODO: 11/7/2017 buildReviewsDbUrl() - rename
-        public static URL buildReviewsDbUrl(String movieId) {
+        public static URL buildDetailsRequestUrl(String movieId) {
         //Build a Uri with the base URL and the path endpoints
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendPath(movieId)
@@ -91,7 +90,7 @@ public final class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "buildReviewsDbUrl() returned: " + url);
+        Log.d(TAG, "buildDetailsRequestUrl() returned: " + url);
         return url;
     }
 
