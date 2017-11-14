@@ -85,7 +85,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
 
             @Override
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-                // TODO: 11/7/2017 onInitializationFailure() - set an error image signalling no internet connection
+
             }
         });
     }
