@@ -109,9 +109,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
             // TODO: 11/10/2017 onBindViewHolder() - load images from byte array
             byte[] imageBytes = favoritesPosterArray.get(position);
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-//            bitmap.setWidth(holder.moviePoster.getWidth());
-//            bitmap.setHeight(holder.moviePoster.getHeight());
-//
+
             holder.moviePoster.setImageBitmap(bitmap);
         }
         holder.tvTitle.setText(movieTitle);
