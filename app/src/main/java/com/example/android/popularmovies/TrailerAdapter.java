@@ -18,12 +18,12 @@ import java.util.ArrayList;
  * Created by ioutd on 11/6/2017.
  */
 
-public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapter.TrailerAdapterViewHolder> {
+public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
     private final Activity activity;
     private ArrayList<String> trailerArrayList = new ArrayList<>();
 
-    MovieTrailerAdapter(Activity activity){
+    TrailerAdapter(Activity activity){
         this.activity = activity;
     }
 

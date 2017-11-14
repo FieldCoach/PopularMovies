@@ -54,7 +54,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
 
     private ActivityMovieDetailsBinding detailsBinding;
 
-    private MovieTrailerAdapter movieTrailerAdapter;
+    private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
 
     private ShareActionProvider mShareActionProvider;
@@ -98,11 +98,11 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
 
             //Setup the movie trailer RecyclerView
             LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-            movieTrailerAdapter = new MovieTrailerAdapter(this);
+            trailerAdapter = new TrailerAdapter(this);
             SnapHelper snapHelper = new LinearSnapHelper();
 
             detailsBinding.inTrailers.rvMovieTrailers.setLayoutManager(horizontalLayoutManager);
-            detailsBinding.inTrailers.rvMovieTrailers.setAdapter(movieTrailerAdapter);
+            detailsBinding.inTrailers.rvMovieTrailers.setAdapter(trailerAdapter);
             snapHelper.attachToRecyclerView(detailsBinding.inTrailers.rvMovieTrailers);
 
             //Setup the add to favorites button
@@ -332,7 +332,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
 
             //Save the trailers' data to an arrayList to send to its RecyclerView.Adapter
             ArrayList<String> trailerArrayList = JSONDataHandler.getTrailerArrayList(jsonResultString);
-            movieTrailerAdapter.setTrailerArrayList(trailerArrayList);
+            trailerAdapter.setTrailerArrayList(trailerArrayList);
 
             //Get the first trailer's YouTube url
             String BASE_URL = "https://www.youtube.com/watch";
