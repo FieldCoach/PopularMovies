@@ -2,9 +2,8 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePosterAdapterViewHolder>{
 
-    private static final String TAG = PosterAdapter.class.getSimpleName();
+    private static final String TAG = "PopM";
 
     private static final String MOVIE = "movie";
 
@@ -89,19 +88,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         String currentMoviePoster = currentMovie.getPosterLocationUriString();
         String movieTitle = movieArrayList.get(position).getTitle();
 
-        //Load image from the internet if this isn't a favorite movie
-        if (!viewingFavorites) {
+        //Load the image into the ImageView
             Picasso.with(context)
                     .load(currentMoviePoster)
                     .fit()
                     .into(holder.moviePoster);
-        } else {
-            //Load the image from the byteArray and convert to a bitmap
-            byte[] imageBytes = favoritesPosterArray.get(position);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
-            holder.moviePoster.setImageBitmap(bitmap);
-        }
         holder.tvTitle.setText(movieTitle);
     }
 
@@ -125,18 +117,20 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
 
+        String movieTitles = "";
+        for (Movie movie : movieArrayList) {
+            movieTitles = movieTitles.concat(movie.getTitle() + "\n");
+        }
+
+        Log.d(TAG, "PosterAdapter.setMoviesArrayList() " + "\n" +
+                        "sortBySelectionString:\t" + sortBySelectionString + "\n" +
+                        "arraySize:\t" + movieArrayList.size() + "\n" +
+                        "TITLES\n" +
+                        movieTitles);
+
         //Set viewingFavorites for use later
         viewingFavorites = sortBySelectionString.equals("favorites");
 
         notifyDataSetChanged();
-    }
-
-    /**
-     * Sets an arrayList containing byteArray representation of the favorite movie posters
-     * @param posterBytes byteArray representation of the poster
-     */
-    void setFavoritesPosterArray(ArrayList<byte[]> posterBytes){
-        this.favoritesPosterArray.clear();
-        this.favoritesPosterArray.addAll(posterBytes);
     }
 }

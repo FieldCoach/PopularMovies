@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,9 +28,6 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,7 +39,7 @@ import static com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
 public class DetailsActivity extends AppCompatActivity  implements LoaderManager.LoaderCallbacks<String>{
 
-    private static final String TAG = DetailsActivity.class.getSimpleName();
+    private static final String TAG = "PopM";
 
     private static final String MOVIE = "movie";
     private static final String DETAILS_REQUEST_URL = "details_request_url";
@@ -169,9 +164,8 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
             detailsBinding.floatingActionButton.setImageIcon(icon);
             favorite = true;
         }
+        cursor.close();
 
-        //If this movie isn't a favorite, load the poster and backdrop from the internet
-        if (!favorite) {
             //Load the poster into the ImageView
             Picasso.with(this)
                     .load(movie.getPosterLocationUriString())
@@ -183,16 +177,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
                     .load(movie.getBackdropLocationUriString())
                     .fit()
                     .into(detailsBinding.ivBackDrop);
-        } else {
-            //If this movie is a favorite, load the images from the byteArrays in the database
-            cursor.moveToFirst();
-            Bitmap poster = bitmapFromBytes(cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_POSTER)));
-            Bitmap backdrop = bitmapFromBytes(cursor.getBlob(cursor.getColumnIndex(MovieEntry.COLUMN_BACKDROP)));
 
-            detailsBinding.ivDetailsPoster.setImageBitmap(poster);
-            detailsBinding.ivBackDrop.setImageBitmap(backdrop);
-        }
-        cursor.close();
     }
 
     /**
@@ -211,54 +196,20 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
     private void insertFavoriteToDb(Movie movie) {
         ContentValues values = new ContentValues();
 
-        try {
-            //Get the movie images from their URLs and store the data into byteArrays (to allow parceling)
-            URL posterUrl = new URL(movie.getPosterLocationUriString());
-            URL backdropUrl = new URL(movie.getBackdropLocationUriString());
+        //Add the movie details to the database
+        values.put(MovieEntry.COLUMN_POSTER, movie.getPosterLocationUriString());
+        values.put(MovieEntry.COLUMN_BACKDROP, movie.getBackdropLocationUriString());
+        values.put(MovieEntry.COLUMN_PLOT, movie.getOverview());
+        values.put(MovieEntry.COLUMN_RATING, movie.getVoteAverage());
+        values.put(MovieEntry.COLUMN_RELEASE, movie.getReleaseDate());
+        values.put(MovieEntry.COLUMN_TITLE, movie.getTitle());
+        values.put(MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
 
-            byte[] posterBytes = bytesFromImageUrl(posterUrl);
-            byte[] backdropBytes = bytesFromImageUrl(backdropUrl);
-
-            //Add the movie details to the database
-            values.put(MovieEntry.COLUMN_POSTER, posterBytes);
-            values.put(MovieEntry.COLUMN_BACKDROP, backdropBytes);
-            values.put(MovieEntry.COLUMN_PLOT, movie.getOverview());
-            values.put(MovieEntry.COLUMN_RATING, movie.getVoteAverage());
-            values.put(MovieEntry.COLUMN_RELEASE, movie.getReleaseDate());
-            values.put(MovieEntry.COLUMN_TITLE, movie.getTitle());
-            values.put(MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
-
-            getContentResolver().insert(MovieEntry.CONTENT_URI, values);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getContentResolver().insert(MovieEntry.CONTENT_URI, values);
     }
 
     //convert bitmap to byte array
     //https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
-
-    /**
-     * Retrieves an byte array from the image's URL
-     * @param imageUrl the image URL location
-     * @return byte array
-     * @throws IOException if the URL is invalid
-     */
-    private byte[] bytesFromImageUrl(URL imageUrl) throws IOException{
-        InputStream inputStream = imageUrl.openStream();
-        Bitmap image = BitmapFactory.decodeStream(inputStream);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
-    }
-
-    /**
-     * Creates a bitmap from a byte array
-     * @param bytes byte array containing image data
-     * @return bitmap of the image
-     */
-    private Bitmap bitmapFromBytes(byte[] bytes){
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
 
     private void loadTrailersAndReviews(String movieId) {
         //Remove the trailers and reviews from the layout if there is no network connection
