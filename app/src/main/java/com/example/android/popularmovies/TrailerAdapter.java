@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
-    private final Activity activity;
+    private final Activity activity;    // TODO: 11/21/2017 () - Change activity to weak reference to avoid memory leak
     private ArrayList<String> trailerArrayList = new ArrayList<>();
 
     TrailerAdapter(Activity activity){

@@ -104,17 +104,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             moviesArrayList = savedInstanceState.getParcelableArrayList(MOVIES_ARRAY_LIST);
             posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
-            Log.d(TAG, "onCreate savedInstanceState: called setMoviesAdapter\n" +
-                    "sortBySelectionString: " + sortBySelectionString);
-
-            Log.d(TAG, "*********************************" + "\n" +
-                    "MainActivity.onCreate() returned: \n" +
-                    posterAdapter.getItemCount() + "\n" +
-                    "currentScrollPosition= " + currentScrollPosition + "\n" +
-                    "moviesArrayList= " + moviesArrayList + "\n" +
-                    "mPage= " + mPage + "\n" +
-                    "sortBySelectionString= " + sortBySelectionString+ "\n"+
-                    "*********************************");
 
             //Scroll to the previous position
             mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
@@ -148,14 +137,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         outState.putString(PAGE, mPage);
         outState.putString(SORT_BY, sortBySelectionString);
 
-        Log.d(TAG, "*********************************" + "\n" +
-                "MainActivity.onCreate() returned: \n" +
-                posterAdapter.getItemCount() + "\n"+
-                "currentScrollPosition= " + currentScrollPosition + "\n" +
-                "moviesArrayList= " + moviesArrayList.get(0).getTitle() + "\n" +
-                "mPage= " + mPage + "\n" +
-                "sortBySelectionString= " + sortBySelectionString+ "\n"+
-                "*********************************");
         super.onSaveInstanceState(outState);
     }
 
@@ -210,12 +191,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         switch (id){
             case MOVIES_LOADER:
                 //Create and return the MoviesLoader. Pass in the bundle containing the MOVIE_REQUEST_URL
-                Log.d(TAG, "MainActivity.onCreateLoader() returned: MOVIES_LOADER");
                 return new MoviesLoader(this, MOVIE_REQUEST_URL, bundle);
 
             case FAVORITES_LOADER:
                 //Create and return a CursorLoader that will load favorites from the database
-                Log.d(TAG, "MainActivity.onCreateLoader() returned: FAVORITES_LOADER");
                 return new CursorLoader(this,
                         MovieEntry.CONTENT_URI,
                         null,
@@ -242,28 +221,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     String jsonResultString = (String) data;
                     if (moviesArrayList == null) {
                         //Get an ArrayList containing the Movies
-                        Log.d(TAG, "MainActivity.onLoadFinished() returned: movieArraySize= " + moviesArrayList.size());
                         moviesArrayList = JSONDataHandler.getMovieArrayList(jsonResultString);
-                        Log.d(TAG, "after MainActivity.onLoadFinished() returned: movieArraySize= " + moviesArrayList.size());
                     } else {
                         //Get an ArrayList containing more Movies and add them to the existing Movies
-                        Log.d(TAG, "MainActivity.onLoadFinished() returned: moreMoviesSize= " + moviesArrayList.size());
                         ArrayList<Movie> moreMovies = JSONDataHandler.getMovieArrayList(jsonResultString);
                         moviesArrayList.addAll(moreMovies);
-                        Log.d(TAG, "after  MainActivity.onLoadFinished() returned: moreMoviesSize= " + moviesArrayList.size());
 
                     }
                     //Send the Movies to the RecyclerView.Adapter so their posters can be displayed
                     posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
-                    Log.d(TAG, "MainActivity.onLoadFinished MOVIES_LOADER: called setMoviesArray\n"+
-                            "sortBySelectionString: " + sortBySelectionString);
-
 
                 } catch (NullPointerException | JSONException e) {
                     e.printStackTrace();
                 }
                 break;
             case FAVORITES_LOADER:
+                if(!sortBySelectionString.equals(FAVORITES)) return;
+
                 if (moviesArrayList != null)
                     moviesArrayList.clear();
 
@@ -282,12 +256,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             .build();
                     moviesArrayList.add(movie);
                 }
-                /*
-                Send the Movies to the RecyclerView.Adapter (to later send to MovieDetailsObject) and
-                send the ArrayList of byte[] to allow viewing of the favorite movie posters offline
-                */
-                Log.d(TAG, "MainActivity.onLoadFinished FAVORITES_LOADER: called setMoviesArray\n" +
-                        "sortBySelectionString: " + sortBySelectionString);
+
+                //Send the Movies to the RecyclerView.Adapter
                 posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
                 break;
 
@@ -357,7 +327,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (id == R.id.popular){
             sortBySelectionString = POPULAR;
-            Log.d(TAG, "MainActivity.onOptionsItemSelected: popular was called");
             if (checkConnectionStatus())
                 getNewMovieResults();
 
@@ -366,14 +335,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (id == R.id.top_rated){
             sortBySelectionString = TOP_RATED;
-            Log.d(TAG, "MainActivity.onOptionsItemSelected: top rated was called");
             if (checkConnectionStatus())
                 getNewMovieResults();
 
             return true;
         }
         if (id == R.id.favorites){
-            Log.d(TAG, "MainActivity.onOptionsItemSelected: favorites was called");
+            sortBySelectionString = FAVORITES;
 
             getFavoriteMovies();
             return true;
@@ -386,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * Sets sortBySelectionString to FAVORITES, then starts the FAVORITES_LOADER
      */
     private void getFavoriteMovies() {
-        sortBySelectionString = FAVORITES;
 
         //Create FAVORITES_LOADER
         LoaderManager loaderManager = getSupportLoaderManager();
