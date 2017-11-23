@@ -215,7 +215,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
     private void loadTrailersAndReviews(String movieId) {
         //Remove the trailers and reviews from the layout if there is no network connection
         if (!NetworkUtils.isOnline(this)){
-            Toast.makeText(this,"Trailers and reviews offline can't be viewed offline", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Trailers and reviews can't be viewed offline", Toast.LENGTH_SHORT).show();
             detailsBinding.cvTrailers.setVisibility(View.GONE);
             detailsBinding.cvReviews.setVisibility(View.GONE);
             return;
@@ -260,11 +260,21 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
                 try {
                     //Save the reviews' data to an arrayList to send to its RecyclerView.Adapter
                     ArrayList<Review> reviewArrayList = JSONDataHandler.getReviewArrayList((String) data);
-                    reviewAdapter.setmReviewArrayList(reviewArrayList);
+                    if (reviewArrayList.size() > 0){
+                        reviewAdapter.setmReviewArrayList(reviewArrayList);
+                    } else {
+                        //Hide the reviews CardView if there are no reviews
+                        detailsBinding.cvReviews.setVisibility(View.GONE);
+                    }
 
                     //Save the trailers' data to an arrayList to send to its RecyclerView.Adapter
                     ArrayList<String> trailerArrayList = JSONDataHandler.getTrailerArrayList((String) data);
-                    trailerAdapter.setTrailerArrayList(trailerArrayList);
+                    if (trailerArrayList.size() > 0){
+                        trailerAdapter.setTrailerArrayList(trailerArrayList);
+                    } else {
+                        //Hide the trailers CardView if there are no trailers
+                        detailsBinding.cvTrailers.setVisibility(View.GONE);
+                    }
 
                     //Get the first trailer's YouTube url
                     String BASE_URL = "https://www.youtube.com/watch";
