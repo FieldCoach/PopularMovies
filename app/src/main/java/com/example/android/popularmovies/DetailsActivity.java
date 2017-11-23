@@ -1,6 +1,5 @@
 package com.example.android.popularmovies;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
@@ -37,13 +36,14 @@ import java.util.Locale;
 
 import static com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
-public class DetailsActivity extends AppCompatActivity  implements LoaderManager.LoaderCallbacks<String>{
+public class DetailsActivity extends AppCompatActivity  implements LoaderManager.LoaderCallbacks{
 
     private static final String TAG = "PopM";
 
     private static final String MOVIE = "movie";
     private static final String DETAILS_REQUEST_URL = "details_request_url";
     private static final int DETAILS_LOADER = 2;
+    private static final int INSERT_FAVS_LOADER = 4;
 
     private ActivityMovieDetailsBinding detailsBinding;
 
@@ -194,18 +194,19 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
      * @param movie the movie to be added to the database
      */
     private void insertFavoriteToDb(Movie movie) {
-        ContentValues values = new ContentValues();
+        Bundle movieBundle = new Bundle();
+        movieBundle.putParcelable(MOVIE, movie);
 
-        //Add the movie details to the database
-        values.put(MovieEntry.COLUMN_POSTER, movie.getPosterLocationUriString());
-        values.put(MovieEntry.COLUMN_BACKDROP, movie.getBackdropLocationUriString());
-        values.put(MovieEntry.COLUMN_PLOT, movie.getOverview());
-        values.put(MovieEntry.COLUMN_RATING, movie.getVoteAverage());
-        values.put(MovieEntry.COLUMN_RELEASE, movie.getReleaseDate());
-        values.put(MovieEntry.COLUMN_TITLE, movie.getTitle());
-        values.put(MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
+        //Get the INSERT_FAVS_LOADER
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<String> insertFavoritesLoader = loaderManager.getLoader(INSERT_FAVS_LOADER);
 
-        getContentResolver().insert(MovieEntry.CONTENT_URI, values);
+        //Initialize/Restart the INSERT_FAVS_LOADER and pass it the bundle containing the movie
+        if (insertFavoritesLoader == null) {
+            loaderManager.initLoader(INSERT_FAVS_LOADER, movieBundle, this).forceLoad();
+        } else {
+            loaderManager.restartLoader(INSERT_FAVS_LOADER, movieBundle, this).forceLoad();
+        }
     }
 
     //convert bitmap to byte array
@@ -241,44 +242,56 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
     }
 
     @Override
-    public Loader<String> onCreateLoader(int id, final Bundle bundle) {
-        return new DetailsLoader(this, bundle, DETAILS_REQUEST_URL);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<String> loader, String jsonResultString) {
-        try {
-            //Save the reviews' data to an arrayList to send to its RecyclerView.Adapter
-            ArrayList<Review> reviewArrayList = JSONDataHandler.getReviewArrayList(jsonResultString);
-            reviewAdapter.setmReviewArrayList(reviewArrayList);
-
-            //Save the trailers' data to an arrayList to send to its RecyclerView.Adapter
-            ArrayList<String> trailerArrayList = JSONDataHandler.getTrailerArrayList(jsonResultString);
-            trailerAdapter.setTrailerArrayList(trailerArrayList);
-
-            //Get the first trailer's YouTube url
-            String BASE_URL = "https://www.youtube.com/watch";
-            String trailerId = trailerArrayList.get(0);
-
-            shareUri = Uri.parse(BASE_URL).buildUpon()
-                    .appendQueryParameter("v", trailerId)
-                    .build();
-
-            //Add the url to an intent
-            shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareUri.toString());
-
-            setShareIntent(shareIntent);
-
-        } catch (JSONException | NullPointerException e) {
-            e.printStackTrace();
+    public Loader onCreateLoader(int id, final Bundle bundle) {
+        switch (id){
+            case DETAILS_LOADER:
+                return new DetailsLoader(this, bundle, DETAILS_REQUEST_URL);
+            case INSERT_FAVS_LOADER:
+                return new InsertFavoritesLoader(this, bundle, MOVIE);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<String> loader) {
+    public void onLoadFinished(Loader loader, Object data) {
+        switch (loader.getId()){
+            case DETAILS_LOADER:
+                try {
+                    //Save the reviews' data to an arrayList to send to its RecyclerView.Adapter
+                    ArrayList<Review> reviewArrayList = JSONDataHandler.getReviewArrayList((String) data);
+                    reviewAdapter.setmReviewArrayList(reviewArrayList);
+
+                    //Save the trailers' data to an arrayList to send to its RecyclerView.Adapter
+                    ArrayList<String> trailerArrayList = JSONDataHandler.getTrailerArrayList((String) data);
+                    trailerAdapter.setTrailerArrayList(trailerArrayList);
+
+                    //Get the first trailer's YouTube url
+                    String BASE_URL = "https://www.youtube.com/watch";
+                    String trailerId = trailerArrayList.get(0);
+
+                    shareUri = Uri.parse(BASE_URL).buildUpon()
+                            .appendQueryParameter("v", trailerId)
+                            .build();
+
+                    //Add the url to an intent
+                    shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareUri.toString());
+
+                    setShareIntent(shareIntent);
+
+                } catch (JSONException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
         //Not implemented
     }
 
