@@ -106,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
 
             //Scroll to the previous position
-            mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+            if (currentScrollPosition > 0) {
+                mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+            }
         } else {
             //Otherwise, the movies still need to be retrieved
             moviesArrayList.clear();
@@ -236,6 +238,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
                 break;
             case FAVORITES_LOADER:
+                //FAVORITES_LOADER code shouldn't run if we aren't viewing favorites
+                //Without this check, favorites can be loaded into the popular and top rated lists
                 if(!sortBySelectionString.equals(FAVORITES)) return;
 
                 if (moviesArrayList != null)
@@ -373,8 +377,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * ArrayList
      */
     private void getNewMovieResults() {
-        int size = moviesArrayList.size();
-
         //removes old movie results before getting new results
         moviesArrayList.clear();
 //        posterAdapter.notifyItemRangeRemoved(0, size);
