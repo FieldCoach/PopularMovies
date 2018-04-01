@@ -52,3 +52,7 @@ To become an Android developer, you must know how to bring particular mobile exp
 #### Extra Features
 - [x] Extend the favorites ContentProvider to store the movie poster, synopsis, user rating, and release date, and display them even when offline.
 - [x] Implement sharing functionality to allow the user to share the first trailer’s YouTube URL from the movie details screen.
+
+
+Github Page
+https://aaroncrutchfield.github.io/PopularMovies/
