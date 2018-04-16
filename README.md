@@ -8,9 +8,7 @@
 * Share links to movie trailers with friends
 
 ## Screenshots
-![](screenshots/1.png)
-![](screenshots/2.png)
-![](screenshots/3.png)
+![](screenshots/4.png)
 
 ## Overview
 In this project, you’ll build an app to allow users to discover the most popular movies playing.
