@@ -8,8 +8,9 @@
 * Share links to movie trailers with friends
 
 ## Screenshots
-<img src="screenshots/1.png" width=300/><img src="screenshots/2.png" width=300/>
-<img src="screenshots/3.png" width=600/>
+![](screenshots/1.png)
+![](screenshots/2.png)
+![](screenshots/3.png)
 
 ## Overview
 In this project, you’ll build an app to allow users to discover the most popular movies playing.
@@ -56,3 +57,5 @@ To become an Android developer, you must know how to bring particular mobile exp
 
 Github Page
 https://aaroncrutchfield.github.io/PopularMovies/
+
+[screenshot1]: screenshots/1.png =300x
