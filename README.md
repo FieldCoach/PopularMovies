@@ -57,5 +57,3 @@ To become an Android developer, you must know how to bring particular mobile exp
 
 Github Page
 https://aaroncrutchfield.github.io/PopularMovies/
-
-[screenshot1]: screenshots/1.png =300x
