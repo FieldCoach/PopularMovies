@@ -14,7 +14,7 @@ import java.net.URL;
 /**
  * Created by ioutd on 11/14/2017.
  */
-
+@Deprecated
 public class DetailsLoader extends AsyncTaskLoader<String> {
     private Bundle bundle;
     private String detailsRequestUrl;
@@ -37,6 +37,7 @@ public class DetailsLoader extends AsyncTaskLoader<String> {
     @Nullable
     @Override
     public String loadInBackground() {
+        /**
         //Get the details request url
         String detailsRequestString = bundle.getString(detailsRequestUrl);
 
@@ -52,6 +53,8 @@ public class DetailsLoader extends AsyncTaskLoader<String> {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
+        }*/
+        // TODO 5: loadInBackground returns null
+        return null;
     }
 }
