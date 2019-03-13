@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.android.popularmovies.data.MovieContract.MovieEntry;
+//import static com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
 public class DetailsActivity extends AppCompatActivity  implements LoaderManager.LoaderCallbacks{
 
@@ -152,6 +152,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
      * @param movie the movie object whose images will be loaded
      */
     private void getPosterAndBackdrop(Movie movie) {
+        /**
         Cursor cursor = getContentResolver().query(MovieEntry.CONTENT_URI,
                 null,
                 MovieEntry.COLUMN_TITLE + "=?",
@@ -176,8 +177,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
             Picasso.with(this)
                     .load(movie.getBackdropLocationUriString())
                     .fit()
-                    .into(detailsBinding.ivBackDrop);
-
+                    .into(detailsBinding.ivBackDrop); */
     }
 
     /**
@@ -185,8 +185,10 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
      * @param title the movie title
      */
     private void deleteFavoriteFromDb(String title) {
+        /**
         String where = MovieEntry.COLUMN_TITLE + "=?";
         getContentResolver().delete(MovieEntry.CONTENT_URI, where, new String[]{title});
+         */
     }
 
     /**
