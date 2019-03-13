@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.ui;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -19,6 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.DetailsLoader;
+// import com.example.android.popularmovies.InsertFavoritesLoader;
+import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.Review;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
@@ -245,10 +249,12 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
     @Override
     public Loader onCreateLoader(int id, final Bundle bundle) {
         switch (id){
+            /**
             case DETAILS_LOADER:
-                return new DetailsLoader(this, bundle, DETAILS_REQUEST_URL);
+                return new DetailsLoader(this, bundle, DETAILS_REQUEST_URL); */
+            /**
             case INSERT_FAVS_LOADER:
-                return new InsertFavoritesLoader(this, bundle, MOVIE);
+                return new InsertFavoritesLoader(this, bundle, MOVIE); */
             default:
                 throw new RuntimeException("Loader Not Implemented: " + id);
         }

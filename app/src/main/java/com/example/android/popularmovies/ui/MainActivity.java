@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,8 +19,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 // import com.example.android.popularmovies.data.MovieContract.MovieEntry;
+import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
+import com.example.android.popularmovies.ui.PosterAdapter;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 

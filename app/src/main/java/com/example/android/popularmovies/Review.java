@@ -13,7 +13,7 @@ public class Review {
         this.content = content;
     }
 
-    String getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
