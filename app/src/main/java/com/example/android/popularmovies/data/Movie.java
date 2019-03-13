@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -128,31 +128,31 @@ public class Movie implements Parcelable {
         }
     }
 
-    String getMovieId() {
+    public String getMovieId() {
         return movieId;
     }
 
-    String getPosterLocationUriString() {
+    public String getPosterLocationUriString() {
         return posterLocationUriString;
     }
 
-    String getBackdropLocationUriString() {
+    public String getBackdropLocationUriString() {
         return backdropLocationUriString;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    String getVoteAverage() {
+    public String getVoteAverage() {
         return voteAverage;
     }
 
-    String getOverview() {
+    public String getOverview() {
         return overview;
     }
 
-    String getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 }

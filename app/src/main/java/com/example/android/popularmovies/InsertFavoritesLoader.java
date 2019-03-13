@@ -1,11 +1,10 @@
 package com.example.android.popularmovies;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.example.android.popularmovies.data.MovieContract;
+import com.example.android.popularmovies.data.Movie;
 
 /**
  * Created by ioutd on 11/16/2017.
