@@ -8,3 +8,4 @@
 /captures
 .externalNativeBuild
 app/src/main/java/com/example/android/popularmovies/ApiKeyFile.java
+app/google-services.json
