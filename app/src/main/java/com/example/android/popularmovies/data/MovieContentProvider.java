@@ -15,16 +15,19 @@ import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
 /**
  * Created by ioutd on 11/9/2017.
+ *
+ * MovieContentProvider is deprecated.
  */
-
+@Deprecated
 public class MovieContentProvider  extends ContentProvider {
-    private MovieDbHelper movieDbHelper;
+    // private MovieDbHelper movieDbHelper;
 
-    public static final int MOVIES = 100;
-    public static final int MOVIE_WITH_ID = 101;
+    // public static final int MOVIES = 100;
+    // public static final int MOVIE_WITH_ID = 101;
 
-    public static final UriMatcher sUriMatcher = buildUriMatcher();
+    // public static final UriMatcher sUriMatcher = buildUriMatcher();
 
+    /**
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -32,25 +35,27 @@ public class MovieContentProvider  extends ContentProvider {
         uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIES + "/#", MOVIE_WITH_ID);
 
         return uriMatcher;
-    }
+    }*/
 
     @Override
     public boolean onCreate() {
         //onCreate instantiate the DbHelper
-        movieDbHelper = new MovieDbHelper(getContext());
+        // movieDbHelper = new MovieDbHelper(getContext());
         return true;
     }
+
 
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        final SQLiteDatabase db = movieDbHelper.getReadableDatabase();
+        //final SQLiteDatabase db = movieDbHelper.getReadableDatabase();
 
-        int match = sUriMatcher.match(uri);
-        Cursor returnCursor;
+        // int match = sUriMatcher.match(uri);
+        // TODO 1: Cursor assigned to null
+        Cursor returnCursor = null;
 
-        switch (match) {
+        /**switch (match) {
             case MOVIES:
                 returnCursor = db.query(MovieEntry.TABLE_NAME,
                         projection,
@@ -64,7 +69,7 @@ public class MovieContentProvider  extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri); */
 
         return returnCursor;
     }
@@ -78,12 +83,13 @@ public class MovieContentProvider  extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
+        // final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
 
-        int match = sUriMatcher.match(uri);
-        Uri returnUri;
+        // int match = sUriMatcher.match(uri);
+        // TODO 2: Uri assigned to null
+        Uri returnUri = null;
 
-        switch (match){
+        /**switch (match){
             case MOVIES:
                 long id = db.insert(MovieEntry.TABLE_NAME, null, contentValues);
                 if (id > 0) {
@@ -96,20 +102,20 @@ public class MovieContentProvider  extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(uri, null);*/
 
         return returnUri;
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String whereClause, @Nullable String[] args) {
-        final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
+        // final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
 
-        int match = sUriMatcher.match(uri);
+        // int match = sUriMatcher.match(uri);
+        // TODO 3: moviesDeleted assigned to 0
+        int moviesDeleted = 0;
 
-        int moviesDeleted;
-
-        switch (match){
+        /**switch (match){
             case MOVIES:
                 moviesDeleted = db.delete(MovieEntry.TABLE_NAME, whereClause, args);
                 break;
@@ -119,7 +125,7 @@ public class MovieContentProvider  extends ContentProvider {
 
         if (moviesDeleted != 0){
             getContext().getContentResolver().notifyChange(uri, null);
-        }
+        } */
         return moviesDeleted;
     }
 
