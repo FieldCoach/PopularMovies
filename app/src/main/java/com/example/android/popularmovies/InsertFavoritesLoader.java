@@ -9,8 +9,10 @@ import com.example.android.popularmovies.data.MovieContract;
 
 /**
  * Created by ioutd on 11/16/2017.
+ *
+ * InsertFavoritesLoader is deprecated.
  */
-
+@Deprecated
 class InsertFavoritesLoader extends AsyncTaskLoader {
 
     private Movie movie;
@@ -22,6 +24,7 @@ class InsertFavoritesLoader extends AsyncTaskLoader {
 
     @Override
     public Object loadInBackground() {
+        /**
         ContentValues values = new ContentValues();
 
         //Add the movie details to the database
@@ -34,7 +37,7 @@ class InsertFavoritesLoader extends AsyncTaskLoader {
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
 
         getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
-
+         */
         return null;
     }
 
