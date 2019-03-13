@@ -20,7 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.example.android.popularmovies.data.MovieContract.MovieEntry;
+// import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 import com.example.android.popularmovies.databinding.ActivityMainBinding;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public Loader onCreateLoader(final int id, final Bundle bundle) {
-
+        /**
         switch (id){
             case MOVIES_LOADER:
                 //Create and return the MoviesLoader. Pass in the bundle containing the MOVIE_REQUEST_URL
@@ -205,7 +205,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             default:
                 throw new RuntimeException("Loader Not Implemented: " + id);
         }
-
+        */
+        // TODO 4: Loader returns null
+        return null;
     }
 
     /**
@@ -215,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public void onLoadFinished(Loader loader, Object data) {
+        /**
         switch (loader.getId()){
             case MOVIES_LOADER:
                 try {
@@ -264,8 +267,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
                 break;
 
-        }
-
+        }*/
     }
 
     @Override
