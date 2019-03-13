@@ -19,10 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.android.popularmovies.DetailsLoader;
 // import com.example.android.popularmovies.InsertFavoritesLoader;
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.Review;
+import com.example.android.popularmovies.data.Review;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
