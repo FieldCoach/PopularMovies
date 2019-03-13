@@ -2,15 +2,9 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
-
-import com.example.android.popularmovies.utilities.NetworkUtils;
-
-import java.io.IOException;
-import java.net.URL;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.content.AsyncTaskLoader;
 
 /**
  * Created by ioutd on 11/10/2017.

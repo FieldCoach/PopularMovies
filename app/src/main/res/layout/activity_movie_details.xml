@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
 
-        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="0dp"
@@ -41,7 +41,7 @@
                 app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@color/colorAccent" />
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cv_poster"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,10 +61,10 @@
                     android:contentDescription="@string/poster_content_description"
                     app:srcCompat="@android:color/black" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cv_overview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -86,9 +86,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cv_trailers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -108,9 +108,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cv_reviews"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -129,9 +129,9 @@
                     layout="@layout/reviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/floatingActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -146,6 +146,6 @@
                 app:srcCompat="@drawable/ic_favorite_black_48dp" />
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
