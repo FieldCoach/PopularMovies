@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else {
             //Otherwise, the movies still need to be retrieved
             moviesArrayList.clear();
-            getMovies();
+            // getMovies();
         }
     }
 
@@ -152,7 +152,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /**
      * Gets the URL used to request movies then starts the MOVIE_LOADER
+     *
+     * getMovies() method is deprecated.
      */
+    @Deprecated
     private void getMovies() {
         URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, mPage);
 
