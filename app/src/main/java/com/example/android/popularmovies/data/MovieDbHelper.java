@@ -9,13 +9,16 @@ import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
 /**
  * Created by ioutd on 11/9/2017.
+ *
+ * MovieDbHelper is deprecated.
  */
-
+@Deprecated
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movieDb.db";
     private static int VERSION = 1;
     public static final String TAG = MovieDbHelper.class.getSimpleName();
+
 
     MovieDbHelper(Context context){
         super(context, DATABASE_NAME, null, VERSION);
@@ -23,6 +26,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        /**
         final String CREATE_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
                 MovieEntry._ID + " INTEGER PRIMARY KEY, " +
                 MovieEntry.COLUMN_POSTER    + " TEXT NOT NULL, " +
@@ -35,12 +39,12 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(CREATE_TABLE);
 
-        Log.d(TAG, "onCreate: CREATE TABLE" + CREATE_TABLE);
+        Log.d(TAG, "onCreate: CREATE TABLE" + CREATE_TABLE); */
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
-        onCreate(sqLiteDatabase);
+        // sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        // onCreate(sqLiteDatabase);
     }
 }
