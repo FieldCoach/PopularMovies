@@ -5,12 +5,15 @@ import android.provider.BaseColumns;
 
 /**
  * Created by ioutd on 11/9/2017.
+ *
+ * MovieContract is deprecated.
  */
-
-public class MovieContract{
-        public static final String AUTHORITY = "com.example.android.popularmovies";
-        public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-        public static final String PATH_MOVIES = "movies";
+@Deprecated
+public class MovieContract {
+    /**
+    public static final String AUTHORITY = "com.example.android.popularmovies";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final String PATH_MOVIES = "movies";
 
 
     public static final class MovieEntry implements BaseColumns {
@@ -28,5 +31,5 @@ public class MovieContract{
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_RELEASE = "release";
 
-    }
+    } */
 }

@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.android.popularmovies.data.MovieContract.MovieEntry;
+// import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
 /**
  * Created by ioutd on 11/9/2017.
