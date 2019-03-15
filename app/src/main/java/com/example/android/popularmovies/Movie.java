@@ -3,18 +3,27 @@ package com.example.android.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Contains all of the details of a Movie that will be displayed in the UI
  */
 
 public class Movie implements Parcelable {
 
+    @SerializedName("id")
     private final String movieId;
+    @SerializedName("poster_path")
     private final String posterLocationUriString;
+    @SerializedName("backdrop_path")
     private final String backdropLocationUriString;
+    @SerializedName("original_title")
     private final String title;
+    @SerializedName("vote_average")
     private final String voteAverage;
+    @SerializedName("overview")
     private final String overview;
+    @SerializedName("release_date")
     private final String releaseDate;
 
     public Movie(String movieId, String posterLocationUriString, String backdropLocationUriString, String title, String voteAverage, String overview, String releaseDate) {

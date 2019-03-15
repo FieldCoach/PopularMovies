@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by AaronC on 7/26/2017.
@@ -131,6 +132,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         //Set viewingFavorites for use later
         viewingFavorites = sortBySelectionString.equals("favorites");
 
+        notifyDataSetChanged();
+    }
+
+    void updateMoviesList(List<Movie> moviesArrayList) {
+        this.movieArrayList.clear();
+        this.movieArrayList.addAll(moviesArrayList);
         notifyDataSetChanged();
     }
 }
