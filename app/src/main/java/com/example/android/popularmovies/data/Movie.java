@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
  */
 @Entity
 public class Movie implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private final String movieId;
     private final String posterLocationUriString;
     private final String backdropLocationUriString;
