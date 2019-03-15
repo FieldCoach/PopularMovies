@@ -3,12 +3,15 @@ package com.example.android.popularmovies.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 /**
  * Contains all of the details of a Movie that will be displayed in the UI
  */
-
+@Entity
 public class Movie implements Parcelable {
-
+    @PrimaryKey(autoGenerate = true)
     private final String movieId;
     private final String posterLocationUriString;
     private final String backdropLocationUriString;
