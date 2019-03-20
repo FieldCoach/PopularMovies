@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.android.popularmovies.ui.DetailsActivity">
+    tools:context="com.example.android.popularmovies.ui.DetailsActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -148,4 +150,4 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

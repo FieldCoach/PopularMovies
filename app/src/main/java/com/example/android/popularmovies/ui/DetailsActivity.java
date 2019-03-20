@@ -1,31 +1,22 @@
 package com.example.android.popularmovies.ui;
 
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.core.view.MenuItemCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.appcompat.widget.ShareActionProvider;
-import androidx.recyclerview.widget.SnapHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-// import com.example.android.popularmovies.InsertFavoritesLoader;
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.data.Review;
 import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.databinding.ActivityMovieDetailsBinding;
+import com.example.android.popularmovies.data.Review;
 import com.example.android.popularmovies.utilities.JSONDataHandler;
 import com.example.android.popularmovies.utilities.NetworkUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 
@@ -35,6 +26,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ShareActionProvider;
+import androidx.cardview.widget.CardView;
+import androidx.core.view.MenuItemCompat;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
+
+// import com.example.android.popularmovies.InsertFavoritesLoader;
 
 //import static com.example.android.popularmovies.data.MovieContract.MovieEntry;
 
@@ -47,8 +51,6 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
     private static final int DETAILS_LOADER = 2;
     private static final int INSERT_FAVS_LOADER = 4;
 
-    private ActivityMovieDetailsBinding detailsBinding;
-
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
 
@@ -57,6 +59,11 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
     private Uri shareUri;
 
     private Boolean favorite = false;
+    private RecyclerView rvReviews;
+    private RecyclerView rvMovieTrailers;
+    private FloatingActionButton floatingActionButton;
+    private CardView cvTrailers;
+    private CardView cvReviews;
 
     /**
      * Gets the Intent from the MainActivity to retrieve Extras containing the details to display
@@ -66,9 +73,15 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        detailsBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_details);
+        setContentView(R.layout.activity_movie_details);
 
         Intent intentFromMainActivity = getIntent();
+
+        rvReviews = findViewById(R.id.rv_reviews);
+        rvReviews = findViewById(R.id.rv_movie_trailers);
+        floatingActionButton = findViewById(R.id.floatingActionButton);
+        cvTrailers = findViewById(R.id.cv_trailers);
+        cvReviews = findViewById(R.id.cv_reviews);
 
         //Only attempt to get Extras from the intent if it has the Extras needed
         if (intentFromMainActivity.hasExtra(MOVIE)) {
@@ -88,20 +101,20 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             reviewAdapter = new ReviewAdapter(this);
 
-            detailsBinding.inReviews.rvReviews.setLayoutManager(layoutManager);
-            detailsBinding.inReviews.rvReviews.setAdapter(reviewAdapter);
+            rvReviews.setLayoutManager(layoutManager);
+            rvReviews.setAdapter(reviewAdapter);
 
             //Setup the movie trailer RecyclerView
             LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
             trailerAdapter = new TrailerAdapter(this);
             SnapHelper snapHelper = new LinearSnapHelper();
 
-            detailsBinding.inTrailers.rvMovieTrailers.setLayoutManager(horizontalLayoutManager);
-            detailsBinding.inTrailers.rvMovieTrailers.setAdapter(trailerAdapter);
-            snapHelper.attachToRecyclerView(detailsBinding.inTrailers.rvMovieTrailers);
+            rvMovieTrailers.setLayoutManager(horizontalLayoutManager);
+            rvMovieTrailers.setAdapter(trailerAdapter);
+            snapHelper.attachToRecyclerView(rvMovieTrailers);
 
             //Setup the add to favorites button
-            detailsBinding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Icon icon;
@@ -122,7 +135,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
                         favorite = true;
                     }
 
-                    detailsBinding.floatingActionButton.setImageIcon(icon);
+                    floatingActionButton.setImageIcon(icon);
                 }
             });
         }
@@ -134,15 +147,20 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
      */
     private void getDetailsText(Movie movie) {
         //Set the text on the TextViews to show the Movie details
-        detailsBinding.inTitle.tvTitle.setText(movie.getTitle());
-        detailsBinding.inTitle.tvRating.setText(String.valueOf(movie.getVoteAverage()));
-        detailsBinding.inOverview.tvOverview.setText(movie.getOverview());
+        TextView tvTitle = findViewById(R.id.title);
+        TextView tvRating = findViewById(R.id.tv_rating);
+        TextView tvOverview = findViewById(R.id.tv_overview);
+        TextView tvReleaseDate = findViewById(R.id.tv_release_date);
+
+        tvTitle.setText(movie.getTitle());
+        tvRating.setText(String.valueOf(movie.getVoteAverage()));
+        tvOverview.setText(movie.getOverview());
 
         //Format the date before calling setText on the Text View
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(movie.getReleaseDate());
             String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
-            detailsBinding.inTitle.tvReleaseDate.setText(dateString);
+            tvReleaseDate.setText(dateString);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -220,8 +238,9 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
         //Remove the trailers and reviews from the layout if there is no network connection
         if (!NetworkUtils.isOnline(this)){
             Toast.makeText(this,"Trailers and reviews can't be viewed offline", Toast.LENGTH_SHORT).show();
-            detailsBinding.cvTrailers.setVisibility(View.GONE);
-            detailsBinding.cvReviews.setVisibility(View.GONE);
+
+            cvTrailers.setVisibility(View.GONE);
+            cvReviews.setVisibility(View.GONE);
             return;
         }
 
@@ -270,7 +289,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
                         reviewAdapter.setmReviewArrayList(reviewArrayList);
                     } else {
                         //Hide the reviews CardView if there are no reviews
-                        detailsBinding.cvReviews.setVisibility(View.GONE);
+                        cvReviews.setVisibility(View.GONE);
                     }
 
                     //Save the trailers' data to an arrayList to send to its RecyclerView.Adapter
@@ -279,7 +298,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
                         trailerAdapter.setTrailerArrayList(trailerArrayList);
                     } else {
                         //Hide the trailers CardView if there are no trailers
-                        detailsBinding.cvTrailers.setVisibility(View.GONE);
+                        cvTrailers.setVisibility(View.GONE);
                     }
 
                     //Get the first trailer's YouTube url

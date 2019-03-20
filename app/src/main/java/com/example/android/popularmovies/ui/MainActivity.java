@@ -3,30 +3,28 @@ package com.example.android.popularmovies.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-// import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.databinding.ActivityMainBinding;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks  {
 
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMainBinding mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null)
@@ -69,11 +67,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Configure the GridLayoutManager then set it as the layout manager of the RecyclerView
         int noOfColumns = calculateNoOfColumns(this);
         gridLayoutManager = new GridLayoutManager(this, noOfColumns);
-        mainBinding.rvMoviePosters.setLayoutManager(gridLayoutManager);
+        RecyclerView rvMoviePosters = findViewById(R.id.rv_movie_posters);
+
+        rvMoviePosters.setLayoutManager(gridLayoutManager);
 
         //Construct and set the adapter for the RecyclerView
         posterAdapter = new PosterAdapter(this);
-        mainBinding.rvMoviePosters.setAdapter(posterAdapter);
+        rvMoviePosters.setAdapter(posterAdapter);
 
         //Construct a new Endless Scroll Listener and pass it the GridLayoutManager
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         };
         //Add an OnScrollListener to the RecyclerView and pass it the Endless Scroll Listener
-        mainBinding.rvMoviePosters.addOnScrollListener(scrollListener);
+        rvMoviePosters.addOnScrollListener(scrollListener);
 
         checkConnectionStatus();
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             //Scroll to the previous position
             if (currentScrollPosition > 0) {
-                mainBinding.rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+                rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
             }
         } else {
             //Otherwise, the movies still need to be retrieved

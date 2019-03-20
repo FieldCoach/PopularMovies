@@ -12,6 +12,8 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Movie implements Parcelable {
     @PrimaryKey
+    private int id;
+
     private final String movieId;
     private final String posterLocationUriString;
     private final String backdropLocationUriString;
@@ -78,6 +80,14 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public static final class Builder {
         private String movieId;
