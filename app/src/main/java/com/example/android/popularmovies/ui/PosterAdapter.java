@@ -2,7 +2,6 @@ package com.example.android.popularmovies.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,9 @@ import com.example.android.popularmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by AaronC on 7/26/2017.
@@ -133,6 +135,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         //Set viewingFavorites for use later
         viewingFavorites = sortBySelectionString.equals("favorites");
 
+        notifyDataSetChanged();
+    }
+
+    void updateMoviesList(List<Movie> moviesArrayList) {
+        this.movieArrayList.clear();
+        this.movieArrayList.addAll(moviesArrayList);
         notifyDataSetChanged();
     }
 }

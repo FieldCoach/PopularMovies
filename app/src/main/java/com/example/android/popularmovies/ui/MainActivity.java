@@ -6,17 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
+import com.example.android.popularmovies.data.Movies;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
+import com.example.android.popularmovies.utilities.MovieDbService;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -25,8 +29,16 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks  {
+
+    private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
@@ -37,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String CURRENT_SCROLL_POSITION = "currentScrollPosition";
     private static final String MOVIE_REQUEST_URL = "movie_request_url";
 
-    private static ArrayList<Movie> moviesArrayList = new ArrayList<>();
+    private static List<Movie> moviesArrayList = new ArrayList<>();
     private String sortBySelectionString = "popular";
     private String mPage = "1";
     private int currentScrollPosition;
@@ -92,24 +104,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         checkConnectionStatus();
 
+        getMovies();
+
         //If savedInstanceState isn't null, restore the app's previous state
-        if (savedInstanceState != null) {
-            mPage = savedInstanceState.getString(PAGE);
-            sortBySelectionString = savedInstanceState.getString(SORT_BY);
-            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION, 0);
-
-            moviesArrayList = savedInstanceState.getParcelableArrayList(MOVIES_ARRAY_LIST);
-            posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
-
-            //Scroll to the previous position
-            if (currentScrollPosition > 0) {
-                rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
-            }
-        } else {
-            //Otherwise, the movies still need to be retrieved
-            moviesArrayList.clear();
-            // getMovies();
-        }
+//        if (savedInstanceState != null) {
+//            mPage = savedInstanceState.getString(PAGE);
+//            sortBySelectionString = savedInstanceState.getString(SORT_BY);
+//            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION, 0);
+//
+//            moviesArrayList = savedInstanceState.getParcelableArrayList(MOVIES_ARRAY_LIST);
+//            posterAdapter.setMoviesArrayList(moviesArrayList, sortBySelectionString);
+//
+//            //Scroll to the previous position
+//            if (currentScrollPosition > 0) {
+//                rvMoviePosters.smoothScrollToPosition(currentScrollPosition);
+//            }
+//        } else {
+//            //Otherwise, the movies still need to be retrieved
+//            moviesArrayList.clear();
+//             getMovies();
+//        }
     }
 
     /**
@@ -128,15 +142,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * Saves the data needed to restore the RecyclerView's previous state
      * @param outState the bundle containing the data to be persisted
      */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(CURRENT_SCROLL_POSITION, currentScrollPosition);
-        outState.putParcelableArrayList(MOVIES_ARRAY_LIST , moviesArrayList);
-        outState.putString(PAGE, mPage);
-        outState.putString(SORT_BY, sortBySelectionString);
-
-        super.onSaveInstanceState(outState);
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        outState.putInt(CURRENT_SCROLL_POSITION, currentScrollPosition);
+//        outState.putParcelableArrayList(MOVIES_ARRAY_LIST , moviesArrayList);
+//        outState.putString(PAGE, mPage);
+//        outState.putString(SORT_BY, sortBySelectionString);
+//
+//        super.onSaveInstanceState(outState);
+//    }
 
     /**
      * Saves the current scroll position
@@ -152,24 +166,44 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      *
      * getMovies() method is deprecated.
      */
-    @Deprecated
     private void getMovies() {
-        URL movieRequestUrl = NetworkUtils.buildMovieDbUrl(sortBySelectionString, mPage);
 
-        //Put the url in a bundle to be passed to MOVIES_LOADER
-        Bundle urlBundle = new Bundle();
-        urlBundle.putString(MOVIE_REQUEST_URL, movieRequestUrl.toString());
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        //Create the MOVIES_LOADER
-        LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<String> movieLoader = loaderManager.getLoader(MOVIES_LOADER);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MOVIE_DB_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
 
-        //Initialize/Restart the MOVIES_LOADER
-        if (movieLoader == null){
-            loaderManager.initLoader(MOVIES_LOADER, urlBundle, this).forceLoad();
-        } else {
-            loaderManager.restartLoader(MOVIES_LOADER, urlBundle, this).forceLoad();
-        }
+        MovieDbService service = retrofit.create(MovieDbService.class);
+
+        Call<Movies> call = service.getSortedMovies("popular", ApiKeyFile.MOVIE_DB_API_KEY, mPage);
+
+        Log.d("MainActivity", "getMovies: " + mPage);
+        call.enqueue(new Callback<Movies>() {
+            @Override
+            public void onResponse(Call<Movies> call, Response<Movies> response) {
+                Movies movies = response.body();
+
+                if (moviesArrayList == null) {
+                    //Get an ArrayList containing the Movies
+                    moviesArrayList = movies.getMovies();
+                } else {
+                    //Get an ArrayList containing more Movies and add them to the existing Movies
+                    List<Movie> moreMovies = movies.getMovies();
+                    moviesArrayList.addAll(moreMovies);
+
+                }
+                posterAdapter.updateMoviesList(moviesArrayList);
+                Log.d("MainActivity", "onResponse: " + mPage);
+            }
+
+            @Override
+            public void onFailure(Call<Movies> call, Throwable t) {
+                Log.d("MainActivity", "onFailure: " + t.getMessage());
+            }
+        });
     }
 
     /**
