@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,14 +89,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
         Movie currentMovie = movieArrayList.get(position);
-        String currentMoviePoster = currentMovie.getPosterLocationUriString();
+        String currentMoviePoster = currentMovie.getPosterUriString();
         String movieTitle = movieArrayList.get(position).getTitle();
 
         //Load the image into the ImageView
-            Picasso.with(context)
-                    .load(currentMoviePoster)
-                    .fit()
-                    .into(holder.moviePoster);
+        Glide.with(context)
+                .load(currentMoviePoster)
+                .into(holder.moviePoster);
 
         holder.tvTitle.setText(movieTitle);
     }

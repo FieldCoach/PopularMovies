@@ -1,7 +1,10 @@
 package com.example.android.popularmovies.data;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -15,17 +18,22 @@ public class Movie implements Parcelable {
     private int id;
 
     private final String movieId;
-    private final String posterLocationUriString;
-    private final String backdropLocationUriString;
+    @SerializedName("poster_path")
+    private final String posterPath;
+    @SerializedName("backdrop_path")
+    private final String backdropPath;
     private final String title;
     private final String voteAverage;
     private final String overview;
     private final String releaseDate;
 
-    public Movie(String movieId, String posterLocationUriString, String backdropLocationUriString, String title, String voteAverage, String overview, String releaseDate) {
+    private final static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+    private final static String IMAGE_SIZE = "w342";
+
+    public Movie(String movieId, String posterPath, String backdropPath, String title, String voteAverage, String overview, String releaseDate) {
         this.movieId = movieId;
-        this.posterLocationUriString = posterLocationUriString;
-        this.backdropLocationUriString = backdropLocationUriString;
+        this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
         this.title = title;
         this.voteAverage = voteAverage;
         this.overview = overview;
@@ -34,8 +42,8 @@ public class Movie implements Parcelable {
 
     private Movie(Builder builder) {
         movieId = builder.movieId;
-        posterLocationUriString = builder.posterLocationUriString;
-        backdropLocationUriString = builder.backdropLocationUriString;
+        posterPath = builder.posterLocationUriString;
+        backdropPath = builder.backdropLocationUriString;
         title = builder.title;
         voteAverage = builder.voteAverage;
         overview = builder.overview;
@@ -50,8 +58,8 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.movieId);
-        dest.writeString(this.posterLocationUriString);
-        dest.writeString(this.backdropLocationUriString);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.backdropPath);
         dest.writeString(this.title);
         dest.writeString(this.voteAverage);
         dest.writeString(this.overview);
@@ -61,8 +69,8 @@ public class Movie implements Parcelable {
 
     private Movie(Parcel in) {
         this.movieId = in.readString();
-        this.posterLocationUriString = in.readString();
-        this.backdropLocationUriString = in.readString();
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
         this.title = in.readString();
         this.voteAverage = in.readString();
         this.overview = in.readString();
@@ -145,12 +153,12 @@ public class Movie implements Parcelable {
         return movieId;
     }
 
-    public String getPosterLocationUriString() {
-        return posterLocationUriString;
+    public String getPosterPath() {
+        return posterPath;
     }
 
-    public String getBackdropLocationUriString() {
-        return backdropLocationUriString;
+    public String getBackdropPath() {
+        return backdropPath;
     }
 
     public String getTitle() {
@@ -167,5 +175,24 @@ public class Movie implements Parcelable {
 
     public String getReleaseDate() {
         return releaseDate;
+    }
+
+    public String getPosterUriString() {
+        Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon()
+                .appendPath(IMAGE_SIZE)
+                // "%2 is added to the front of each path. This needs to be removed
+                .appendPath(posterPath.substring(1))
+                .build();
+
+        return builtUri.toString();
+    }
+
+    public String getBackdropUriString() {
+        Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon()
+                .appendPath(IMAGE_SIZE)
+                .appendPath(backdropPath.substring(1))
+                .build();
+
+        return builtUri.toString();
     }
 }

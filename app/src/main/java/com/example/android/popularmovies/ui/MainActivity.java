@@ -30,6 +30,7 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -168,7 +169,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private void getMovies() {
 
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+// set your desired log level
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        httpClient.addInterceptor(logging);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MOVIE_DB_BASE_URL)
@@ -180,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         Call<Movies> call = service.getSortedMovies("popular", ApiKeyFile.MOVIE_DB_API_KEY, mPage);
 
+        Log.d("MainActivity", "getMovies: " + call.toString());
         Log.d("MainActivity", "getMovies: " + mPage);
         call.enqueue(new Callback<Movies>() {
             @Override

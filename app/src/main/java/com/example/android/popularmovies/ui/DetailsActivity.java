@@ -147,7 +147,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
      */
     private void getDetailsText(Movie movie) {
         //Set the text on the TextViews to show the Movie details
-        TextView tvTitle = findViewById(R.id.title);
+        TextView tvTitle = findViewById(R.id.tv_title);
         TextView tvRating = findViewById(R.id.tv_rating);
         TextView tvOverview = findViewById(R.id.tv_overview);
         TextView tvReleaseDate = findViewById(R.id.tv_release_date);
@@ -157,13 +157,11 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
         tvOverview.setText(movie.getOverview());
 
         //Format the date before calling setText on the Text View
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(movie.getReleaseDate());
-            String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
-            tvReleaseDate.setText(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        //            Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(movie.getReleaseDate());
+//            String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
+        // TODO: 6/19/2019 Format release date properly
+        String dateString = movie.getReleaseDate();
+        tvReleaseDate.setText(dateString);
     }
 
     /**
@@ -189,13 +187,13 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
 
             //Load the poster into the ImageView
             Picasso.with(this)
-                    .load(movie.getPosterLocationUriString())
+                    .load(movie.getPosterPath())
                     .fit()
                     .into(detailsBinding.ivDetailsPoster);
 
             //Load the backdrop into its ImageView
             Picasso.with(this)
-                    .load(movie.getBackdropLocationUriString())
+                    .load(movie.getBackdropPath())
                     .fit()
                     .into(detailsBinding.ivBackDrop); */
     }
