@@ -31,16 +31,16 @@ public class MovieMockData {
 
     public static List<Movie> getMoviesList () {
         List<Movie> movies = new ArrayList<>();
-        movies.add(new Movie("1",posterUri1, backdropUri1, "Movie 1", "1.0", "Overview 1", "1/1/1991"));
-        movies.add(new Movie("2",posterUri2, backdropUri2, "Movie 2", "2.0", "Overview 2", "2/1/1991"));
-        movies.add(new Movie("3",posterUri3, backdropUri3, "Movie 3", "3.0", "Overview 3", "3/1/1991"));
-        movies.add(new Movie("4",posterUri4, backdropUri4, "Movie 4", "4.0", "Overview 4", "4/1/1991"));
-        movies.add(new Movie("5",posterUri5, backdropUri5, "Movie 5", "5.0", "Overview 5", "5/1/1991"));
-        movies.add(new Movie("6",posterUri6, backdropUri6, "Movie 6", "6.0", "Overview 6", "6/1/1991"));
-        movies.add(new Movie("7",posterUri7, backdropUri7, "Movie 7", "7.0", "Overview 7", "7/1/1991"));
-        movies.add(new Movie("8",posterUri8, backdropUri8, "Movie 8", "8.0", "Overview 8", "8/1/1991"));
-        movies.add(new Movie("9",posterUri9, backdropUri9, "Movie 9", "9.0", "Overview 9", "9/1/1991"));
-        movies.add(new Movie("10",posterUri10, backdropUri10, "Movie 10", "10.0", "Overview 10", "10/1/1991"));
+//        movies.add(new Movie("1",posterUri1, backdropUri1, "Movie 1", "1.0", "Overview 1", "1/1/1991"));
+//        movies.add(new Movie("2",posterUri2, backdropUri2, "Movie 2", "2.0", "Overview 2", "2/1/1991"));
+//        movies.add(new Movie("3",posterUri3, backdropUri3, "Movie 3", "3.0", "Overview 3", "3/1/1991"));
+//        movies.add(new Movie("4",posterUri4, backdropUri4, "Movie 4", "4.0", "Overview 4", "4/1/1991"));
+//        movies.add(new Movie("5",posterUri5, backdropUri5, "Movie 5", "5.0", "Overview 5", "5/1/1991"));
+//        movies.add(new Movie("6",posterUri6, backdropUri6, "Movie 6", "6.0", "Overview 6", "6/1/1991"));
+//        movies.add(new Movie("7",posterUri7, backdropUri7, "Movie 7", "7.0", "Overview 7", "7/1/1991"));
+//        movies.add(new Movie("8",posterUri8, backdropUri8, "Movie 8", "8.0", "Overview 8", "8/1/1991"));
+//        movies.add(new Movie("9",posterUri9, backdropUri9, "Movie 9", "9.0", "Overview 9", "9/1/1991"));
+//        movies.add(new Movie("10",posterUri10, backdropUri10, "Movie 10", "10.0", "Overview 10", "10/1/1991"));
 
         return movies;
     }

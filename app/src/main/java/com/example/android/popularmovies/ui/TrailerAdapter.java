@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 
 import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.data.Result;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ioutd on 11/6/2017.
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
     private final Activity activity;    // TODO: 11/21/2017 () - Change activity to weak reference to avoid memory leak
-    private ArrayList<String> trailerArrayList = new ArrayList<>();
+    private ArrayList<Result> trailerArrayList = new ArrayList<>();
 
     TrailerAdapter(Activity activity){
         this.activity = activity;
@@ -76,7 +78,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     @Override
     public void onBindViewHolder(TrailerAdapterViewHolder holder, int position) {
         //query for trailer urls and attach them to thumbnail
-        final String trailerKey = trailerArrayList.get(position);
+        Result result = trailerArrayList.get(position);
+        final String trailerKey = result.getKey();
         holder.itemView.setTag(trailerKey);
 
         holder.trailerThumbnail.initialize(ApiKeyFile.YOUTUBE_API_KEY, new YouTubeThumbnailView.OnInitializedListener() {
@@ -106,7 +109,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
      * Clears previous data from the ArrayList of keys, adds new keys, then notifies the Adapter
      * @param trailerArrayList arrayList containing the trailer video keys
      */
-    void setTrailerArrayList(ArrayList<String> trailerArrayList) {
+    void setTrailerArrayList(List<Result> trailerArrayList) {
         this.trailerArrayList.clear();
         this.trailerArrayList.addAll(trailerArrayList);
 

@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -16,32 +17,72 @@ import androidx.room.PrimaryKey;
 public class Movie implements Parcelable {
     @PrimaryKey
     private int id;
-
-    private final String movieId;
     @SerializedName("poster_path")
-    private final String posterPath;
+    private String posterPath;
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setVoteAverage(String voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setReviews(Review reviews) {
+        this.reviews = reviews;
+    }
+
+
     @SerializedName("backdrop_path")
-    private final String backdropPath;
-    private final String title;
-    private final String voteAverage;
-    private final String overview;
-    private final String releaseDate;
+    private String backdropPath;
+    private String title;
+    @SerializedName("vote_average")
+    private String voteAverage;
+    private String overview;
+    private String releaseDate;
 
     private final static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
     private final static String IMAGE_SIZE = "w342";
 
-    public Movie(String movieId, String posterPath, String backdropPath, String title, String voteAverage, String overview, String releaseDate) {
-        this.movieId = movieId;
+    @Ignore
+    private Review reviews;
+
+    @Ignore
+    private Video videos;
+
+    public Movie() {
+    }
+
+    public Movie(int id, String posterPath, String backdropPath, String title, String voteAverage, String overview, String releaseDate, Review reviews, Video videos) {
+        this.id = id;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
         this.title = title;
         this.voteAverage = voteAverage;
         this.overview = overview;
         this.releaseDate = releaseDate;
+        this.reviews = reviews;
+        this.videos = videos;
     }
 
     private Movie(Builder builder) {
-        movieId = builder.movieId;
+        id = builder.id;
         posterPath = builder.posterLocationUriString;
         backdropPath = builder.backdropLocationUriString;
         title = builder.title;
@@ -57,7 +98,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.movieId);
+        dest.writeInt(this.id);
         dest.writeString(this.posterPath);
         dest.writeString(this.backdropPath);
         dest.writeString(this.title);
@@ -68,7 +109,7 @@ public class Movie implements Parcelable {
 
 
     private Movie(Parcel in) {
-        this.movieId = in.readString();
+        this.id = in.readInt();
         this.posterPath = in.readString();
         this.backdropPath = in.readString();
         this.title = in.readString();
@@ -97,8 +138,21 @@ public class Movie implements Parcelable {
         this.id = id;
     }
 
+    public Review getReviews() {
+        return reviews;
+    }
+
+    public Video getVideos() {
+        return videos;
+    }
+
+    public void setVideos(Video videos) {
+        this.videos = videos;
+    }
+
+
     public static final class Builder {
-        private String movieId;
+        private int id;
         private String posterLocationUriString;
         private String backdropLocationUriString;
         private String title;
@@ -109,8 +163,8 @@ public class Movie implements Parcelable {
         public Builder() {
         }
 
-        public Builder movieId(String val) {
-            movieId = val;
+        public Builder movieId(int val) {
+            id = val;
             return this;
         }
 
@@ -147,10 +201,6 @@ public class Movie implements Parcelable {
         public Movie build() {
             return new Movie(this);
         }
-    }
-
-    public String getMovieId() {
-        return movieId;
     }
 
     public String getPosterPath() {

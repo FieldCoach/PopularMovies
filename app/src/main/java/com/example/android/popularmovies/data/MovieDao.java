@@ -15,7 +15,7 @@ public interface MovieDao {
     @Query("SELECT * FROM Movie")
     LiveData<List<Movie>> getMovies();
 
-    @Query("SELECT * FROM Movie WHERE movieId = :id")
+    @Query("SELECT * FROM Movie WHERE id = :id")
     LiveData<Movie> getMovie(int id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

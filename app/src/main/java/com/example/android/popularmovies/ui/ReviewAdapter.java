@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.data.Result;
 import com.example.android.popularmovies.data.Review;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by AaronC on 11/2/2017.
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder> {
 
     private Context mContext;
-    private ArrayList<Review> mReviewArrayList = new ArrayList<>();
+    private ArrayList<Result> mReviewArrayList = new ArrayList<>();
     private final static String TAG = ReviewAdapter.class.getSimpleName();
 
     ReviewAdapter(Context context) {
@@ -62,10 +64,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
      */
     @Override
     public void onBindViewHolder(ReviewAdapterViewHolder holder, int position) {
-        Review review = mReviewArrayList.get(position);
+        Result result = mReviewArrayList.get(position);
 
-        holder.author.setText(review.getAuthor());
-        holder.content.setText(review.getContent());
+        holder.author.setText(result.getAuthor());
+        holder.content.setText(result.getContent());
 
         if (position == mReviewArrayList.size() - 1){
             holder.view.setVisibility(View.GONE);
@@ -86,7 +88,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
      * Clears previous data from the ArrayList of Reviews, adds new Reviews, then notifies the Adapter
      * @param mReviewArrayList arrayList containing the reviews
      */
-    void setmReviewArrayList(ArrayList<Review> mReviewArrayList) {
+    void setmReviewArrayList(List<Result> mReviewArrayList) {
         this.mReviewArrayList.clear();
         this.mReviewArrayList.addAll(mReviewArrayList);
 

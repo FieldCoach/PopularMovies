@@ -170,35 +170,41 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void getMovies() {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-// set your desired log level
+        // set your desired log level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+        // Build Http Client
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         httpClient.addInterceptor(logging);
 
+        // Build Retrofit Object with Base URL
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MOVIE_DB_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
                 .build();
 
+        // Create the Service Object containing the @GET call
         MovieDbService service = retrofit.create(MovieDbService.class);
 
+        // Create the Call by calling the @GET method from the Service
         Call<Movies> call = service.getSortedMovies("popular", ApiKeyFile.MOVIE_DB_API_KEY, mPage);
 
         Log.d("MainActivity", "getMovies: " + call.toString());
         Log.d("MainActivity", "getMovies: " + mPage);
+
+        // Use the method enqueue from the Call to act upon onResponse and onFailure
         call.enqueue(new Callback<Movies>() {
             @Override
             public void onResponse(Call<Movies> call, Response<Movies> response) {
                 Movies movies = response.body();
 
                 if (moviesArrayList == null) {
-                    //Get an ArrayList containing the Movies
+                    // Get an ArrayList containing the Movies
                     moviesArrayList = movies.getMovies();
                 } else {
-                    //Get an ArrayList containing more Movies and add them to the existing Movies
+                    // Get an ArrayList containing more Movies and add them to the existing Movies
                     List<Movie> moreMovies = movies.getMovies();
                     moviesArrayList.addAll(moreMovies);
 

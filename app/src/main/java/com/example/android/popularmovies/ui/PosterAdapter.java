@@ -60,7 +60,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
             Intent intent = new Intent(view.getContext(), DetailsActivity.class);
             int position = getAdapterPosition();
 
-            intent.putExtra(MOVIE, movieArrayList.get(position));
+            Movie movie = movieArrayList.get(position);
+            intent.putExtra(MOVIE, movie);
             view.getContext().startActivity(intent);
         }
     }

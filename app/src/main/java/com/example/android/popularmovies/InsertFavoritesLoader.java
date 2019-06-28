@@ -33,7 +33,7 @@ class InsertFavoritesLoader extends AsyncTaskLoader {
         values.put(MovieContract.MovieEntry.COLUMN_RATING, movie.getVoteAverage());
         values.put(MovieContract.MovieEntry.COLUMN_RELEASE, movie.getReleaseDate());
         values.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
-        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.getMovieId());
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.getId());
 
         getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
          */
