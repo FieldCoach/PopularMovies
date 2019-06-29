@@ -29,7 +29,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
     private Context context;
     private ArrayList<Movie> movieArrayList = new ArrayList<>();
 
-    PosterAdapter(Context context){
+    public PosterAdapter(Context context){
         this.context = context;
     }
 
@@ -125,7 +125,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         notifyDataSetChanged();
     }
 
-    void updateMoviesList(List<Movie> moviesArrayList) {
+    public void updateMoviesList(List<Movie> moviesArrayList) {
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
         notifyDataSetChanged();
