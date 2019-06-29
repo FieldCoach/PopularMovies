@@ -21,18 +21,13 @@ import java.util.List;
 /**
  * Created by AaronC on 7/26/2017.
  */
-
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePosterAdapterViewHolder>{
 
     private static final String TAG = "PopM";
-
     private static final String MOVIE_ID = "movie_id";
 
     private Context context;
     private ArrayList<Movie> movieArrayList = new ArrayList<>();
-    private ArrayList<byte[]> favoritesPosterArray = new ArrayList<>();
-
-    private Boolean viewingFavorites;
 
     PosterAdapter(Context context){
         this.context = context;
@@ -46,7 +41,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
             super(itemView);
             moviePoster = itemView.findViewById(R.id.iv_movie_poster);
             tvTitle = itemView.findViewById(R.id.tv_movie_title);
-
             itemView.setOnClickListener(this);
         }
 
@@ -59,7 +53,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), DetailsActivity.class);
             int position = getAdapterPosition();
-
             Movie movie = movieArrayList.get(position);
             intent.putExtra(MOVIE_ID, movie.getId());
             view.getContext().startActivity(intent);
@@ -76,9 +69,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
     public MoviePosterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int movieListItemId = R.layout.movie_list_item;
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-
         View view = layoutInflater.inflate(movieListItemId, parent, false);
-
         return new MoviePosterAdapterViewHolder(view);
     }
 
@@ -92,12 +83,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         Movie currentMovie = movieArrayList.get(position);
         String currentMoviePoster = currentMovie.getPosterUriString();
         String movieTitle = movieArrayList.get(position).getTitle();
-
         //Load the image into the ImageView
         Glide.with(context)
                 .load(currentMoviePoster)
                 .into(holder.moviePoster);
-
         holder.tvTitle.setText(movieTitle);
     }
 
@@ -112,6 +101,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         return movieArrayList.size();
     }
 
+    // TODO 6/29/2019: What is difference between this method and updateMoviesList() method? - Emre
     /**
      * Clears previous data from the ArrayList of Movies, adds new Movies, then notifies the Adapter
      * @param moviesArrayList arrayList containing all of the movies
@@ -120,21 +110,18 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
     void setMoviesArrayList(ArrayList<Movie> moviesArrayList, String sortBySelectionString) {
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
-
         String movieTitles = "";
         for (Movie movie : movieArrayList) {
             movieTitles = movieTitles.concat(movie.getTitle() + "\n");
         }
-
         Log.d(TAG, "PosterAdapter.setMoviesArrayList() " + "\n" +
                         "sortBySelectionString:\t" + sortBySelectionString + "\n" +
                         "arraySize:\t" + movieArrayList.size() + "\n" +
                         "TITLES\n" +
                         movieTitles);
-
         //Set viewingFavorites for use later
-        viewingFavorites = sortBySelectionString.equals("favorites");
-
+        // TODO 6/29/2019 - When and for what? - Emre
+        Boolean viewingFavorites = sortBySelectionString.equals("favorites");
         notifyDataSetChanged();
     }
 
