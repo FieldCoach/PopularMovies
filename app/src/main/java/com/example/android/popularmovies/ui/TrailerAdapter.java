@@ -22,39 +22,15 @@ import java.util.List;
 /**
  * Created by ioutd on 11/6/2017.
  */
-
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
-    private final Activity activity;    // TODO: 11/21/2017 () - Change activity to weak reference to avoid memory leak
+    // TODO: 11/21/2017 () - Change activity to weak reference to avoid memory leak - Aaron
+    // TODO 6/29/2019 : Wonder why this is here? This should never be here - Emre
+    private final Activity activity;
     private ArrayList<Result> trailerArrayList = new ArrayList<>();
 
     TrailerAdapter(Activity activity){
         this.activity = activity;
-    }
-
-    class TrailerAdapterViewHolder extends RecyclerView.ViewHolder {
-
-        private YouTubeThumbnailView trailerThumbnail;
-
-        TrailerAdapterViewHolder(final View itemView) {
-            super(itemView);
-            trailerThumbnail = itemView.findViewById(R.id.tn_youtube_trailer);
-
-            //When the thumbnail is clicked, play the video
-            trailerThumbnail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                            activity,
-                            ApiKeyFile.YOUTUBE_API_KEY,
-                            itemView.getTag().toString(),
-                            0,
-                            true,
-                            false);
-                    activity.startActivity(intent);
-                }
-            });
-        }
     }
 
     /**
@@ -67,7 +43,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     public TrailerAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.trailer_list_item, parent, false);
-
         return new TrailerAdapterViewHolder(view);
     }
 
@@ -82,13 +57,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         Result result = trailerArrayList.get(position);
         final String trailerKey = result.getKey();
         holder.itemView.setTag(trailerKey);
-
         holder.trailerThumbnail.initialize(ApiKeyFile.YOUTUBE_API_KEY, new YouTubeThumbnailView.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
                 youTubeThumbnailLoader.setVideo(trailerKey);
             }
-
             @Override
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
 
@@ -113,8 +86,29 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     void setTrailerArrayList(List<Result> trailerArrayList) {
         this.trailerArrayList.clear();
         this.trailerArrayList.addAll(trailerArrayList);
-
         notifyDataSetChanged();
     }
 
+    class TrailerAdapterViewHolder extends RecyclerView.ViewHolder {
+        private YouTubeThumbnailView trailerThumbnail;
+
+        TrailerAdapterViewHolder(final View itemView) {
+            super(itemView);
+            trailerThumbnail = itemView.findViewById(R.id.tn_youtube_trailer);
+            //When the thumbnail is clicked, play the video
+            trailerThumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                            activity,
+                            ApiKeyFile.YOUTUBE_API_KEY,
+                            itemView.getTag().toString(),
+                            0,
+                            true,
+                            false);
+                    activity.startActivity(intent);
+                }
+            });
+        }
+    }
 }
