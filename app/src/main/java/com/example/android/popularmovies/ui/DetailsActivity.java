@@ -27,7 +27,7 @@ import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.data.Result;
+import com.example.android.popularmovies.data.Movies.Result;
 import com.example.android.popularmovies.utilities.MovieDbService;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

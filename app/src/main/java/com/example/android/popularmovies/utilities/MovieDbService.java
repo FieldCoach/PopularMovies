@@ -1,8 +1,7 @@
 package com.example.android.popularmovies.utilities;
 
-import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.Movies;
-import com.example.android.popularmovies.data.Review;
+import com.example.android.popularmovies.data.Movie;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

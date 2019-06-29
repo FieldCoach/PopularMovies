@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.Movies;
+import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.MovieDbService;
 import com.example.android.popularmovies.utilities.NetworkUtils;

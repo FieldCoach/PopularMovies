@@ -6,11 +6,9 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.example.android.popularmovies.data.Movies.Review;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Contains all of the details of a Movie that will be displayed in the UI
- */
 @Entity
 public class Movie {
     @PrimaryKey
@@ -33,12 +31,12 @@ public class Movie {
     private Review reviews;
 
     @Ignore
-    private Video videos;
+    private Movies.Video videos;
 
     public Movie() {
     }
 
-    public Movie(int id, String posterPath, String backdropPath, String title, String voteAverage, String overview, String releaseDate, Review reviews, Video videos) {
+    public Movie(int id, String posterPath, String backdropPath, String title, String voteAverage, String overview, String releaseDate, Review reviews, Movies.Video videos) {
         this.id = id;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
@@ -62,11 +60,11 @@ public class Movie {
         return reviews;
     }
 
-    public Video getVideos() {
+    public Movies.Video getVideos() {
         return videos;
     }
 
-    public void setVideos(Video videos) {
+    public void setVideos(Movies.Video videos) {
         this.videos = videos;
     }
 

@@ -1,15 +1,15 @@
 package com.example.android.popularmovies.ui;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.data.Result;
-import com.example.android.popularmovies.data.Review;
+import com.example.android.popularmovies.data.Movies.Result;
 
 import java.util.ArrayList;
 import java.util.List;

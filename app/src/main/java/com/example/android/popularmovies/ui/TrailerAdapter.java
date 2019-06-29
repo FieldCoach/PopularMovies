@@ -2,14 +2,15 @@ package com.example.android.popularmovies.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.data.Result;
+import com.example.android.popularmovies.data.Movies.Result;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
