@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,12 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
     private static final String FAVORITES = "favorites";
 
-    private static List<Movie> moviesArrayList = new ArrayList<>();
+    private List<Movie> moviesArrayList = new ArrayList<>();
     private String sortBySelectionString = "popular";
     private String mPage = "1";
-
     private PosterAdapter posterAdapter;
-    private GridLayoutManager gridLayoutManager;
 
     /**
      * Creates and format the RecyclerView and adds an EndlessRecyclerViewScrollListener to allow endless
@@ -57,21 +55,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
-
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
-
         //Configure the GridLayoutManager then set it as the layout manager of the RecyclerView
         int noOfColumns = calculateNoOfColumns(this);
-        gridLayoutManager = new GridLayoutManager(this, noOfColumns);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, noOfColumns);
         RecyclerView rvMoviePosters = findViewById(R.id.rv_movie_posters);
-
         rvMoviePosters.setLayoutManager(gridLayoutManager);
-
         //Construct and set the adapter for the RecyclerView
         posterAdapter = new PosterAdapter(this);
         rvMoviePosters.setAdapter(posterAdapter);
-
         //Construct a new Endless Scroll Listener and pass it the GridLayoutManager
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
@@ -96,98 +89,63 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // TODO 6/29/2018: Not sure what is this scroll position is used for? - Emre
-        int currentScrollPosition = gridLayoutManager.findFirstVisibleItemPosition();
+        // TODO 6/29/2018: If the following variable is not in use, we don't need to override onPause() - Emre
+        // int currentScrollPosition = gridLayoutManager.findFirstVisibleItemPosition();
     }
 
-    /**
-     * Inflates the main menu
-     * @param menu the menu to be inflated
-     * @return true, representing this was done successfully
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
-    /**
-     * Changes sortBySelection to the value of the selected menu item, checks if the device is online
-     * (except with favorites), then loads movies based off of the selected item
-     *
-     * @param item menu item that was selected
-     * @return true representing it was done successfully
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Calculates the number of columns for the GridLayoutManager
-     * @param context the context
-     * @return the number of columns
-     */
-    public static int calculateNoOfColumns (Context context){
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int scalingFactor = 180;
-        return (int) (dpWidth / scalingFactor);
-    }
-
-    /**
-     * Gets the URL used to request movies then starts the MOVIE_LOADER
-     *
-     * getMovies() method is deprecated.
+     * Uses retrofit to get movies from MovieDB endpoint
      */
     private void getMovies() {
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        // set your desired log level
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
         // Build Http Client
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        httpClient.addInterceptor(logging);
-
         // Build Retrofit Object with Base URL
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MOVIE_DB_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
                 .build();
-
         // Create the Service Object containing the @GET call
         MovieDbService service = retrofit.create(MovieDbService.class);
-
         // Create the Call by calling the @GET method from the Service
-        Call<Movies> call = service.getSortedMovies("popular", ApiKeyFile.MOVIE_DB_API_KEY, mPage);
-
+        Call<Movies> call = service.getSortedMovies(
+                        "popular",
+                        ApiKeyFile.MOVIE_DB_API_KEY,
+                        mPage);
         Log.d("MainActivity", "getMovies: " + call.toString());
         Log.d("MainActivity", "getMovies: " + mPage);
-
         // Use the method enqueue from the Call to act upon onResponse and onFailure
         call.enqueue(new Callback<Movies>() {
             @Override
-            public void onResponse(Call<Movies> call, Response<Movies> response) {
+            public void onResponse(@NonNull Call<Movies> call,@NonNull Response<Movies> response) {
                 Movies movies = response.body();
-
-                if (moviesArrayList == null) {
-                    // Get an ArrayList containing the Movies
-                    moviesArrayList = movies.getMovies();
-                } else {
-                    // Get an ArrayList containing more Movies and add them to the existing Movies
-                    List<Movie> moreMovies = movies.getMovies();
-                    moviesArrayList.addAll(moreMovies);
-
+                if(movies != null) {
+                    if (moviesArrayList == null) {
+                        // Get an ArrayList containing the Movies
+                        moviesArrayList = movies.getMovies();
+                    } else {
+                        // Get an ArrayList containing more Movies and add them to the existing Movies
+                        List<Movie> moreMovies = movies.getMovies();
+                        moviesArrayList.addAll(moreMovies);
+                    }
                 }
                 posterAdapter.updateMoviesList(moviesArrayList);
                 Log.d("MainActivity", "onResponse: " + mPage);
             }
 
             @Override
-            public void onFailure(Call<Movies> call, Throwable t) {
+            public void onFailure(@NonNull Call<Movies> call,@NonNull Throwable t) {
                 Log.d("MainActivity", "onFailure: " + t.getMessage());
             }
         });
@@ -230,5 +188,17 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
         return connected;
+    }
+
+    /**
+     * Calculates the number of columns for the GridLayoutManager
+     * @param context the context
+     * @return the number of columns
+     */
+    public static int calculateNoOfColumns (Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 180;
+        return (int) (dpWidth / scalingFactor);
     }
 }
