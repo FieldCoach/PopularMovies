@@ -9,14 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by AaronC on 7/26/2017.
@@ -26,7 +26,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
 
     private static final String TAG = "PopM";
 
-    private static final String MOVIE = "movie";
+    private static final String MOVIE_ID = "movie_id";
 
     private Context context;
     private ArrayList<Movie> movieArrayList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
             int position = getAdapterPosition();
 
             Movie movie = movieArrayList.get(position);
-            intent.putExtra(MOVIE, movie);
+            intent.putExtra(MOVIE_ID, movie.getId());
             view.getContext().startActivity(intent);
         }
     }

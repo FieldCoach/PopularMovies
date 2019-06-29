@@ -61,18 +61,18 @@ public class JSONDataHandler {
             String backdropUriString = NetworkUtils.buildImageUriString(backdropPath);
 
             //Store all of the details as fields within a Movie Object
-            Movie movie = new Movie.Builder()
-//                    .movieId(JSONMovieObject.getString(ID))
-                    .posterLocationUriString(moviePosterUriString)
-                    .backdropLocationUriString(backdropUriString)
-                    .title(JSONMovieObject.getString(TITLE))
-                    .voteAverage(JSONMovieObject.getString(VOTE_AVERAGE))
-                    .overview(JSONMovieObject.getString(OVERVIEW))
-                    .releaseDate(JSONMovieObject.getString(RELEASE_DATE))
-                    .build();
+//            Movie movie = new Movie.Builder()
+////                    .movieId(JSONMovieObject.getString(ID))
+//                    .posterLocationUriString(moviePosterUriString)
+//                    .backdropLocationUriString(backdropUriString)
+//                    .title(JSONMovieObject.getString(TITLE))
+//                    .voteAverage(JSONMovieObject.getString(VOTE_AVERAGE))
+//                    .overview(JSONMovieObject.getString(OVERVIEW))
+//                    .releaseDate(JSONMovieObject.getString(RELEASE_DATE))
+//                    .build();
 
             //Add the Movie Object to the ArrayList
-            moviesArray.add(movie);
+//            moviesArray.add(movie);
         }
         return moviesArray;
     }

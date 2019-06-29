@@ -12,23 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.android.popularmovies.ApiKeyFile;
-import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.data.Result;
-import com.example.android.popularmovies.data.Review;
-import com.example.android.popularmovies.utilities.JSONDataHandler;
-import com.example.android.popularmovies.utilities.MovieDbService;
-import com.example.android.popularmovies.utilities.NetworkUtils;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.json.JSONException;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ShareActionProvider;
 import androidx.cardview.widget.CardView;
@@ -39,6 +22,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
+
+import com.bumptech.glide.Glide;
+import com.example.android.popularmovies.ApiKeyFile;
+import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.data.Movie;
+import com.example.android.popularmovies.data.Result;
+import com.example.android.popularmovies.utilities.MovieDbService;
+import com.example.android.popularmovies.utilities.NetworkUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -56,7 +50,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
 
     private static final String TAG = "PopM";
 
-    private static final String MOVIE = "movie";
+    private static final String MOVIE_ID = "movie_id";
     private static final String DETAILS_REQUEST_URL = "details_request_url";
     private static final int DETAILS_LOADER = 2;
     private static final int INSERT_FAVS_LOADER = 4;
@@ -97,19 +91,18 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
         cvReviews = findViewById(R.id.cv_reviews);
 
         //Only attempt to get Extras from the intent if it has the Extras needed
-        if (intentFromMainActivity.hasExtra(MOVIE)) {
+        if (intentFromMainActivity.hasExtra(MOVIE_ID)) {
 
-            final Movie movie = intentFromMainActivity.getParcelableExtra(MOVIE);
+            int movieId = intentFromMainActivity.getIntExtra(MOVIE_ID, -1);
 
             //Get the poster and backdrop
 //            getPosterAndBackdrop(movie);
 
-            //Get the text details
-            getDetailsText(movie);
 
             //Load the trailers and reviews using the movieId
 //            loadTrailersAndReviews(movie.getId());
-            getMovieDetails(movie);
+            String movieIdString = String.valueOf(movieId);
+            getMovieDetails(movieIdString);
 
             //Setup the reviews RecyclerView
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -140,12 +133,12 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
                     //Remove from favorites
                     if (favorite){
                         icon = Icon.createWithResource(view.getContext(), R.drawable.ic_favorite_black_48dp);
-                        deleteFavoriteFromDb(movie.getTitle());
+//                        deleteFavoriteFromDb(movie.getTitle());
                         favorite = false;
                     //Add to favorites
                     } else {
                         icon = Icon.createWithResource(view.getContext(), R.drawable.ic_favorite_red_48dp);
-                        insertFavoriteToDb(movie);
+//                        insertFavoriteToDb(movie);
                         favorite = true;
                     }
 
@@ -155,7 +148,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
         }
     }
 
-    private void getMovieDetails(Movie movie) {
+    private void getMovieDetails(String movieIdString) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 
@@ -178,8 +171,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
         MovieDbService service = retrofit.create(MovieDbService.class);
 
         // Create the Call by calling the @GET method from the Service
-        String movieId = String.valueOf(movie.getId());
-        Call<Movie> call = service.getDetails(movieId, ApiKeyFile.MOVIE_DB_API_KEY, REVIEWS + TRAILERS);
+        Call<Movie> call = service.getDetails(movieIdString, ApiKeyFile.MOVIE_DB_API_KEY, REVIEWS + TRAILERS);
 
         // Use the method enqueue from the Call to act upon onResponse and onFailure
         call.enqueue(new Callback<Movie>() {
@@ -301,7 +293,7 @@ public class DetailsActivity extends AppCompatActivity  implements LoaderManager
                 return new DetailsLoader(this, bundle, DETAILS_REQUEST_URL); */
             /**
             case INSERT_FAVS_LOADER:
-                return new InsertFavoritesLoader(this, bundle, MOVIE); */
+                return new InsertFavoritesLoader(this, bundle, MOVIE_ID); */
             default:
                 throw new RuntimeException("Loader Not Implemented: " + id);
         }
