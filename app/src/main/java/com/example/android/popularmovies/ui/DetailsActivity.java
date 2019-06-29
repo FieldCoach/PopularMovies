@@ -199,7 +199,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
         List<Result> reviewsList = movie.getReviews().getResults();
         if (reviewsList.size() > 0){
-            reviewAdapter.setmReviewArrayList(reviewsList);
+            reviewAdapter.updateReviewList(reviewsList);
         } else {
             //Hide the reviews CardView if there are no reviews
             cvReviews.setVisibility(View.GONE);

@@ -17,30 +17,13 @@ import java.util.List;
 /**
  * Created by AaronC on 11/2/2017.
  */
-
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder> {
 
     private Context mContext;
     private ArrayList<Result> mReviewArrayList = new ArrayList<>();
-    private final static String TAG = ReviewAdapter.class.getSimpleName();
 
     ReviewAdapter(Context context) {
         mContext = context;
-    }
-
-    class ReviewAdapterViewHolder extends RecyclerView.ViewHolder{
-
-        private TextView author;
-        private TextView content;
-        private View view;
-
-        ReviewAdapterViewHolder(View itemView) {
-            super(itemView);
-
-            author = itemView.findViewById(R.id.tv_author);
-            content = itemView.findViewById(R.id.tv_content);
-            view = itemView.findViewById(R.id.v_seperator);
-        }
     }
 
     /**
@@ -53,7 +36,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.review_list_item, parent, false);
-
         return new ReviewAdapterViewHolder(view);
     }
 
@@ -65,10 +47,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     @Override
     public void onBindViewHolder(ReviewAdapterViewHolder holder, int position) {
         Result result = mReviewArrayList.get(position);
-
         holder.author.setText(result.getAuthor());
         holder.content.setText(result.getContent());
-
         if (position == mReviewArrayList.size() - 1){
             holder.view.setVisibility(View.GONE);
         }
@@ -88,10 +68,22 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
      * Clears previous data from the ArrayList of Reviews, adds new Reviews, then notifies the Adapter
      * @param mReviewArrayList arrayList containing the reviews
      */
-    void setmReviewArrayList(List<Result> mReviewArrayList) {
+    void updateReviewList(List<Result> mReviewArrayList) {
         this.mReviewArrayList.clear();
         this.mReviewArrayList.addAll(mReviewArrayList);
-
         notifyDataSetChanged();
+    }
+
+    class ReviewAdapterViewHolder extends RecyclerView.ViewHolder{
+        private TextView author;
+        private TextView content;
+        private View view;
+
+        ReviewAdapterViewHolder(View itemView) {
+            super(itemView);
+            author = itemView.findViewById(R.id.tv_author);
+            content = itemView.findViewById(R.id.tv_content);
+            view = itemView.findViewById(R.id.v_seperator);
+        }
     }
 }
