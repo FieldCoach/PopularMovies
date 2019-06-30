@@ -15,6 +15,9 @@
     <string name="favorites">Favorites</string>
     <string name="share">Share</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Navigation Drawer string resources -->
+    <string name="navHomeTitle">Home</string>
+    <string name="navFavoritesTitle">Favorites</string>
+    <string name="defaultUserName">John</string>
+    <string name="defaultEmail">john_doe@email.com</string>
 </resources>
