@@ -1,7 +1,6 @@
 package com.example.android.popularmovies.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,39 +23,14 @@ import java.util.List;
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePosterAdapterViewHolder>{
 
     private static final String TAG = "PopM";
-    private static final String MOVIE_ID = "movie_id";
 
     private Context context;
     private ArrayList<Movie> movieArrayList = new ArrayList<>();
+    private PosterAdapterClickListener listener;
 
-    public PosterAdapter(Context context){
+    public PosterAdapter(Context context, PosterAdapterClickListener listener){
         this.context = context;
-    }
-
-    public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        final ImageView moviePoster;
-        final TextView tvTitle;
-
-        MoviePosterAdapterViewHolder(View itemView) {
-            super(itemView);
-            moviePoster = itemView.findViewById(R.id.iv_movie_poster);
-            tvTitle = itemView.findViewById(R.id.tv_movie_title);
-            itemView.setOnClickListener(this);
-        }
-
-        /**
-         * Stores the Movie Object at the current adapter position into an intent and passes it to
-         * the DetailsActivity
-         * @param view The moviePoster ImageView that was clicked
-         */
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), DetailsActivity.class);
-            int position = getAdapterPosition();
-            Movie movie = movieArrayList.get(position);
-            intent.putExtra(MOVIE_ID, movie.getId());
-            view.getContext().startActivity(intent);
-        }
+        this.listener = listener;
     }
 
     /**
@@ -67,10 +41,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
      */
     @Override
     public MoviePosterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        int movieListItemId = R.layout.movie_list_item;
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(movieListItemId, parent, false);
-        return new MoviePosterAdapterViewHolder(view);
+        View itemView = LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.movie_list_item, parent,false);
+        return new MoviePosterAdapterViewHolder(itemView);
     }
 
     /**
@@ -80,14 +54,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
      */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
-        Movie currentMovie = movieArrayList.get(position);
-        String currentMoviePoster = currentMovie.getPosterUriString();
-        String movieTitle = movieArrayList.get(position).getTitle();
-        //Load the image into the ImageView
-        Glide.with(context)
-                .load(currentMoviePoster)
-                .into(holder.moviePoster);
-        holder.tvTitle.setText(movieTitle);
+        holder.onBind(movieArrayList.get(position));
     }
 
     /**
@@ -129,5 +96,30 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
         notifyDataSetChanged();
+    }
+
+    public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder {
+        final TextView tvTitle;
+        final ImageView moviePoster;
+
+        MoviePosterAdapterViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(v ->
+                    listener.onPosterClick(movieArrayList.get(getAdapterPosition()).getId()));
+            tvTitle = itemView.findViewById(R.id.tv_movie_title);
+            moviePoster = itemView.findViewById(R.id.iv_movie_poster);
+        }
+
+        public void onBind(Movie movie) {
+            tvTitle.setText(movie.getTitle());
+            //Load the image into the ImageView
+            Glide.with(context)
+                    .load(movie.getPosterUriString())
+                    .into(moviePoster);
+        }
+    }
+
+    public interface PosterAdapterClickListener {
+        void onPosterClick(int movieId);
     }
 }
