@@ -29,7 +29,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     private final Activity activity;
     private ArrayList<Result> trailerArrayList = new ArrayList<>();
 
-    TrailerAdapter(Activity activity){
+    public TrailerAdapter(Activity activity){
         this.activity = activity;
     }
 
@@ -83,7 +83,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
      * Clears previous data from the ArrayList of keys, adds new keys, then notifies the Adapter
      * @param trailerArrayList arrayList containing the trailer video keys
      */
-    void setTrailerArrayList(List<Result> trailerArrayList) {
+    public void setTrailerArrayList(List<Result> trailerArrayList) {
         this.trailerArrayList.clear();
         this.trailerArrayList.addAll(trailerArrayList);
         notifyDataSetChanged();
