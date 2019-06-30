@@ -22,7 +22,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     private Context mContext;
     private ArrayList<Result> mReviewArrayList = new ArrayList<>();
 
-    ReviewAdapter(Context context) {
+    public ReviewAdapter(Context context) {
         mContext = context;
     }
 
@@ -68,7 +68,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
      * Clears previous data from the ArrayList of Reviews, adds new Reviews, then notifies the Adapter
      * @param mReviewArrayList arrayList containing the reviews
      */
-    void updateReviewList(List<Result> mReviewArrayList) {
+    public void updateReviewList(List<Result> mReviewArrayList) {
         this.mReviewArrayList.clear();
         this.mReviewArrayList.addAll(mReviewArrayList);
         notifyDataSetChanged();
