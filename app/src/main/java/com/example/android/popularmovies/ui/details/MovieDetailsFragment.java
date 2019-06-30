@@ -137,37 +137,12 @@ public class MovieDetailsFragment extends Fragment {
                                                             LinearLayoutManager.HORIZONTAL,
                                                             false);
         trailerAdapter = new TrailerAdapter(getActivity());
-        SnapHelper snapHelper = new LinearSnapHelper();
         rvMovieTrailers.setLayoutManager(horizontalLayoutManager);
         rvMovieTrailers.setAdapter(trailerAdapter);
-        snapHelper.attachToRecyclerView(rvMovieTrailers);
         floatingActionButton = view.findViewById(R.id.floatingActionButton);
         //Setup the add to favorites button
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Icon icon;
-                //Prevent favorites database changes offline
-                if (!NetworkUtils.isOnline(Objects.requireNonNull(getContext()))) {
-                    Toast.makeText(getContext(),
-                            "Favorites can't be modified offline",
-                            Toast.LENGTH_SHORT)
-                            .show();
-                    return;
-                }
-                //Remove from favorites
-                if (favorite){
-                    icon = Icon.createWithResource(view.getContext(), R.drawable.ic_favorite_black_48dp);
-                    //  deleteFavoriteFromDb(movie.getTitle());
-                    favorite = false;
-                    //Add to favorites
-                } else {
-                    icon = Icon.createWithResource(view.getContext(), R.drawable.ic_favorite_red_48dp);
-                    //  insertFavoriteToDb(movie);
-                    favorite = true;
-                }
-                floatingActionButton.setImageIcon(icon);
-            }
+        floatingActionButton.setOnClickListener(v -> {
+            // TODO 6/30/2019 : Implement FAB click - Emre
         });
         return view;
     }
