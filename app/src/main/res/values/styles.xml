@@ -24,4 +24,11 @@
         <item name="android:paddingBottom">8dp</item>
     </style>
 
+    <!-- Toolbar Style -->
+    <style name="ToolbarStyle" parent="AppTheme">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
 </resources>
