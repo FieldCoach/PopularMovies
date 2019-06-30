@@ -78,8 +78,6 @@ public class MovieDetailsFragment extends Fragment {
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
     private ShareActionProvider mShareActionProvider;
-    private Boolean favorite = false;
-    private FloatingActionButton floatingActionButton;
     private CardView cvTrailers;
     private CardView cvReviews;
     private TextView tvTitle;
@@ -108,15 +106,14 @@ public class MovieDetailsFragment extends Fragment {
         if(getArguments() != null) {
             movieId = getArguments().getInt(ARG_MOVIE_ID);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
-        RecyclerView rvReviews = view.findViewById(R.id.rv_reviews);
-        RecyclerView rvMovieTrailers = view.findViewById(R.id.rv_movie_trailers);
         cvTrailers = view.findViewById(R.id.cv_trailers);
         cvReviews = view.findViewById(R.id.cv_reviews);
         tvTitle = view.findViewById(R.id.tv_title);
@@ -125,21 +122,23 @@ public class MovieDetailsFragment extends Fragment {
         tvReleaseDate = view.findViewById(R.id.tv_release_date);
         ivDetailsPoster = view.findViewById(R.id.iv_details_poster);
         ivBackDrop = view.findViewById(R.id.iv_back_drop);
-        String movieIdString = String.valueOf(movieId);
-        getMovieDetails(movieIdString);
+        // Get movie details from server
+        getMovieDetails(String.valueOf(movieId));
         //Setup the reviews RecyclerView
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        RecyclerView rvReviews = view.findViewById(R.id.rv_reviews);
+        rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
         reviewAdapter = new ReviewAdapter(getContext());
-        rvReviews.setLayoutManager(layoutManager);
         rvReviews.setAdapter(reviewAdapter);
         //Setup the movie trailer RecyclerView
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(),
-                                                            LinearLayoutManager.HORIZONTAL,
-                                                            false);
+        RecyclerView rvMovieTrailers = view.findViewById(R.id.rv_movie_trailers);
+        rvMovieTrailers.setLayoutManager(
+                        new LinearLayoutManager(getContext(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false));
         trailerAdapter = new TrailerAdapter(getActivity());
-        rvMovieTrailers.setLayoutManager(horizontalLayoutManager);
         rvMovieTrailers.setAdapter(trailerAdapter);
-        floatingActionButton = view.findViewById(R.id.floatingActionButton);
+        // private Boolean favorite = false;
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
         //Setup the add to favorites button
         floatingActionButton.setOnClickListener(v -> {
             // TODO 6/30/2019 : Implement FAB click - Emre
@@ -171,14 +170,16 @@ public class MovieDetailsFragment extends Fragment {
         // Use the method enqueue from the Call to act upon onResponse and onFailure
         call.enqueue(new Callback<Movie>() {
             @Override
-            public void onResponse(Call<Movie> call, Response<Movie> response) {
+            public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
                 Movie movie = response.body();
-                getDetailsText(movie);
-                getPosterAndBackdrop(movie);
-                loadTrailersAndReviews(movie);
+                if(movie != null) {
+                    getDetailsText(movie);
+                    getPosterAndBackdrop(movie);
+                    loadTrailersAndReviews(movie);
+                }
             }
             @Override
-            public void onFailure(Call<Movie> call, Throwable t) {
+            public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
                 Log.d("DetailsActivity", "onFailure: " + t.getMessage());
                 // TODO: 6/28/2019 warn the user the movie didn't load - Aaron
             }
@@ -249,15 +250,5 @@ public class MovieDetailsFragment extends Fragment {
      */
     private void insertFavoriteToDb(Movie movie) {
         // TODO: 6/28/2019 Add movie to Room - Aaron
-    }
-
-    /**
-     * Sets the intent containing the data to be shared
-     * @param shareIntent the intent containing the data
-     */
-    private void setShareIntent(Intent shareIntent){
-        if (mShareActionProvider != null){
-            mShareActionProvider.setShareIntent(shareIntent);
-        }
     }
 }
