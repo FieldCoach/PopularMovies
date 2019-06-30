@@ -77,7 +77,6 @@ public class MovieDetailsFragment extends Fragment {
 
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
-    private ShareActionProvider mShareActionProvider;
     private CardView cvTrailers;
     private CardView cvReviews;
     private TextView tvTitle;
@@ -150,8 +149,6 @@ public class MovieDetailsFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_details, menu);
-        MenuItem item = menu.findItem(R.id.menu_item_share);
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
     }
 
     private void getMovieDetails(String movieIdString) {
