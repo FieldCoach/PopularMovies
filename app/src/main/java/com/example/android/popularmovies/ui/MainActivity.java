@@ -43,17 +43,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
     private void setActionBarIcon() {
         ActionBar actionBar = getSupportActionBar();
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
@@ -62,29 +51,29 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration getAppBarConfig() {
         return new AppBarConfiguration
-                .Builder(R.id.nav_home, R.id.nav_detail)
+                .Builder(R.id.nav_home)
                 .setDrawerLayout(drawerLayout).build();
     }
 
     private void setDrawerItemClickListener() {
         navView.setNavigationItemSelectedListener(
-                menuItem -> {
-                    switch (menuItem.getItemId()) {
-                        case R.id.nav_home:
-                            Navigation
-                                    .findNavController(this, R.id.nav_host_fragment)
-                                    .navigate(R.id.nav_home);
-                            drawerLayout.closeDrawers();
-                            return true;
-                        case R.id.nav_detail:
-                            Navigation
-                                    .findNavController(this, R.id.nav_host_fragment)
-                                    .navigate(R.id.nav_detail);
-                            drawerLayout.closeDrawers();
-                            return true;
-                    }
-                    return true;
+            menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_home:
+                        Navigation
+                                .findNavController(this, R.id.nav_host_fragment)
+                                .navigate(R.id.nav_home);
+                        drawerLayout.closeDrawers();
+                        return true;
+                    case R.id.nav_detail:
+                        Navigation
+                                .findNavController(this, R.id.nav_host_fragment)
+                                .navigate(R.id.nav_detail);
+                        drawerLayout.closeDrawers();
+                        return true;
                 }
+                return true;
+            }
         );
     }
 }
