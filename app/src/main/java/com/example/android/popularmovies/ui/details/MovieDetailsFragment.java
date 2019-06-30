@@ -56,7 +56,6 @@ import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.Movies;
-import com.example.android.popularmovies.ui.DetailsActivity;
 import com.example.android.popularmovies.ui.ReviewAdapter;
 import com.example.android.popularmovies.ui.TrailerAdapter;
 import com.example.android.popularmovies.utilities.MovieDbService;

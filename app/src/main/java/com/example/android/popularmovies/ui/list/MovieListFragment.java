@@ -43,6 +43,7 @@ import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.Movies;
 import com.example.android.popularmovies.ui.PosterAdapter;
+import com.example.android.popularmovies.ui.details.MovieDetailsFragment;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.MovieDbService;
 import com.example.android.popularmovies.utilities.NetworkUtils;
@@ -54,7 +55,9 @@ import java.util.Objects;
 /**
  * Created by androidpirate.
  */
-public class MovieListFragment extends Fragment {
+public class MovieListFragment extends Fragment
+    implements PosterAdapter.PosterAdapterClickListener {
+
     private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
     private static final String FAVORITES = "favorites";
 
@@ -89,7 +92,7 @@ public class MovieListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rv_list);
         // Setup GridLayoutManager
         setLayoutManager();
-        adapter = new PosterAdapter(getContext());
+        adapter = new PosterAdapter(getContext(), this);
         recyclerView.setAdapter(adapter);
         if(isConnectedToNetwork()) {
             getMoviesFromServer();
@@ -202,5 +205,14 @@ public class MovieListFragment extends Fragment {
      */
     private boolean isConnectedToNetwork() {
         return NetworkUtils.isOnline(Objects.requireNonNull(getContext()));
+    }
+
+    @Override
+    public void onPosterClick(int movieId) {
+        Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, MovieDetailsFragment.newInstance(movieId))
+                .commit();
     }
 }
