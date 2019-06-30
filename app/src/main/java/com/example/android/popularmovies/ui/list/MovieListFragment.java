@@ -218,6 +218,6 @@ public class MovieListFragment extends Fragment
         args.putInt(MovieDetailsFragment.ARG_MOVIE_ID, movieId);
         Navigation.findNavController(Objects.requireNonNull(getActivity()),
                                     R.id.nav_host_fragment)
-                .navigate(R.id.nav_detail, args);
+                .navigate(R.id.action_list_to_detail, args);
     }
 }
