@@ -23,6 +23,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.OkHttpClient;
@@ -209,10 +210,14 @@ public class MovieListFragment extends Fragment
 
     @Override
     public void onPosterClick(int movieId) {
-        Objects.requireNonNull(getActivity())
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, MovieDetailsFragment.newInstance(movieId))
-                .commit();
+        navigateToDetail(movieId);
+    }
+
+    private void navigateToDetail(int movieId) {
+        Bundle args = new Bundle();
+        args.putInt(MovieDetailsFragment.ARG_MOVIE_ID, movieId);
+        Navigation.findNavController(Objects.requireNonNull(getActivity()),
+                                    R.id.nav_host_fragment)
+                .navigate(R.id.nav_detail, args);
     }
 }

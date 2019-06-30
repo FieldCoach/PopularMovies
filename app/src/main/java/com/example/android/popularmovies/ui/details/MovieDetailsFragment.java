@@ -18,21 +18,14 @@
 
 package com.example.android.popularmovies.ui.details;
 
-
-import android.content.Intent;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.ShareActionProvider;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,7 +37,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -70,7 +62,7 @@ import java.util.Objects;
  */
 public class MovieDetailsFragment extends Fragment {
 
-    private static final String ARG_MOVIE_ID = "movie_id";
+    public static final String ARG_MOVIE_ID = "movie_id";
     private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
     private static final String REVIEWS = "reviews";
     private static final String TRAILERS = ",videos";
