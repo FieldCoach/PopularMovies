@@ -33,12 +33,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         this.listener = listener;
     }
 
-    /**
-     * Inflates the layout of the Movie list_item then returns a ViewHolder containing that layout
-     * @param parent the parent ViewGroup
-     * @param viewType identifies the type of view
-     * @return ViewHolder containing the inflated layout
-     */
     @Override
     public MoviePosterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater
@@ -47,21 +41,11 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         return new MoviePosterAdapterViewHolder(itemView);
     }
 
-    /**
-     * Loads the poster image and binds it to the ImageView in the ViewHolder
-     * @param holder the ViewHolder
-     * @param position the position of the ViewHolder to be bound
-     */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
         holder.onBind(movieArrayList.get(position));
     }
 
-    /**
-     * Returns the total number of items in the data set held by the adapter.
-     *
-     * @return The total number of items in this adapter.
-     */
     @Override
     public int getItemCount() {
         if (null == movieArrayList) return 0;
@@ -92,13 +76,19 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         notifyDataSetChanged();
     }
 
+    /**
+     * TODO 7/1/2019 NEW FEAT:
+     *  Instead of updating the adapter data here,
+     *  we need to implement a diff util class to
+     *  handle data changes - Emre
+     */
     public void updateMoviesList(List<Movie> moviesArrayList) {
         this.movieArrayList.clear();
         this.movieArrayList.addAll(moviesArrayList);
         notifyDataSetChanged();
     }
 
-    public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder {
+    class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder {
         final TextView tvTitle;
         final ImageView moviePoster;
 

@@ -13,9 +13,12 @@ import com.google.gson.annotations.SerializedName;
 public class Movie {
     @PrimaryKey
     private int id;
+    /**
+     * TODO 7/1/2019 CODE CLEAN-UP:
+     *  Do we need a serialized name for each of these fields? - Emre
+     */
     @SerializedName("poster_path")
     private String posterPath;
-
     @SerializedName("backdrop_path")
     private String backdropPath;
     private String title;
@@ -26,13 +29,19 @@ public class Movie {
 
     private final static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
     private final static String IMAGE_SIZE = "w342";
-
+    /**
+     * TODO 7/1/2019 NEW FEAT: Following fields require type converters in order
+     *  to be restored in Room database - Emre
+     */
     @Ignore
     private Review reviews;
 
     @Ignore
     private Movies.Video videos;
 
+    /**
+     * TODO 7/1/2019 CODE CLEAN-UP: No need an empty constructor - Emre
+     */
     public Movie() {
     }
 
@@ -64,6 +73,9 @@ public class Movie {
         return videos;
     }
 
+    /**
+     * TODO 7/1/2019 CODE CLEAN-UP: Do we really need this method? - Emre
+     */
     public void setVideos(Movies.Video videos) {
         this.videos = videos;
     }
@@ -116,6 +128,9 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
+    /**
+     * TODO 7/1/2019 CODE CLEAN-UP: Do we really need this method? - Emre
+     */
     public void setReviews(Review reviews) {
         this.reviews = reviews;
     }

@@ -16,6 +16,14 @@
   ~      limitations under the License.
   ~
   -->
+
+<!--
+     TODO 7/1/2019 - NEW FEAT: This layout needs to be redesigned to
+      simplify the hierarchy of widgets and handling scrolling within
+      the RecyclerView itself better.
+      - Reviews could be a tab
+      - The backdrop could be  collapsing toolbar - Emre
+-->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

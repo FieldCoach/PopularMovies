@@ -22,10 +22,17 @@ import java.util.List;
 /**
  * Created by ioutd on 11/6/2017.
  */
+/**
+ * TODO 7/1/2019 CODE CLEAN-UP:
+ *  Aaron, please update this class using PosterAdapter as a template - Emre
+ */
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
-    // TODO: 11/21/2017 () - Change activity to weak reference to avoid memory leak - Aaron
-    // TODO 6/29/2019 : Wonder why this is here? This should never be here - Emre
+    /*
+     TODO: 11/21/2017 () - Change activity to weak reference to avoid memory leak - Aaron
+     TODO 7/1/2019(Update) CODE CLEAN-UP: Whatever requires the activity itself to do its job,
+      shouldn't be here so, this implementation needs to be handled in another way - Emre
+     */
     private final Activity activity;
     private ArrayList<Result> trailerArrayList = new ArrayList<>();
 
@@ -99,6 +106,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
             trailerThumbnail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    /* TODO 7/1/I2019 CODE CLEAN-UP: Aaron, never handle these click events
+                    *   here in the holder class. Instead use a listener interface
+                    *   (check out PosterAdapter impl) and delegate the work to Fragment,
+                    *   that way you don't have to pass Activity instance to adapter. - Emre
+                    */
                     Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                             activity,
                             ApiKeyFile.YOUTUBE_API_KEY,

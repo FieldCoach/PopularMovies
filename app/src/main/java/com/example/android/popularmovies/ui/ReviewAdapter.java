@@ -17,21 +17,24 @@ import java.util.List;
 /**
  * Created by AaronC on 11/2/2017.
  */
+/**
+ * TODO 7/1/2019 CODE CLEAN-UP:
+ *  Aaron, please update this class using PosterAdapter as a template - Emre
+ */
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder> {
 
     private Context mContext;
     private ArrayList<Result> mReviewArrayList = new ArrayList<>();
 
+    /**
+     * TODO 7/1/2019 CODE CLEAN-UP:
+     *  We don't need to pass the Context here,
+     *  we can simply get it from the parent in onCreateViewHolder() - Emre
+     */
     public ReviewAdapter(Context context) {
         mContext = context;
     }
 
-    /**
-     * Inflates the review_list_item layout then returns a ViewHolder containing that layout
-     * @param parent the parent ViewGroup
-     * @param viewType identifies the type of view
-     * @return ViewHolder containing the inflated layout
-     */
     @Override
     public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -39,11 +42,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         return new ReviewAdapterViewHolder(view);
     }
 
-    /**
-     * Sets the text on the TextViews in the ViewHolder
-     * @param holder the ViewHolder
-     * @param position the position of the ViewHolder to be bound
-     */
     @Override
     public void onBindViewHolder(ReviewAdapterViewHolder holder, int position) {
         Result result = mReviewArrayList.get(position);
@@ -54,10 +52,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         }
     }
 
-    /**
-     * Returns the total number of items in the data set held by the adapter.
-     * @return The total number of items in this adapter.
-     */
     @Override
     public int getItemCount() {
         if (null == mReviewArrayList) return 0;

@@ -36,7 +36,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+/**
+ * TODO 7/1/2019 NEW FEAT:
+ *  Repo class will be the center of data access.
+ *  We are also use to store data in cache and
+ *  use that data when offline using Repo class. - Emre
+ */
 public class MovieRepository {
     private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
     private static final String SORT_BY_POPULAR = "popular";
@@ -74,6 +79,12 @@ public class MovieRepository {
 
             @Override
             public void onFailure(@NonNull Call<Movies> call,@NonNull Throwable t) {
+                /**
+                 * TODO 7/1/2019 NEW FEAT:
+                 *  Instead of creating a log message, we need to use
+                 *  either cache or database to display those results
+                 *  and may be show a Toast about connection error here - Emre
+                 */
                 Log.d("MovieRepository", "onFailure: " + t.getMessage());
             }
         });
@@ -94,15 +105,17 @@ public class MovieRepository {
                 Movie movie = response.body();
                 if(movie != null) {
                     serverMovieDetails.setValue(movie);
-                    // getDetailsText(movie);
-                    // getPosterAndBackdrop(movie);
-                    // loadTrailersAndReviews(movie);
                 }
             }
             @Override
             public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
+                /**
+                 * TODO 7/1/2019 NEW FEAT:
+                 *  Instead of creating a log message, we need to use
+                 *  either cache or database to display those results
+                 *  and may be show a Toast about connection error here - Emre
+                 */
                 Log.d("DetailsActivity", "onFailure: " + t.getMessage());
-                // TODO: 6/28/2019 warn the user the movie didn't load - Aaron
             }
         });
         return serverMovieDetails;

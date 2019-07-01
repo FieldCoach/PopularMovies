@@ -150,7 +150,12 @@ public class MovieDetailsFragment extends Fragment {
         tvTitle.setText(movie.getTitle());
         tvRating.setText(String.valueOf(movie.getVoteAverage()));
         tvOverview.setText(movie.getOverview());
-        // TODO: 6/19/2019 Format release date properly - Aaron
+        /* TODO 6/19/2019(Original) Format release date properly - Aaron
+         * TODO 7/1/2019(Update) BUG-FIX:
+            * Either there is problem with JSON mapping
+              or the response doesn't have a release date field, but
+              the field comes out to be null - Emre
+        */
         String dateString = movie.getReleaseDate();
         tvReleaseDate.setText(dateString);
     }
@@ -204,6 +209,6 @@ public class MovieDetailsFragment extends Fragment {
      * @param movie the movie to be added to the database
      */
     private void insertFavoriteToDb(Movie movie) {
-        // TODO: 6/28/2019 Add movie to Room - Aaron
+        // TODO 6/28/2019 NEW FEAT: Add movie to Room - Aaron
     }
 }

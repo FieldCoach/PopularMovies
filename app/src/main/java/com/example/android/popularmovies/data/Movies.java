@@ -5,6 +5,11 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO 7/1/2019 CODE CLEAN-UP:
+ *  We need to find a way to merge this class with Movie class.
+ *  Or some other way to map the JSON object with our model - Emre
+ */
 public class Movies {
 
     @SerializedName("results")

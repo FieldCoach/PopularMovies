@@ -5,6 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+/* TODO 7/1/I2019 CODE CLEAN-UP: May be RecyclerView has a better
+    method to handle endless scrolling at the moment.
+    We should look into that. Hint: The answer is PagingLibrary ;) - Emre
+ */
 /***************************************************************************************
  *    Title: EndlessRecyclerViewScrollListener.java
  *    Author: nesquena
@@ -12,7 +16,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  *    Availability: https://gist.github.com/nesquena/d09dc68ff07e845cc622#file-endlessrecyclerviewscrolllistener-java
  *
  ***************************************************************************************/
-
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
