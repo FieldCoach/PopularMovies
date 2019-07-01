@@ -39,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MovieRepository {
     private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
-
+    private static final String SORT_BY_POPULAR = "popular";
     private String pageNumber = "";
     private MutableLiveData<List<Movie>> serverMovies;
 
@@ -60,7 +60,7 @@ public class MovieRepository {
         MovieDbService service = retrofit.create(MovieDbService.class);
         // Create the Call by calling the @GET method from the Service
         Call<Movies> call = service.getSortedMovies(
-                "popular",
+                SORT_BY_POPULAR,
                 ApiKeyFile.MOVIE_DB_API_KEY,
                 pageNumber);
         // Use the method enqueue from the Call to act upon onResponse and onFailure
