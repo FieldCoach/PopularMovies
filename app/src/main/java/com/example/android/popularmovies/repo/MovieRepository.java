@@ -22,7 +22,6 @@ import android.util.Log;
 
 import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.data.MovieDao;
 import com.example.android.popularmovies.data.Movies;
 import com.example.android.popularmovies.utilities.MovieDbService;
 
@@ -41,7 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MovieRepository {
     private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
-    private String mPage = "1";
+    private String pageNumber = "";
     private MutableLiveData<List<Movie>> serverMovies;
 
     public MovieRepository() {
@@ -63,9 +62,7 @@ public class MovieRepository {
         Call<Movies> call = service.getSortedMovies(
                 "popular",
                 ApiKeyFile.MOVIE_DB_API_KEY,
-                mPage);
-        Log.d("MainActivity", "getMovies: " + call.toString());
-        Log.d("MainActivity", "getMovies: " + mPage);
+                pageNumber);
         // Use the method enqueue from the Call to act upon onResponse and onFailure
         call.enqueue(new Callback<Movies>() {
             @Override
@@ -73,17 +70,7 @@ public class MovieRepository {
                 Movies movies = response.body();
                 if(movies != null) {
                     serverMovies.setValue(movies.getMovies());
-                    /**if (moviesArrayList == null) {
-                        // Get an ArrayList containing the Movies
-                        moviesArrayList = movies.getMovies();
-                    } else {
-                        // Get an ArrayList containing more Movies and add them to the existing Movies
-                        List<Movie> moreMovies = movies.getMovies();
-                        moviesArrayList.addAll(moreMovies);
-                    }*/
                 }
-                // adapter.updateMoviesList(moviesArrayList);
-                // Log.d("MainActivity", "onResponse: " + mPage);
             }
 
             @Override
@@ -92,5 +79,14 @@ public class MovieRepository {
             }
         });
         return serverMovies;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = String.valueOf(pageNumber);
+    }
+
+    public void loadMoviesFromServer(int pageNumber) {
+        setPageNumber(pageNumber);
+        getMoviesFromServer();
     }
 }
