@@ -73,14 +73,6 @@ public class MovieDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static MovieDetailsFragment newInstance(int movieId) {
-        Bundle args = new Bundle();
-        args.putInt(ARG_MOVIE_ID, movieId);
-        MovieDetailsFragment fragment = new MovieDetailsFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
