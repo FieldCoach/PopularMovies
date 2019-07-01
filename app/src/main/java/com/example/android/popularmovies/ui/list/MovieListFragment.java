@@ -75,10 +75,6 @@ public class MovieListFragment extends Fragment
         // Required empty public constructor
     }
 
-    public static MovieListFragment newInstance() {
-        return new MovieListFragment();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
