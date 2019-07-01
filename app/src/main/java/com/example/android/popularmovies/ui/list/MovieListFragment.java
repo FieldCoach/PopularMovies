@@ -23,6 +23,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,6 +50,7 @@ import com.example.android.popularmovies.ui.details.MovieDetailsFragment;
 import com.example.android.popularmovies.utilities.EndlessRecyclerViewScrollListener;
 import com.example.android.popularmovies.utilities.MovieDbService;
 import com.example.android.popularmovies.utilities.NetworkUtils;
+import com.example.android.popularmovies.viewmodel.MovieListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,10 +98,25 @@ public class MovieListFragment extends Fragment
         setLayoutManager();
         adapter = new PosterAdapter(getContext(), this);
         recyclerView.setAdapter(adapter);
-        if(isConnectedToNetwork()) {
-            getMoviesFromServer();
-        }
+        //if(isConnectedToNetwork()) {
+            // getMoviesFromServer();
+        // }
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        MovieListViewModel viewModel = ViewModelProviders.of(this)
+                .get(MovieListViewModel.class);
+        viewModel.getMovies()
+                .observe(this, new Observer<List<Movie>>() {
+                    @Override
+                    public void onChanged(List<Movie> movies) {
+                        moviesArrayList.addAll(movies);
+                        adapter.updateMoviesList(moviesArrayList);
+                    }
+                });
     }
 
     /**
