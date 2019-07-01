@@ -24,16 +24,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,14 +38,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.Movies;
 import com.example.android.popularmovies.ui.ReviewAdapter;
 import com.example.android.popularmovies.ui.TrailerAdapter;
-import com.example.android.popularmovies.utilities.MovieDbService;
 import com.example.android.popularmovies.utilities.NetworkUtils;
+import com.example.android.popularmovies.viewmodel.MovieDetailsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -63,9 +56,6 @@ import java.util.Objects;
 public class MovieDetailsFragment extends Fragment {
 
     public static final String ARG_MOVIE_ID = "movie_id";
-    private final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
-    private static final String REVIEWS = "reviews";
-    private static final String TRAILERS = ",videos";
 
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
@@ -114,7 +104,7 @@ public class MovieDetailsFragment extends Fragment {
         ivDetailsPoster = view.findViewById(R.id.iv_details_poster);
         ivBackDrop = view.findViewById(R.id.iv_back_drop);
         // Get movie details from server
-        getMovieDetails(String.valueOf(movieId));
+        // getMovieDetails(String.valueOf(movieId));
         //Setup the reviews RecyclerView
         RecyclerView rvReviews = view.findViewById(R.id.rv_reviews);
         rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -138,41 +128,25 @@ public class MovieDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        MovieDetailsViewModel viewModel = ViewModelProviders
+                .of(this)
+                .get(MovieDetailsViewModel.class);
+        // Set movieId
+        viewModel.setMovieId(movieId);
+        // Observe data
+        viewModel.getMovieDetails().observe(this, movie -> {
+            getDetailsText(movie);
+            getPosterAndBackdrop(movie);
+            loadTrailersAndReviews(movie);
+        });
+    }
+
+    @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_details, menu);
-    }
-
-    private void getMovieDetails(String movieIdString) {
-        // Build Http Client
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        // Build Retrofit Object with Base URL
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MOVIE_DB_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-        // Create the Service Object containing the @GET call
-        MovieDbService service = retrofit.create(MovieDbService.class);
-        // Create the Call by calling the @GET method from the Service
-        Call<Movie> call = service.getDetails(movieIdString, ApiKeyFile.MOVIE_DB_API_KEY, REVIEWS + TRAILERS);
-        // Use the method enqueue from the Call to act upon onResponse and onFailure
-        call.enqueue(new Callback<Movie>() {
-            @Override
-            public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
-                Movie movie = response.body();
-                if(movie != null) {
-                    getDetailsText(movie);
-                    getPosterAndBackdrop(movie);
-                    loadTrailersAndReviews(movie);
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
-                Log.d("DetailsActivity", "onFailure: " + t.getMessage());
-                // TODO: 6/28/2019 warn the user the movie didn't load - Aaron
-            }
-        });
     }
 
     /**
