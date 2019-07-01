@@ -45,30 +45,23 @@ public class MovieRepository {
     private static final String TRAILERS = "videos";
 
     private String pageNumber = "";
+    private MovieDbService movieDbService;
     private MutableLiveData<List<Movie>> serverMovies;
     private MutableLiveData<Movie> serverMovieDetails;
 
     public MovieRepository() {
         serverMovies = new MutableLiveData<>();
         serverMovieDetails = new MutableLiveData<>();
+        movieDbService = createMovieDbService();
     }
 
     public LiveData<List<Movie>> getMoviesFromServer() {
-        // Build Http Client
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        // Build Retrofit Object with Base URL
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MOVIE_DB_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-        // Create the Service Object containing the @GET call
-        MovieDbService service = retrofit.create(MovieDbService.class);
         // Create the Call by calling the @GET method from the Service
-        Call<Movies> call = service.getSortedMovies(
-                SORT_BY_POPULAR,
-                ApiKeyFile.MOVIE_DB_API_KEY,
-                pageNumber);
+        Call<Movies> call = movieDbService
+                .getSortedMovies(
+                    SORT_BY_POPULAR,
+                    ApiKeyFile.MOVIE_DB_API_KEY,
+                    pageNumber);
         // Use the method enqueue from the Call to act upon onResponse and onFailure
         call.enqueue(new Callback<Movies>() {
             @Override
@@ -88,20 +81,12 @@ public class MovieRepository {
     }
 
     public LiveData<Movie> getMovieDetailsFromServer(String movieId) {
-        // Build Http Client
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        // Build Retrofit Object with Base URL
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MOVIE_DB_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-        // Create the Service Object containing the @GET call
-        MovieDbService service = retrofit.create(MovieDbService.class);
         // Create the Call by calling the @GET method from the Service
-        Call<Movie> call = service.getDetails(movieId,
-                ApiKeyFile.MOVIE_DB_API_KEY,
-                REVIEWS + COMMA_SEPARATOR + TRAILERS);
+        Call<Movie> call = movieDbService
+                .getDetails(
+                        movieId,
+                        ApiKeyFile.MOVIE_DB_API_KEY,
+                        REVIEWS + COMMA_SEPARATOR + TRAILERS);
         // Use the method enqueue from the Call to act upon onResponse and onFailure
         call.enqueue(new Callback<Movie>() {
             @Override
@@ -130,5 +115,18 @@ public class MovieRepository {
     public void loadMoviesFromServer(int pageNumber) {
         setPageNumber(pageNumber);
         getMoviesFromServer();
+    }
+
+    private MovieDbService createMovieDbService() {
+        // Build Http Client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        // Build Retrofit Object with Base URL
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MOVIE_DB_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+        // Create the Service Object containing the @GET call
+        return retrofit.create(MovieDbService.class);
     }
 }
