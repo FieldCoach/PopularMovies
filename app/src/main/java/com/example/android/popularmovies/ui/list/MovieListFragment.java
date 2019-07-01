@@ -155,6 +155,9 @@ public class MovieListFragment extends Fragment
         return NetworkUtils.isOnline(Objects.requireNonNull(getContext()));
     }
 
+    /**
+     * Navigates to MovieDetailsFragment using Navigation Component.
+     */
     private void navigateToDetail(int movieId) {
         Bundle args = new Bundle();
         args.putInt(MovieDetailsFragment.ARG_MOVIE_ID, movieId);
