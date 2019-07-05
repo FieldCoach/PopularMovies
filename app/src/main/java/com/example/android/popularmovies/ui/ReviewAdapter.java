@@ -41,7 +41,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     public void onBindViewHolder(ReviewAdapterViewHolder holder, int position) {
         holder.bind(mReviewArrayList.get(position));
 
-        // TODO: 2019-07-05 Is this setting the Review Card invisible when there are no results? - Aaron
+        // Removes divider line under the last Review in the RecyclerView - Aaron
         if (position == mReviewArrayList.size() - 1){
             holder.view.setVisibility(View.GONE);
         }
