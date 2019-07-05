@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.popularmovies.R;
@@ -16,10 +17,6 @@ import java.util.List;
 /**
  * Created by AaronC on 11/2/2017.
  */
-/**
- * TODO 7/1/2019 CODE CLEAN-UP:
- *  Aaron, please update this class using PosterAdapter as a template - Emre
- */
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder> {
 
     private ArrayList<Result> mReviewArrayList = new ArrayList<>();
@@ -29,8 +26,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
     }
 
+    @NonNull
     @Override
-    public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ReviewAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.review_list_item, parent, false);
@@ -38,7 +36,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     }
 
     @Override
-    public void onBindViewHolder(ReviewAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReviewAdapterViewHolder holder, int position) {
         holder.bind(mReviewArrayList.get(position));
 
         // Removes divider line under the last Review in the RecyclerView - Aaron
