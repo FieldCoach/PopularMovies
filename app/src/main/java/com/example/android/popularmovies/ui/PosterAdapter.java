@@ -1,7 +1,6 @@
 package com.example.android.popularmovies.ui;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,30 +53,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
     public int getItemCount() {
         if (null == movieArrayList) return 0;
         return movieArrayList.size();
-    }
-
-    // TODO 6/29/2019: What is difference between this method and updateMoviesList() method? - Emre
-    /**
-     * Clears previous data from the ArrayList of Movies, adds new Movies, then notifies the Adapter
-     * @param moviesArrayList arrayList containing all of the movies
-     * @param sortBySelectionString String to inform if these are favorite movies
-     */
-    void setMoviesArrayList(ArrayList<Movie> moviesArrayList, String sortBySelectionString) {
-        this.movieArrayList.clear();
-        this.movieArrayList.addAll(moviesArrayList);
-        String movieTitles = "";
-        for (Movie movie : movieArrayList) {
-            movieTitles = movieTitles.concat(movie.getTitle() + "\n");
-        }
-        Log.d(TAG, "PosterAdapter.setMoviesArrayList() " + "\n" +
-                        "sortBySelectionString:\t" + sortBySelectionString + "\n" +
-                        "arraySize:\t" + movieArrayList.size() + "\n" +
-                        "TITLES\n" +
-                        movieTitles);
-        //Set viewingFavorites for use later
-        // TODO 6/29/2019 - When and for what? - Emre
-        Boolean viewingFavorites = sortBySelectionString.equals("favorites");
-        notifyDataSetChanged();
     }
 
     public void updateMoviesList(List<Movie> newMoviesList) {
