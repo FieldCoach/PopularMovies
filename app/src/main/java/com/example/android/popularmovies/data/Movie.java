@@ -13,10 +13,8 @@ import com.google.gson.annotations.SerializedName;
 public class Movie {
     @PrimaryKey
     private int id;
-    /**
-     * TODO 7/1/2019 CODE CLEAN-UP:
-     *  Do we need a serialized name for each of these fields? - Emre
-     */
+
+    // @SerializedName is needed to correctly parse fields into POJO - Aaron
     @SerializedName("poster_path")
     private String posterPath;
     @SerializedName("backdrop_path")
@@ -25,6 +23,7 @@ public class Movie {
     @SerializedName("vote_average")
     private String voteAverage;
     private String overview;
+    @SerializedName("release_date")
     private String releaseDate;
 
     private final static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";

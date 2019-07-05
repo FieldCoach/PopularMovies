@@ -49,7 +49,11 @@ import com.example.android.popularmovies.viewmodel.MovieDetailsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -152,13 +156,13 @@ public class MovieDetailsFragment extends Fragment implements TrailerAdapter.Tra
         tvTitle.setText(movie.getTitle());
         tvRating.setText(String.valueOf(movie.getVoteAverage()));
         tvOverview.setText(movie.getOverview());
-        /* TODO 6/19/2019(Original) Format release date properly - Aaron
-         * TODO 7/1/2019(Update) BUG-FIX:
-            * Either there is problem with JSON mapping
-              or the response doesn't have a release date field, but
-              the field comes out to be null - Emre
-        */
-        String dateString = movie.getReleaseDate();
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(movie.getReleaseDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String dateString = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).format(date);
         tvReleaseDate.setText(dateString);
     }
 
