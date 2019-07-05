@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android.popularmovies.ApiKeyFile;
@@ -38,8 +39,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
      * @param viewType identifies the type of view
      * @return ViewHolder containing the inflated layout
      */
+    @NonNull
     @Override
-    public TrailerAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TrailerAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.trailer_list_item, parent, false);
         return new TrailerAdapterViewHolder(view);
@@ -51,7 +53,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
      * @param position the position of the ViewHolder to be bound
      */
     @Override
-    public void onBindViewHolder(TrailerAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TrailerAdapterViewHolder holder, int position) {
         //query for trailer urls and attach them to thumbnail
         holder.onBind(trailerArrayList.get(position));
 
