@@ -99,7 +99,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
             moviePoster = itemView.findViewById(R.id.iv_movie_poster);
         }
 
-        public void onBind(Movie movie) {
+        void onBind(Movie movie) {
             tvTitle.setText(movie.getTitle());
             //Load the image into the ImageView
             Glide.with(context)
