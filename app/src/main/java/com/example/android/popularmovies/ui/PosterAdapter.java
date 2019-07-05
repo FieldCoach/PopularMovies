@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
+import com.example.android.popularmovies.utilities.PosterDiffCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,16 +78,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         notifyDataSetChanged();
     }
 
-    /**
-     * TODO 7/1/2019 NEW FEAT:
-     *  Instead of updating the adapter data here,
-     *  we need to implement a diff util class to
-     *  handle data changes - Emre
-     */
-    public void updateMoviesList(List<Movie> moviesArrayList) {
-        this.movieArrayList.clear();
-        this.movieArrayList.addAll(moviesArrayList);
-        notifyDataSetChanged();
+    public void updateMoviesList(List<Movie> newMoviesList) {
+        DiffUtil.DiffResult diffResult =
+                DiffUtil.calculateDiff(new PosterDiffCallback(this.movieArrayList, newMoviesList));
+
+        movieArrayList.clear();
+        movieArrayList.addAll(newMoviesList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder {
