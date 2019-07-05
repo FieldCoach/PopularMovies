@@ -39,9 +39,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
     @Override
     public void onBindViewHolder(ReviewAdapterViewHolder holder, int position) {
-        Result result = mReviewArrayList.get(position);
-        holder.author.setText(result.getAuthor());
-        holder.content.setText(result.getContent());
+        holder.bind(mReviewArrayList.get(position));
+
+        // TODO: 2019-07-05 Is this setting the Review Card invisible when there are no results? - Aaron
         if (position == mReviewArrayList.size() - 1){
             holder.view.setVisibility(View.GONE);
         }
@@ -73,6 +73,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
             author = itemView.findViewById(R.id.tv_author);
             content = itemView.findViewById(R.id.tv_content);
             view = itemView.findViewById(R.id.v_seperator);
+        }
+
+        void bind(Result result) {
+            author.setText(result.getAuthor());
+            content.setText(result.getContent());
         }
     }
 }
