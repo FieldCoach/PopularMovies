@@ -38,22 +38,7 @@ public class Movie {
     @Ignore
     private Movies.Video videos;
 
-    /**
-     * TODO 7/1/2019 CODE CLEAN-UP: No need an empty constructor - Emre
-     */
     public Movie() {
-    }
-
-    public Movie(int id, String posterPath, String backdropPath, String title, String voteAverage, String overview, String releaseDate, Review reviews, Movies.Video videos) {
-        this.id = id;
-        this.posterPath = posterPath;
-        this.backdropPath = backdropPath;
-        this.title = title;
-        this.voteAverage = voteAverage;
-        this.overview = overview;
-        this.releaseDate = releaseDate;
-        this.reviews = reviews;
-        this.videos = videos;
     }
 
     public int getId() {
