@@ -139,8 +139,11 @@ public class MovieListFragment extends Fragment
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 //Use field page instead of the parameter for this method
                 //Using the parameter page caused the same page of result to be loaded multiple times
-                /* TODO 7/1/2019 CODE CLEAN-UP: Not sure about having this logic here.
-                 *  Sorting might be changed based on drawer menu item selection I guess. - Emre
+                /**
+                 * TODO: 2019-07-05 REFACTOR
+                 *  Replace "FAVORITES" with "SELECTED_SORT_OPTION" instead. We will have multiple
+                 *  options of sorting our movies later.
+                 *  - Aaron
                  */
                 if (!sortBySelectionString.equals(FAVORITES)){
                     viewModel.loadMovies();
