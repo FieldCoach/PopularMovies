@@ -72,13 +72,6 @@ public class Movie {
         return videos;
     }
 
-    /**
-     * TODO 7/1/2019 CODE CLEAN-UP: Do we really need this method? - Emre
-     */
-    public void setVideos(Movies.Video videos) {
-        this.videos = videos;
-    }
-
     String getPosterPath() {
         return posterPath;
     }
