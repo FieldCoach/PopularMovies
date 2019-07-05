@@ -1,7 +1,5 @@
 package com.example.android.popularmovies.ui;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movies.Result;
 import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 
@@ -22,22 +19,17 @@ import java.util.List;
 /**
  * Created by ioutd on 11/6/2017.
  */
-/**
- * TODO 7/1/2019 CODE CLEAN-UP:
- *  Aaron, please update this class using PosterAdapter as a template - Emre
- */
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
-    /*
-     TODO: 11/21/2017 () - Change activity to weak reference to avoid memory leak - Aaron
-     TODO 7/1/2019(Update) CODE CLEAN-UP: Whatever requires the activity itself to do its job,
-      shouldn't be here so, this implementation needs to be handled in another way - Emre
-     */
-    private final Activity activity;
     private ArrayList<Result> trailerArrayList = new ArrayList<>();
+    private TrailerAdapterListener listener;
 
-    public TrailerAdapter(Activity activity){
-        this.activity = activity;
+    public interface TrailerAdapterListener {
+        void onTrailerInteraction(String tag);
+    }
+
+    public TrailerAdapter(TrailerAdapterListener listener){
+        this.listener = listener;
     }
 
     /**
@@ -92,24 +84,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
             super(itemView);
             trailerThumbnail = itemView.findViewById(R.id.tn_youtube_trailer);
             //When the thumbnail is clicked, play the video
-            trailerThumbnail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    /* TODO 7/1/I2019 CODE CLEAN-UP: Aaron, never handle these click events
-                    *   here in the holder class. Instead use a listener interface
-                    *   (check out PosterAdapter impl) and delegate the work to Fragment,
-                    *   that way you don't have to pass Activity instance to adapter. - Emre
-                    */
-                    Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                            activity,
-                            ApiKeyFile.YOUTUBE_API_KEY,
-                            itemView.getTag().toString(),
-                            0,
-                            true,
-                            false);
-                    activity.startActivity(intent);
-                }
-            });
+            trailerThumbnail.setOnClickListener(view ->
+                    listener.onTrailerInteraction(itemView.getTag().toString()));
         }
 
         void onBind(Result result) {

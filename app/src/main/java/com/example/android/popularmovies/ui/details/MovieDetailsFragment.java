@@ -18,6 +18,7 @@
 
 package com.example.android.popularmovies.ui.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,6 +38,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.android.popularmovies.ApiKeyFile;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.Movies;
@@ -45,6 +47,7 @@ import com.example.android.popularmovies.ui.TrailerAdapter;
 import com.example.android.popularmovies.utilities.NetworkUtils;
 import com.example.android.popularmovies.viewmodel.MovieDetailsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +55,7 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MovieDetailsFragment extends Fragment {
+public class MovieDetailsFragment extends Fragment implements TrailerAdapter.TrailerAdapterListener {
 
     public static final String ARG_MOVIE_ID = "movie_id";
 
@@ -107,7 +110,7 @@ public class MovieDetailsFragment extends Fragment {
                         new LinearLayoutManager(getContext(),
                         LinearLayoutManager.HORIZONTAL,
                         false));
-        trailerAdapter = new TrailerAdapter(getActivity());
+        trailerAdapter = new TrailerAdapter(this);
         rvMovieTrailers.setAdapter(trailerAdapter);
         // private Boolean favorite = false;
         FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
@@ -209,5 +212,17 @@ public class MovieDetailsFragment extends Fragment {
      */
     private void insertFavoriteToDb(Movie movie) {
         // TODO 6/28/2019 NEW FEAT: Add movie to Room - Aaron
+    }
+
+    @Override
+    public void onTrailerInteraction(String tag) {
+        Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                getActivity(),
+                ApiKeyFile.YOUTUBE_API_KEY,
+                tag,
+                0,
+                true,
+                false);
+        startActivity(intent);
     }
 }
