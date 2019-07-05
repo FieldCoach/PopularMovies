@@ -61,19 +61,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     @Override
     public void onBindViewHolder(TrailerAdapterViewHolder holder, int position) {
         //query for trailer urls and attach them to thumbnail
-        Result result = trailerArrayList.get(position);
-        final String trailerKey = result.getKey();
-        holder.itemView.setTag(trailerKey);
-        holder.trailerThumbnail.initialize(ApiKeyFile.YOUTUBE_API_KEY, new YouTubeThumbnailView.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
-                youTubeThumbnailLoader.setVideo(trailerKey);
-            }
-            @Override
-            public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+        holder.onBind(trailerArrayList.get(position));
 
-            }
-        });
     }
 
     /**
@@ -119,6 +108,21 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
                             true,
                             false);
                     activity.startActivity(intent);
+                }
+            });
+        }
+
+        void onBind(Result result) {
+            final String trailerKey = result.getKey();
+            itemView.setTag(trailerKey);
+            trailerThumbnail.initialize(ApiKeyFile.YOUTUBE_API_KEY, new YouTubeThumbnailView.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
+                    youTubeThumbnailLoader.setVideo(trailerKey);
+                }
+                @Override
+                public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+
                 }
             });
         }
