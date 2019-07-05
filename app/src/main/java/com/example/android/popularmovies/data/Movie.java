@@ -120,13 +120,6 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    /**
-     * TODO 7/1/2019 CODE CLEAN-UP: Do we really need this method? - Emre
-     */
-    public void setReviews(Review reviews) {
-        this.reviews = reviews;
-    }
-
     public String getPosterUriString() {
         Uri builtUri = Uri.parse(IMAGE_BASE_URL).buildUpon()
                 .appendPath(IMAGE_SIZE)
