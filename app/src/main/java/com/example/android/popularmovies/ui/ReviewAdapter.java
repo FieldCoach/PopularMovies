@@ -1,6 +1,5 @@
 package com.example.android.popularmovies.ui;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,23 +22,19 @@ import java.util.List;
  */
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder> {
 
-    private Context mContext;
     private ArrayList<Result> mReviewArrayList = new ArrayList<>();
 
-    /**
-     * TODO 7/1/2019 CODE CLEAN-UP:
-     *  We don't need to pass the Context here,
-     *  we can simply get it from the parent in onCreateViewHolder() - Emre
-     */
-    public ReviewAdapter(Context context) {
-        mContext = context;
+
+    public ReviewAdapter() {
+
     }
 
     @Override
     public ReviewAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.review_list_item, parent, false);
-        return new ReviewAdapterViewHolder(view);
+        View itemView = LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.review_list_item, parent, false);
+        return new ReviewAdapterViewHolder(itemView);
     }
 
     @Override

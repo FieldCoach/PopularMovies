@@ -19,15 +19,6 @@
 package com.example.android.popularmovies.ui.details;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +27,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
@@ -100,7 +99,7 @@ public class MovieDetailsFragment extends Fragment {
         //Setup the reviews RecyclerView
         RecyclerView rvReviews = view.findViewById(R.id.rv_reviews);
         rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
-        reviewAdapter = new ReviewAdapter(getContext());
+        reviewAdapter = new ReviewAdapter();
         rvReviews.setAdapter(reviewAdapter);
         //Setup the movie trailer RecyclerView
         RecyclerView rvMovieTrailers = view.findViewById(R.id.rv_movie_trailers);
