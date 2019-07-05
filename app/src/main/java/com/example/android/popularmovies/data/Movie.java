@@ -79,11 +79,11 @@ public class Movie {
         this.videos = videos;
     }
 
-    public String getPosterPath() {
+    String getPosterPath() {
         return posterPath;
     }
 
-    public String getBackdropPath() {
+    String getBackdropPath() {
         return backdropPath;
     }
 
@@ -103,11 +103,11 @@ public class Movie {
         return releaseDate;
     }
 
-    public void setPosterPath(String posterPath) {
+    void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
 
-    public void setBackdropPath(String backdropPath) {
+    void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
     }
 
@@ -115,15 +115,15 @@ public class Movie {
         this.title = title;
     }
 
-    public void setVoteAverage(String voteAverage) {
+    void setVoteAverage(String voteAverage) {
         this.voteAverage = voteAverage;
     }
 
-    public void setOverview(String overview) {
+    void setOverview(String overview) {
         this.overview = overview;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
