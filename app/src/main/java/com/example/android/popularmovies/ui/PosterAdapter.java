@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,8 +36,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public MoviePosterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MoviePosterAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.movie_list_item, parent,false);
@@ -44,7 +46,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.MoviePoste
     }
 
     @Override
-    public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MoviePosterAdapterViewHolder holder, int position) {
         holder.onBind(movieArrayList.get(position));
     }
 
